@@ -7,10 +7,11 @@ from app.models import Session, Appointment, Patient, Therapist
 from app.schemas.schemas import SOAPResponse
 from app.integrations.mock_services import WhisperMock
 from app.services.llm_service import LLMService
+from app.services.s3_service import s3_service
 from app.api.deps import get_current_user
 import enum
 from pydantic import BaseModel
-from sqlalchemy import Column, String
+import asyncio
 
 class SessionStatus(str, enum.Enum):
     PENDING = "pending"
@@ -28,6 +29,10 @@ router = APIRouter()
 async def process_audio_background(session_id: int, audio_bytes: bytes, patient_diagnosis: str, previous_plan: str):
     async with AsyncSessionLocal() as db:
         try:
+            # 0. Upload to S3
+            # We run this synchronous boto3 call in a thread pool so it doesn't block the event loop
+            s3_key = await asyncio.to_thread(s3_service.upload_audio, audio_bytes)
+            
             # 1. Mock Whisper Transcription
             transcript = await WhisperMock.transcribe(audio_bytes)
             
@@ -42,6 +47,7 @@ async def process_audio_background(session_id: int, audio_bytes: bytes, patient_
             result = await db.execute(select(Session).filter(Session.id == session_id))
             db_session = result.scalars().first()
             if db_session:
+                db_session.audio_file_path = s3_key
                 db_session.raw_transcript = transcript
                 db_session.soap_subjective = soap_dict.get("subjective")
                 db_session.soap_objective = soap_dict.get("objective")
