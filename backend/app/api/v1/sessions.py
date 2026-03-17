@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from app.core.database import get_db, AsyncSessionLocal
 from app.models import Session, Appointment, Patient, Therapist
 from app.schemas.schemas import SOAPResponse
-from app.integrations.mock_services import WhisperMock
+from app.integrations.whisper_service import WhisperService
 from app.services.llm_service import LLMService
 from app.services.s3_service import s3_service
 from app.api.deps import get_current_user
@@ -30,11 +30,10 @@ async def process_audio_background(session_id: int, audio_bytes: bytes, patient_
     async with AsyncSessionLocal() as db:
         try:
             # 0. Upload to S3
-            # We run this synchronous boto3 call in a thread pool so it doesn't block the event loop
             s3_key = await asyncio.to_thread(s3_service.upload_audio, audio_bytes)
             
-            # 1. Mock Whisper Transcription
-            transcript = await WhisperMock.transcribe(audio_bytes)
+            # 1. Transcription (Uses real OpenAI if key is present, otherwise falls back to mock)
+            transcript = await WhisperService.transcribe(audio_bytes)
             
             # 2. Generate SOAP via LLM
             soap_dict = await LLMService.generate_soap_note(
@@ -71,7 +70,6 @@ async def process_session_audio(
     db: AsyncSession = Depends(get_db),
     current_user: Therapist = Depends(get_current_user)
 ):
-    # 1. Fetch appointment & patient info securely
     result = await db.execute(
         select(Appointment)
         .options(selectinload(Appointment.patient))
@@ -85,7 +83,6 @@ async def process_session_audio(
     patient_diagnosis = appt.patient.diagnosis if appt.patient else ""
     previous_plan = ""
 
-    # 2. Setup Session DB Record
     session_result = await db.execute(select(Session).filter(Session.appointment_id == appointment_id))
     db_session = session_result.scalars().first()
     
@@ -100,7 +97,6 @@ async def process_session_audio(
     
     audio_bytes = await audio.read()
     
-    # 3. Trigger Background Task
     background_tasks.add_task(
         process_audio_background, 
         session_id=db_session.id, 

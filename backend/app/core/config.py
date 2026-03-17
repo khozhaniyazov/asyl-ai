@@ -12,8 +12,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-super-secret-jwt-key-replace-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 11520 # 8 days
     
-    # Gemini AI
+    # AI Keys
     GEMINI_API_KEY: str = ""
+    OPENAI_API_KEY: Optional[str] = None
     
     # S3 Storage (MinIO or AWS)
     AWS_ACCESS_KEY_ID: Optional[str] = None
@@ -21,7 +22,7 @@ class Settings(BaseSettings):
     AWS_ENDPOINT_URL: Optional[str] = None
     S3_BUCKET_NAME: str = "logoped-sessions"
     
-    # WhatsApp / Kaspi placeholers
+    # Integrations
     KASPI_API_KEY: str = ""
     WHATSAPP_API_TOKEN: str = ""
 

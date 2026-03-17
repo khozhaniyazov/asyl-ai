@@ -1,6 +1,7 @@
 ﻿import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/v1';
+// Use environment variable for the API URL, default to localhost for development if not set
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -10,7 +11,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('asyl_ai_token');
   if (token) {
-    config.headers.Authorization = \Bearer ${token}\;
+    config.headers.Authorization = Bearer  + token;
   }
   return config;
 });
@@ -18,7 +19,6 @@ apiClient.interceptors.request.use((config) => {
 export const api = {
   // --- AUTH ---
   login: async (email: string, password: string) => {
-    // OAuth2PasswordRequestForm expects form data
     const formData = new FormData();
     formData.append('username', email);
     formData.append('password', password);
@@ -45,7 +45,7 @@ export const api = {
 
   // --- PATIENTS ---
   getPatients: async (skip = 0, limit = 100) => {
-    const response = await apiClient.get(\/patients/?skip=${skip}&limit=${limit}\);
+    const response = await apiClient.get('/patients/?skip=' + skip + '&limit=' + limit);
     return response.data;
   },
   
@@ -56,7 +56,7 @@ export const api = {
 
   // --- APPOINTMENTS ---
   getAppointments: async (skip = 0, limit = 100) => {
-    const response = await apiClient.get(\/appointments/?skip=${skip}&limit=${limit}\);
+    const response = await apiClient.get('/appointments/?skip=' + skip + '&limit=' + limit);
     return response.data;
   },
 
@@ -66,7 +66,7 @@ export const api = {
   },
 
   generateKaspiLink: async (appointmentId: number, amount: number = 5000) => {
-    const response = await apiClient.post(\/appointments/${appointmentId}/generate-kaspi-link?amount=${amount}\);
+    const response = await apiClient.post('/appointments/' + appointmentId + '/generate-kaspi-link?amount=' + amount);
     return response.data;
   },
 
@@ -75,17 +75,16 @@ export const api = {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'session.webm');
     
-    // Start background processing
-    const response = await apiClient.post(\/sessions/${appointmentId}/transcribe-and-analyze\, formData, {
+    const response = await apiClient.post('/sessions/' + appointmentId + '/transcribe-and-analyze', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data; // Returns { message: "started", session_id: 123 }
+    return response.data;
   },
 
   pollSessionStatus: async (sessionId: number) => {
-    const response = await apiClient.get(\/sessions/${sessionId}/status\);
-    return response.data; // Returns { id: 123, status: 'processing' | 'completed', soap: {...} }
+    const response = await apiClient.get('/sessions/' + sessionId + '/status');
+    return response.data;
   }
 };
