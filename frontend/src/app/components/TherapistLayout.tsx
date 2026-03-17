@@ -1,0 +1,266 @@
+import { useState, useMemo, useRef, useEffect } from "react";
+import { Outlet, NavLink, useNavigate } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  CalendarDays,
+  Users,
+  DollarSign,
+  Settings,
+  Search,
+  Bell,
+  Menu,
+  X,
+  LogOut,
+  Stethoscope,
+  Plus,
+} from "lucide-react";
+import { patients } from "./mockData";
+
+const navItems = [
+  { to: "/", icon: CalendarDays, label: "Dashboard" },
+  { to: "/patients", icon: Users, label: "Patients" },
+  { to: "/finance", icon: DollarSign, label: "Finance" },
+  { to: "/settings", icon: Settings, label: "Settings" },
+];
+
+export default function TherapistLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const navigate = useNavigate();
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return patients
+      .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 5);
+  }, [searchQuery]);
+
+  // Close search dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const notifications = [
+    { id: 1, text: "AI analysis completed for Aibek Nurlan", time: "2 min ago", unread: true },
+    { id: 2, text: "Payment received: 15,000 KZT from Madina Kanat", time: "1 hour ago", unread: true },
+    { id: 3, text: "Reminder: Session with Daulet Marat at 11:00", time: "3 hours ago", unread: false },
+    { id: 4, text: "Homework sent to Aliya Serik's parent via WhatsApp", time: "Yesterday", unread: false },
+  ];
+
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
+  return (
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Mobile overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-card border-r border-sidebar-border flex flex-col transition-transform duration-200 lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+            <Stethoscope className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div>
+            <h3 className="text-[15px]">Logoped</h3>
+            <p className="text-[11px] text-muted-foreground">Speech Therapy SaaS</p>
+          </div>
+          <button className="lg:hidden ml-auto" onClick={() => setSidebarOpen(false)}>
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/"}
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 ${
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`
+              }
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="text-[14px]">{item.label}</span>
+            </NavLink>
+          ))}
+
+          <div className="pt-4 px-3">
+            <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">Quick Actions</p>
+          </div>
+          <button
+            onClick={() => { navigate("/patients"); setSidebarOpen(false); }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-all w-full"
+          >
+            <Plus className="w-5 h-5" />
+            <span className="text-[14px]">New Patient</span>
+          </button>
+        </nav>
+
+        {/* User card */}
+        <div className="px-3 py-4 border-t border-sidebar-border">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px]">
+              DK
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] truncate">Dr. Dana Karimova</p>
+              <p className="text-[11px] text-muted-foreground truncate">SpeechCare Almaty</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/login")}
+            className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl text-muted-foreground hover:bg-accent/50 w-full transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-[13px]">Log out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top bar */}
+        <header className="h-16 border-b border-border flex items-center px-4 lg:px-6 gap-4 bg-card shrink-0">
+          <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
+            <Menu className="w-5 h-5" />
+          </button>
+
+          {/* Search with dropdown */}
+          <div className="flex-1 max-w-md relative" ref={searchRef}>
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search patients..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              className="w-full pl-9 pr-4 py-2 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+            />
+            <AnimatePresence>
+              {searchFocused && searchQuery && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-0 right-0 top-12 bg-card border border-border rounded-xl shadow-lg z-50 overflow-hidden"
+                >
+                  {searchResults.length === 0 ? (
+                    <div className="px-4 py-6 text-center text-[13px] text-muted-foreground">
+                      No patients found for "{searchQuery}"
+                    </div>
+                  ) : (
+                    searchResults.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => {
+                          navigate(`/patients/${p.id}`);
+                          setSearchQuery("");
+                          setSearchFocused(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors text-left"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[12px] shrink-0">
+                          {p.name.split(" ").map((n) => n[0]).join("")}
+                        </div>
+                        <div>
+                          <p className="text-[13px]">{p.name}</p>
+                          <p className="text-[11px] text-muted-foreground">{p.diagnosis} · Age {p.age}</p>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Notifications */}
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative p-2 rounded-xl hover:bg-accent transition-colors"
+            >
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-destructive text-destructive-foreground rounded-full text-[10px] flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-12 w-80 bg-card border border-border rounded-xl shadow-lg z-50 overflow-hidden"
+                >
+                  <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+                    <h4 className="text-[14px]">Notifications</h4>
+                    <span className="text-[11px] text-primary cursor-pointer hover:underline">Mark all read</span>
+                  </div>
+                  {notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className={`px-4 py-3 hover:bg-accent/50 transition-colors border-b border-border last:border-0 ${
+                        n.unread ? "bg-primary/[0.03]" : ""
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        {n.unread && <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />}
+                        <div className={n.unread ? "" : "ml-4"}>
+                          <p className="text-[13px]">{n.text}</p>
+                          <p className="text-[11px] text-muted-foreground mt-1">{n.time}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px] cursor-pointer">
+            DK
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-auto p-4 lg:p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}

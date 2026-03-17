@@ -1,0 +1,33 @@
+import { createBrowserRouter } from "react-router";
+import TherapistLayout from "./components/TherapistLayout";
+import Dashboard from "./components/Dashboard";
+import Patients from "./components/Patients";
+import PatientProfile from "./components/PatientProfile";
+import ActiveSession from "./components/ActiveSession";
+import Finance from "./components/Finance";
+import Settings from "./components/Settings";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import ParentLogin from "./components/ParentLogin";
+import ParentPortal from "./components/ParentPortal";
+import OnboardingWizard from "./components/OnboardingWizard";
+
+export const router = createBrowserRouter([
+  { path: "/login", Component: Login },
+  { path: "/register", Component: Register },
+  { path: "/onboarding", Component: OnboardingWizard },
+  { path: "/parent/login", Component: ParentLogin },
+  { path: "/parent", Component: ParentPortal },
+  {
+    path: "/",
+    Component: TherapistLayout,
+    children: [
+      { index: true, Component: Dashboard },
+      { path: "patients", Component: Patients },
+      { path: "patients/:id", Component: PatientProfile },
+      { path: "session/:appointmentId", Component: ActiveSession },
+      { path: "finance", Component: Finance },
+      { path: "settings", Component: Settings },
+    ],
+  },
+]);
