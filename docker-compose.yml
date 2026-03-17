@@ -1,0 +1,27 @@
+﻿version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./asyl_ai.db
+      - GEMINI_API_KEY=\
+      - SECRET_KEY=\
+    volumes:
+      - asyl_data:/app
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  asyl_data:
