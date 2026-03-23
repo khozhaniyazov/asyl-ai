@@ -1,0 +1,37 @@
+services:
+  - type: pserv
+    name: asyl-ai-db
+    plan: free
+    postgresMajorVersion: 15
+    disk:
+      GB: 1
+
+  - type: web
+    name: asyl-ai-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: asyl-ai-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    name: asyl-ai-frontend
+    plan: free
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    buildCommand: npm install && npm run build
+    envVars:
+      - key: VITE_API_URL
+        value: https://asyl-ai-backend.onrender.com/api/v1

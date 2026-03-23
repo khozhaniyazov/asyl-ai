@@ -1,0 +1,26 @@
+app = "asyl-ai-backend"
+primary_region = "fra"
+
+[build]
+
+[deploy]
+  release_command = "alembic upgrade head"
+
+[run]
+  concurrency = "25"
+  scaling_max = 1
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 0
