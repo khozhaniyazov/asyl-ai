@@ -15,8 +15,13 @@ primary_region = "fra"
   cpu_kind = "shared"
   cpus = 1
 
+[mounts]
+  source = "asyl_data"
+  destination = "/data"
+
 [env]
   PORT = "8080"
+  AIOSQLITE_DATABASE_URL = "sqlite+aiosqlite:///data/asyl_ai.db"
 
 [http_service]
   internal_port = 8080
