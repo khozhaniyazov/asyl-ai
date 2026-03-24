@@ -6,7 +6,7 @@ from app.core.database import get_db, AsyncSessionLocal
 from app.models import Session, Appointment, Patient, Therapist
 from app.schemas.schemas import SOAPResponse, SessionUpdate, SessionResponse
 from app.integrations.whisper_service import WhisperService
-from app.integrations.mock_services import WhatsAppMock
+from app.integrations.whatsapp_service import whatsapp_service
 from app.services.llm_service import LLMService
 from app.services.s3_service import s3_service
 from app.api.deps import get_current_user
@@ -208,7 +208,7 @@ async def send_homework_whatsapp(
     if not patient or not patient.parent_phone:
         raise HTTPException(status_code=400, detail="No parent phone number on file")
 
-    sent = await WhatsAppMock.send_message(
+    sent = await whatsapp_service.send_text_message(
         phone=patient.parent_phone,
         message=f"Homework for {patient.first_name}:\n\n{db_session.homework_for_parents}",
     )

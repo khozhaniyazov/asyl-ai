@@ -19,7 +19,7 @@ from app.schemas.schemas import (
     AppointmentUpdate,
     AppointmentResponse,
 )
-from app.integrations.mock_services import KaspiMock
+from app.integrations.kaspi_service import kaspi_service
 from app.api.deps import get_current_user
 
 router = APIRouter()
@@ -224,7 +224,7 @@ async def generate_kaspi_link(
     if not appt:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
-    link = await KaspiMock.generate_payment_link(amount, appointment_id)
+    link = await kaspi_service.generate_payment_link(amount, appointment_id)
     appt.kaspi_link = link
     await db.commit()
     return {"kaspi_link": link}

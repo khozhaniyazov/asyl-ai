@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppointmentCard } from "./AppointmentCard";
+import CancellationModal from "./CancellationModal";
+import ScheduleRequestList from "./ScheduleRequestList";
 import { api } from "../api";
 import type { AppointmentWithPatient, Patient, Appointment } from "../types";
 import { statusDot } from "../types";
@@ -54,6 +56,7 @@ export default function Dashboard() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [cancellingApptId, setCancellingApptId] = useState<number | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -111,13 +114,7 @@ export default function Dashboard() {
         toast.error("Failed to generate payment link.");
       }
     } else if (action === "cancel") {
-      try {
-        await api.updateAppointment(apt.id, { status: "CANCELLED" });
-        toast.info(t("dashboard.appointmentCancelled"));
-        fetchData();
-      } catch {
-        toast.error("Failed to cancel appointment.");
-      }
+      setCancellingApptId(apt.id);
     }
   };
 
@@ -279,6 +276,18 @@ export default function Dashboard() {
           </div>
         )}
       </motion.div>
+
+      {/* Schedule Requests */}
+      <ScheduleRequestList />
+
+      {/* Cancellation Modal */}
+      {cancellingApptId && (
+        <CancellationModal
+          appointmentId={cancellingApptId}
+          onClose={() => setCancellingApptId(null)}
+          onDone={() => { setCancellingApptId(null); fetchData(); }}
+        />
+      )}
 
       {/* Quick Action Modal */}
       <AnimatePresence>

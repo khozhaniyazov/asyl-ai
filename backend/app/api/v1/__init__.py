@@ -20,6 +20,7 @@ from . import (
     marketplace_profiles,
     marketplace_reviews,
     marketplace_bookings,
+    finance,
 )
 
 router = APIRouter()
@@ -63,3 +64,4 @@ router.include_router(
 router.include_router(
     marketplace_bookings.router, prefix="/marketplace/bookings", tags=["marketplace"]
 )
+router.include_router(finance.router, prefix="/finance", tags=["finance"])

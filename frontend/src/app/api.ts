@@ -418,6 +418,27 @@ export const api = {
     return response.data;
   },
 
+  // --- FINANCE ---
+  getFinanceSummary: async () => {
+    const response = await apiClient.get('/finance/summary');
+    return response.data;
+  },
+
+  getRevenueChart: async (months = 6) => {
+    const response = await apiClient.get(`/finance/revenue-chart?months=${months}`);
+    return response.data;
+  },
+
+  getDebtors: async () => {
+    const response = await apiClient.get('/finance/debtors');
+    return response.data;
+  },
+
+  getFinancePackages: async () => {
+    const response = await apiClient.get('/finance/packages');
+    return response.data;
+  },
+
   // --- PROGRESS ---
   getPatientProgress: async (patientId: number) => {
     const response = await apiClient.get(`/progress/patients/${patientId}/progress`);
