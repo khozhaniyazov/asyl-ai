@@ -4,7 +4,7 @@ primary_region = "fra"
 [build]
 
 [deploy]
-  release_command = "alembic upgrade head"
+  release_command = "python -c \"from app.db.database import init_db; import asyncio; asyncio.run(init_db())\""
 
 [run]
   concurrency = "25"
@@ -21,7 +21,8 @@ primary_region = "fra"
 
 [env]
   PORT = "8080"
-  AIOSQLITE_DATABASE_URL = "sqlite+aiosqlite:///data/asyl_ai.db"
+  ENVIRONMENT = "production"
+  DATABASE_URL = "sqlite+aiosqlite:///data/asyl_ai.db"
 
 [http_service]
   internal_port = 8080

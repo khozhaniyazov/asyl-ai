@@ -1,16 +1,24 @@
-"""Parent portal API — homework, appointments, progress."""
+"""Parent portal API — homework, appointments, progress, sound progress, schedule requests."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 
 from app.core.database import get_db
 from app.core.security import SECRET_KEY, ALGORITHM
-from app.models import Parent, Patient, Appointment, Session
+from app.models import (
+    Parent,
+    Patient,
+    Appointment,
+    Session,
+    HomeworkAssignment,
+    HomeworkStatus,
+    SoundProgressRecord,
+    SessionPackage,
+)
 
 router = APIRouter()
 
@@ -41,10 +49,9 @@ async def get_current_parent(
     return parent
 
 
-def get_patient_ids(parent: Parent) -> list[int]:
-    if not parent.linked_patient_ids:
-        return []
-    return [int(x) for x in parent.linked_patient_ids.split(",") if x.strip()]
+def _get_children_ids_query(parent_id: int):
+    """Get patient IDs via the new Patient.parent_id FK."""
+    return select(Patient.id).where(Patient.parent_id == parent_id)
 
 
 class ParentMeResponse(BaseModel):
@@ -55,12 +62,17 @@ class ParentMeResponse(BaseModel):
 
 
 @router.get("/me", response_model=ParentMeResponse)
-async def parent_me(parent: Parent = Depends(get_current_parent)):
+async def parent_me(
+    db: AsyncSession = Depends(get_db),
+    parent: Parent = Depends(get_current_parent),
+):
+    result = await db.execute(select(Patient.id).where(Patient.parent_id == parent.id))
+    patient_ids = [row[0] for row in result.all()]
     return {
         "id": parent.id,
         "phone": parent.phone,
         "full_name": parent.full_name,
-        "patient_ids": get_patient_ids(parent),
+        "patient_ids": patient_ids,
     }
 
 
@@ -69,10 +81,7 @@ async def get_children(
     db: AsyncSession = Depends(get_db),
     parent: Parent = Depends(get_current_parent),
 ):
-    ids = get_patient_ids(parent)
-    if not ids:
-        return []
-    result = await db.execute(select(Patient).filter(Patient.id.in_(ids)))
+    result = await db.execute(select(Patient).where(Patient.parent_id == parent.id))
     patients = result.scalars().all()
     return [
         {
@@ -80,6 +89,8 @@ async def get_children(
             "first_name": p.first_name,
             "last_name": p.last_name,
             "diagnosis": p.diagnosis,
+            "date_of_birth": p.date_of_birth.isoformat() if p.date_of_birth else None,
+            "status": p.status.value if p.status else "active",
         }
         for p in patients
     ]
@@ -90,12 +101,10 @@ async def get_parent_appointments(
     db: AsyncSession = Depends(get_db),
     parent: Parent = Depends(get_current_parent),
 ):
-    ids = get_patient_ids(parent)
-    if not ids:
-        return []
     result = await db.execute(
         select(Appointment)
-        .filter(Appointment.patient_id.in_(ids))
+        .join(Patient, Appointment.patient_id == Patient.id)
+        .where(Patient.parent_id == parent.id)
         .order_by(Appointment.start_time.desc())
         .limit(20)
     )
@@ -107,6 +116,7 @@ async def get_parent_appointments(
             "start_time": a.start_time.isoformat() if a.start_time else None,
             "end_time": a.end_time.isoformat() if a.end_time else None,
             "status": a.status.value if a.status else "planned",
+            "session_number": a.session_number,
             "kaspi_link": a.kaspi_link,
         }
         for a in appointments
@@ -118,28 +128,32 @@ async def get_homework(
     db: AsyncSession = Depends(get_db),
     parent: Parent = Depends(get_current_parent),
 ):
-    ids = get_patient_ids(parent)
-    if not ids:
-        return []
+    """Get homework assignments for parent's children (v2: uses HomeworkAssignment model)."""
     result = await db.execute(
-        select(Session)
-        .join(Appointment)
-        .filter(Appointment.patient_id.in_(ids))
-        .filter(Session.status == "completed")
-        .filter(Session.homework_for_parents.isnot(None))
-        .order_by(Session.created_at.desc())
-        .limit(20)
+        select(HomeworkAssignment)
+        .join(Patient, HomeworkAssignment.patient_id == Patient.id)
+        .where(Patient.parent_id == parent.id)
+        .order_by(HomeworkAssignment.created_at.desc())
+        .limit(30)
     )
-    sessions = result.scalars().all()
+    assignments = result.scalars().all()
     return [
         {
-            "id": s.id,
-            "appointment_id": s.appointment_id,
-            "homework": s.homework_for_parents,
-            "date": s.created_at.isoformat() if s.created_at else None,
-            "soap_assessment": s.soap_assessment,
+            "id": hw.id,
+            "patient_id": hw.patient_id,
+            "session_id": hw.session_id,
+            "template_id": hw.template_id,
+            "custom_instructions": hw.custom_instructions,
+            "assigned_at": hw.assigned_at.isoformat() if hw.assigned_at else None,
+            "due_date": hw.due_date.isoformat() if hw.due_date else None,
+            "parent_completed_at": hw.parent_completed_at.isoformat()
+            if hw.parent_completed_at
+            else None,
+            "parent_notes": hw.parent_notes,
+            "therapist_feedback": hw.therapist_feedback,
+            "status": hw.status.value if hw.status else "assigned",
         }
-        for s in sessions
+        for hw in assignments
     ]
 
 
@@ -148,14 +162,13 @@ async def get_progress(
     db: AsyncSession = Depends(get_db),
     parent: Parent = Depends(get_current_parent),
 ):
-    ids = get_patient_ids(parent)
-    if not ids:
-        return {"sessions_count": 0, "sessions": []}
+    """Get session progress timeline for parent's children."""
     result = await db.execute(
         select(Session)
         .join(Appointment)
-        .filter(Appointment.patient_id.in_(ids))
-        .filter(Session.status == "completed")
+        .join(Patient, Appointment.patient_id == Patient.id)
+        .where(Patient.parent_id == parent.id)
+        .where(Session.status == "completed")
         .order_by(Session.created_at.asc())
     )
     sessions = result.scalars().all()
@@ -171,3 +184,57 @@ async def get_progress(
             for s in sessions
         ],
     }
+
+
+@router.get("/sound-progress")
+async def get_sound_progress(
+    db: AsyncSession = Depends(get_db),
+    parent: Parent = Depends(get_current_parent),
+):
+    """Get sound progress records for parent's children."""
+    result = await db.execute(
+        select(SoundProgressRecord)
+        .join(Patient, SoundProgressRecord.patient_id == Patient.id)
+        .where(Patient.parent_id == parent.id)
+        .order_by(SoundProgressRecord.assessed_at.desc())
+    )
+    records = result.scalars().all()
+    return [
+        {
+            "id": r.id,
+            "patient_id": r.patient_id,
+            "sound": r.sound,
+            "stage": r.stage.value if r.stage else "not_started",
+            "accuracy_percent": r.accuracy_percent,
+            "notes": r.notes,
+            "assessed_at": r.assessed_at.isoformat() if r.assessed_at else None,
+        }
+        for r in records
+    ]
+
+
+@router.get("/packages")
+async def get_packages(
+    db: AsyncSession = Depends(get_db),
+    parent: Parent = Depends(get_current_parent),
+):
+    """Get session packages for parent's children."""
+    result = await db.execute(
+        select(SessionPackage)
+        .join(Patient, SessionPackage.patient_id == Patient.id)
+        .where(Patient.parent_id == parent.id)
+        .order_by(SessionPackage.created_at.desc())
+    )
+    packages = result.scalars().all()
+    return [
+        {
+            "id": p.id,
+            "patient_id": p.patient_id,
+            "total_sessions": p.total_sessions,
+            "used_sessions": p.used_sessions,
+            "remaining_sessions": p.remaining_sessions,
+            "total_price": float(p.total_price),
+            "payment_status": p.payment_status.value if p.payment_status else "pending",
+        }
+        for p in packages
+    ]

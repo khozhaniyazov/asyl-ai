@@ -21,7 +21,9 @@
     "day": "День",
     "kzt": "KZT",
     "minutes": "мин",
-    "noData": "Нет данных"
+    "noData": "Нет данных",
+    "create": "Создать",
+    "saving": "Сохранение..."
   },
   "auth": {
     "welcomeBack": "С возвращением",
@@ -58,7 +60,11 @@
     "quickActions": "Быстрые действия",
     "newPatient": "Новый пациент",
     "speechTherapy": "Логопедический SaaS",
-    "logoped": "Логопед"
+    "logoped": "Логопед",
+    "homework": "Задания",
+    "waitlist": "Лист ожидания",
+    "marketplace": "Маркетплейс",
+    "bookings": "Заявки"
   },
   "dashboard": {
     "calendar": "Календарь",
@@ -293,5 +299,195 @@
     "searchPatients": "Поиск пациентов...",
     "noResults": "Пациенты не найдены для",
     "noDiagnosis": "Диагноз не указан"
+  },
+  "homework": {
+    "library": "Библиотека заданий",
+    "libraryDesc": "Шаблоны домашних заданий для быстрого назначения",
+    "newTemplate": "Новый шаблон",
+    "editTemplate": "Редактировать шаблон",
+    "searchTemplates": "Поиск шаблонов...",
+    "allCategories": "Все категории",
+    "title": "Название",
+    "description": "Описание",
+    "instructions": "Инструкции",
+    "targetSounds": "Целевые звуки",
+    "ageRange": "Возрастной диапазон",
+    "sounds": "Звуки",
+    "age": "Возраст",
+    "noTemplates": "Шаблонов пока нет. Создайте первый!",
+    "category": {
+      "articulation": "Артикуляция",
+      "phonology": "Фонология",
+      "vocabulary": "Лексика",
+      "grammar": "Грамматика",
+      "fluency": "Плавность",
+      "other": "Другое"
+    }
+  },
+  "soundProgress": {
+    "title": "Прогресс звуков",
+    "noData": "Данных о прогрессе звуков пока нет",
+    "stage": {
+      "not_started": "Не начат",
+      "isolation": "Изоляция",
+      "syllables": "Слоги",
+      "words": "Слова",
+      "phrases": "Фразы",
+      "connected_speech": "Связная речь",
+      "automated": "Автоматизирован"
+    }
+  },
+  "availability": {
+    "title": "Расписание приёма",
+    "addSlot": "Добавить слот",
+    "day": "День",
+    "from": "С",
+    "to": "До",
+    "disable": "Выкл",
+    "enable": "Вкл"
+  },
+  "packages": {
+    "sessionPackage": "Пакет сеансов",
+    "noActive": "Нет активного пакета",
+    "sessionsLeft": "сеансов осталось"
+  },
+  "waitlist": {
+    "title": "Лист ожидания",
+    "description": "Пациенты, ожидающие свободного слота",
+    "empty": "Лист ожидания пуст",
+    "priority": "Приоритет",
+    "offerSlot": "Предложить слот",
+    "remove": "Убрать",
+    "status": {
+      "waiting": "Ожидает",
+      "offered": "Предложено",
+      "enrolled": "Записан",
+      "expired": "Истёк"
+    }
+  },
+  "cancellation": {
+    "title": "Отмена записи",
+    "type": "Тип",
+    "type_cancellation": "Отмена",
+    "type_no_show": "Неявка",
+    "type_late_cancel": "Поздняя отмена",
+    "cancelledBy": "Кем отменено",
+    "by_parent": "Родитель",
+    "by_therapist": "Специалист",
+    "reason": "Причина",
+    "selectReason": "Выберите причину...",
+    "reason_illness": "Болезнь",
+    "reason_schedule_conflict": "Конфликт расписания",
+    "reason_family_emergency": "Семейные обстоятельства",
+    "reason_weather": "Погода",
+    "reason_no_reason": "Без причины",
+    "reason_other": "Другое",
+    "confirm": "Подтвердить отмену"
+  },
+  "scheduleRequests": {
+    "pending": "Запросы на запись",
+    "newBooking": "Новая запись",
+    "reschedule": "Перенос",
+    "approve": "Одобрить",
+    "reject": "Отклонить"
+  },
+  "marketplace": {
+    "title": "Найти логопеда",
+    "subtitle": "Выберите специалиста по городу, специализации и отзывам",
+    "search": "Найти",
+    "allCities": "Все города",
+    "allSpecializations": "Все специализации",
+    "specialistsFound": "специалистов найдено",
+    "noResults": "Специалисты не найдены. Попробуйте изменить фильтры.",
+    "noRatings": "Нет отзывов",
+    "online": "Онлайн",
+    "onlineOnly": "Только онлайн",
+    "onlineAvailable": "Провожу онлайн-сеансы",
+    "verified": "Подтверждён",
+    "cityNotSet": "Город не указан",
+    "language": "Язык",
+    "minRating": "Мин. рейтинг",
+    "priceRange": "Цена",
+    "sortByRating": "По рейтингу",
+    "sortByPriceAsc": "Цена ↑",
+    "sortByPriceDesc": "Цена ↓",
+    "sortByExperience": "По опыту",
+    "backToSearch": "К поиску",
+    "profileNotFound": "Профиль не найден",
+    "yearsExp": "лет опыта",
+    "about": "О специалисте",
+    "specializations": "Специализации",
+    "education": "Образование",
+    "languages": "Языки",
+    "availableSlots": "Доступное время",
+    "noSlots": "Расписание не указано",
+    "bookingCta": "Запишитесь на диагностический сеанс",
+    "bookDiagnostic": "Записаться",
+    "noReviews": "Отзывов пока нет",
+    "anonymous": "Родитель",
+    "ratingOverall": "Общий",
+    "ratingResults": "Результат",
+    "ratingApproach": "Подход",
+    "ratingComm": "Общение",
+    "ratingPunctuality": "Пунктуальность",
+    "tab": {
+      "about": "О специалисте",
+      "reviews": "Отзывы",
+      "booking": "Запись"
+    },
+    "spec": {
+      "dysarthria": "Дизартрия",
+      "stuttering": "Заикание",
+      "speech_delay": "Задержка речи",
+      "alalia": "Алалия",
+      "dyslalia": "Дислалия",
+      "rhinolalia": "Ринолалия",
+      "aphasia": "Афазия",
+      "dysgraphia": "Дисграфия",
+      "dyslexia": "Дислексия",
+      "phonetic_phonemic": "ФФНР",
+      "general_speech_underdevelopment": "ОНР",
+      "other": "Другое"
+    },
+    "lang": {
+      "ru": "Русский",
+      "kk": "Қазақша",
+      "en": "English"
+    },
+    "myProfile": "Профиль на маркетплейсе",
+    "myProfileDesc": "Заполните профиль, чтобы родители могли вас найти",
+    "published": "Опубликован",
+    "draft": "Черновик",
+    "photo": "Фото профиля",
+    "uploadPhoto": "Загрузить фото",
+    "aboutYou": "О вас",
+    "bioPlaceholder": "Расскажите о себе, вашем подходе и опыте...",
+    "educationPlaceholder": "Образование, курсы, сертификаты...",
+    "city": "Город",
+    "selectCity": "Выберите город",
+    "experience": "Опыт (лет)",
+    "priceMin": "Цена от",
+    "priceMax": "Цена до",
+    "sessionDuration": "Длительность сеанса",
+    "gender": "Пол",
+    "notSpecified": "Не указан",
+    "female": "Женский",
+    "male": "Мужской",
+    "incomingBookings": "Заявки с маркетплейса",
+    "incomingBookingsDesc": "Запросы на запись от родителей",
+    "noBookings": "Заявок пока нет",
+    "confirm": "Подтвердить",
+    "reject": "Отклонить",
+    "depositPaid": "Депозит оплачен",
+    "bookingType": {
+      "diagnostic": "Диагностика",
+      "regular": "Обычный"
+    },
+    "bookingStatus": {
+      "pending": "Ожидает",
+      "confirmed": "Подтверждён",
+      "cancelled": "Отменён",
+      "completed": "Завершён"
+    }
   }
 }

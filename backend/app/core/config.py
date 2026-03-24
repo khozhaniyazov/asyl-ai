@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     KASPI_MERCHANT_ID: str = ""
     FRONTEND_URL: str = "http://localhost"
 
+    # Celery + Redis
+    REDIS_URL: str = "redis://localhost:6379/0"
+    CELERY_BROKER_URL: str = "redis://localhost:6379/0"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/1"
+
     model_config = SettingsConfigDict(
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )

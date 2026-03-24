@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 from app.core.database import get_db
 from app.models import Patient, Therapist
 from app.schemas.schemas import PatientCreate, PatientUpdate, PatientResponse
@@ -28,6 +28,7 @@ async def read_patients(
     skip: int = 0,
     limit: int = 100,
     search: Optional[str] = None,
+    status: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     current_user: Therapist = Depends(get_current_user),
 ):
@@ -39,6 +40,8 @@ async def read_patients(
             | (Patient.last_name.ilike(search_term))
             | (Patient.diagnosis.ilike(search_term))
         )
+    if status:
+        query = query.filter(Patient.status == status)
     query = query.order_by(Patient.created_at.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
     return result.scalars().all()

@@ -11,6 +11,13 @@ import Register from "./components/Register";
 import ParentLogin from "./components/ParentLogin";
 import ParentPortal from "./components/ParentPortal";
 import OnboardingWizard from "./components/OnboardingWizard";
+import HomeworkLibrary from "./components/HomeworkLibrary";
+import WaitlistView from "./components/WaitlistView";
+// v3: marketplace
+import MarketplaceSearch from "./components/MarketplaceSearch";
+import TherapistPublicProfile from "./components/TherapistPublicProfile";
+import MarketplaceProfile from "./components/MarketplaceProfile";
+import IncomingBookings from "./components/IncomingBookings";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -18,6 +25,9 @@ export const router = createBrowserRouter([
   { path: "/onboarding", Component: OnboardingWizard },
   { path: "/parent/login", Component: ParentLogin },
   { path: "/parent", Component: ParentPortal },
+  // v3: public marketplace pages
+  { path: "/marketplace", Component: MarketplaceSearch },
+  { path: "/marketplace/:therapistId", Component: TherapistPublicProfile },
   {
     path: "/",
     Component: TherapistLayout,
@@ -27,6 +37,11 @@ export const router = createBrowserRouter([
       { path: "patients/:id", Component: PatientProfile },
       { path: "session/:appointmentId", Component: ActiveSession },
       { path: "finance", Component: Finance },
+      { path: "homework", Component: HomeworkLibrary },
+      { path: "waitlist", Component: WaitlistView },
+      // v3: marketplace management
+      { path: "profile", Component: MarketplaceProfile },
+      { path: "bookings", Component: IncomingBookings },
       { path: "settings", Component: Settings },
     ],
   },

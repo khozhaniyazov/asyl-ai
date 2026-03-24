@@ -21,7 +21,9 @@
     "day": "Күн",
     "kzt": "KZT",
     "minutes": "мин",
-    "noData": "Деректер жоқ"
+    "noData": "Деректер жоқ",
+    "create": "Жасау",
+    "saving": "Сақталуда..."
   },
   "auth": {
     "welcomeBack": "Қайта қош келдіңіз",
@@ -58,7 +60,11 @@
     "quickActions": "Жылдам әрекеттер",
     "newPatient": "Жаңа пациент",
     "speechTherapy": "Логопедиялық SaaS",
-    "logoped": "Логопед"
+    "logoped": "Логопед",
+    "homework": "Тапсырмалар",
+    "waitlist": "Күту тізімі",
+    "marketplace": "Маркетплейс",
+    "bookings": "Өтінімдер"
   },
   "dashboard": {
     "calendar": "Күнтізбе",
@@ -293,5 +299,195 @@
     "searchPatients": "Пациенттерді іздеу...",
     "noResults": "Пациенттер табылмады:",
     "noDiagnosis": "Диагноз көрсетілмеген"
+  },
+  "homework": {
+    "library": "Тапсырмалар кітапханасы",
+    "libraryDesc": "Жылдам тағайындау үшін үй тапсырмасы үлгілері",
+    "newTemplate": "Жаңа үлгі",
+    "editTemplate": "Үлгіні өзгерту",
+    "searchTemplates": "Үлгілерді іздеу...",
+    "allCategories": "Барлық санаттар",
+    "title": "Атауы",
+    "description": "Сипаттама",
+    "instructions": "Нұсқаулар",
+    "targetSounds": "Мақсатты дыбыстар",
+    "ageRange": "Жас аралығы",
+    "sounds": "Дыбыстар",
+    "age": "Жасы",
+    "noTemplates": "Үлгілер әлі жоқ. Біріншісін жасаңыз!",
+    "category": {
+      "articulation": "Артикуляция",
+      "phonology": "Фонология",
+      "vocabulary": "Лексика",
+      "grammar": "Грамматика",
+      "fluency": "Тегістік",
+      "other": "Басқа"
+    }
+  },
+  "soundProgress": {
+    "title": "Дыбыстар прогресі",
+    "noData": "Дыбыстар прогресі туралы деректер әлі жоқ",
+    "stage": {
+      "not_started": "Басталмаған",
+      "isolation": "Оқшаулау",
+      "syllables": "Буындар",
+      "words": "Сөздер",
+      "phrases": "Сөз тіркестері",
+      "connected_speech": "Байланысты сөйлеу",
+      "automated": "Автоматтандырылған"
+    }
+  },
+  "availability": {
+    "title": "Қабылдау кестесі",
+    "addSlot": "Слот қосу",
+    "day": "Күн",
+    "from": "Бастап",
+    "to": "Дейін",
+    "disable": "Өшіру",
+    "enable": "Қосу"
+  },
+  "packages": {
+    "sessionPackage": "Сеанс пакеті",
+    "noActive": "Белсенді пакет жоқ",
+    "sessionsLeft": "сеанс қалды"
+  },
+  "waitlist": {
+    "title": "Күту тізімі",
+    "description": "Бос слотты күтіп тұрған пациенттер",
+    "empty": "Күту тізімі бос",
+    "priority": "Басымдық",
+    "offerSlot": "Слот ұсыну",
+    "remove": "Алып тастау",
+    "status": {
+      "waiting": "Күтуде",
+      "offered": "Ұсынылды",
+      "enrolled": "Жазылды",
+      "expired": "Мерзімі өтті"
+    }
+  },
+  "cancellation": {
+    "title": "Жазбаны болдырмау",
+    "type": "Түрі",
+    "type_cancellation": "Болдырмау",
+    "type_no_show": "Келмеу",
+    "type_late_cancel": "Кеш болдырмау",
+    "cancelledBy": "Кім болдырды",
+    "by_parent": "Ата-ана",
+    "by_therapist": "Маман",
+    "reason": "Себебі",
+    "selectReason": "Себебін таңдаңыз...",
+    "reason_illness": "Ауру",
+    "reason_schedule_conflict": "Кесте қайшылығы",
+    "reason_family_emergency": "Отбасылық жағдай",
+    "reason_weather": "Ауа райы",
+    "reason_no_reason": "Себепсіз",
+    "reason_other": "Басқа",
+    "confirm": "Болдырмауды растау"
+  },
+  "scheduleRequests": {
+    "pending": "Жазба сұраулары",
+    "newBooking": "Жаңа жазба",
+    "reschedule": "Ауыстыру",
+    "approve": "Мақұлдау",
+    "reject": "Қабылдамау"
+  },
+  "marketplace": {
+    "title": "Логопед табу",
+    "subtitle": "Қала, мамандық және пікірлер бойынша маманды таңдаңыз",
+    "search": "Іздеу",
+    "allCities": "Барлық қалалар",
+    "allSpecializations": "Барлық мамандықтар",
+    "specialistsFound": "маман табылды",
+    "noResults": "Мамандар табылмады. Сүзгілерді өзгертіп көріңіз.",
+    "noRatings": "Пікірлер жоқ",
+    "online": "Онлайн",
+    "onlineOnly": "Тек онлайн",
+    "onlineAvailable": "Онлайн сеанстар жүргіземін",
+    "verified": "Расталған",
+    "cityNotSet": "Қала көрсетілмеген",
+    "language": "Тіл",
+    "minRating": "Мин. рейтинг",
+    "priceRange": "Баға",
+    "sortByRating": "Рейтинг бойынша",
+    "sortByPriceAsc": "Баға ↑",
+    "sortByPriceDesc": "Баға ↓",
+    "sortByExperience": "Тәжірибе бойынша",
+    "backToSearch": "Іздеуге",
+    "profileNotFound": "Профиль табылмады",
+    "yearsExp": "жыл тәжірибе",
+    "about": "Маман туралы",
+    "specializations": "Мамандықтар",
+    "education": "Білім",
+    "languages": "Тілдер",
+    "availableSlots": "Бос уақыт",
+    "noSlots": "Кесте көрсетілмеген",
+    "bookingCta": "Диагностикалық сеансқа жазылыңыз",
+    "bookDiagnostic": "Жазылу",
+    "noReviews": "Пікірлер әлі жоқ",
+    "anonymous": "Ата-ана",
+    "ratingOverall": "Жалпы",
+    "ratingResults": "Нәтиже",
+    "ratingApproach": "Тәсіл",
+    "ratingComm": "Қарым-қатынас",
+    "ratingPunctuality": "Уақтылылық",
+    "tab": {
+      "about": "Маман туралы",
+      "reviews": "Пікірлер",
+      "booking": "Жазылу"
+    },
+    "spec": {
+      "dysarthria": "Дизартрия",
+      "stuttering": "Тұтығу",
+      "speech_delay": "Сөйлеу кешігуі",
+      "alalia": "Алалия",
+      "dyslalia": "Дислалия",
+      "rhinolalia": "Ринолалия",
+      "aphasia": "Афазия",
+      "dysgraphia": "Дисграфия",
+      "dyslexia": "Дислексия",
+      "phonetic_phonemic": "ФФНБ",
+      "general_speech_underdevelopment": "ЖСД",
+      "other": "Басқа"
+    },
+    "lang": {
+      "ru": "Орысша",
+      "kk": "Қазақша",
+      "en": "Ағылшынша"
+    },
+    "myProfile": "Маркетплейс профилі",
+    "myProfileDesc": "Ата-аналар сізді таба алуы үшін профильді толтырыңыз",
+    "published": "Жарияланған",
+    "draft": "Жоба",
+    "photo": "Профиль суреті",
+    "uploadPhoto": "Сурет жүктеу",
+    "aboutYou": "Сіз туралы",
+    "bioPlaceholder": "Өзіңіз, тәсіліңіз және тәжірибеңіз туралы айтыңыз...",
+    "educationPlaceholder": "Білім, курстар, сертификаттар...",
+    "city": "Қала",
+    "selectCity": "Қаланы таңдаңыз",
+    "experience": "Тәжірибе (жыл)",
+    "priceMin": "Бағасы бастап",
+    "priceMax": "Бағасы дейін",
+    "sessionDuration": "Сеанс ұзақтығы",
+    "gender": "Жынысы",
+    "notSpecified": "Көрсетілмеген",
+    "female": "Әйел",
+    "male": "Ер",
+    "incomingBookings": "Маркетплейс өтінімдері",
+    "incomingBookingsDesc": "Ата-аналардан жазба сұраулары",
+    "noBookings": "Өтінімдер әлі жоқ",
+    "confirm": "Растау",
+    "reject": "Қабылдамау",
+    "depositPaid": "Депозит төленді",
+    "bookingType": {
+      "diagnostic": "Диагностика",
+      "regular": "Кәдімгі"
+    },
+    "bookingStatus": {
+      "pending": "Күтуде",
+      "confirmed": "Расталды",
+      "cancelled": "Болдырылмады",
+      "completed": "Аяқталды"
+    }
   }
 }
