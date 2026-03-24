@@ -45,3 +45,6 @@ class Appointment(Base):
         "CancellationRecord", back_populates="appointment", uselist=False
     )
     reminders = relationship("Reminder", back_populates="appointment")
+    video_session = relationship(
+        "VideoSession", back_populates="appointment", uselist=False
+    )

@@ -30,3 +30,4 @@ class Therapist(Base):
     marketplace_bookings = relationship(
         "MarketplaceBooking", back_populates="therapist"
     )
+    conversations = relationship("Conversation", back_populates="therapist")

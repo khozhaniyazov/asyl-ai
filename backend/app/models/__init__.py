@@ -22,3 +22,16 @@ from .reminder import Reminder, ReminderType, ReminderChannel, ReminderStatus
 from .therapist_profile import TherapistProfile, VerificationStatus
 from .review import Review
 from .marketplace_booking import MarketplaceBooking, BookingType, BookingStatus
+
+# B+C: new features
+from .treatment_plan import (
+    TreatmentPlan,
+    TreatmentGoal,
+    GoalTemplate,
+    PlanStatus,
+    GoalStatus,
+    GoalType,
+)
+from .messaging import Conversation, Message, SenderType
+from .clinic import Clinic, ClinicMembership, ClinicRole
+from .video_session import VideoSession

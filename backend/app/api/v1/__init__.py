@@ -21,6 +21,11 @@ from . import (
     marketplace_reviews,
     marketplace_bookings,
     finance,
+    # B+C: new features
+    treatment_plans,
+    messaging,
+    analytics,
+    data_export,
 )
 
 router = APIRouter()
@@ -65,3 +70,10 @@ router.include_router(
     marketplace_bookings.router, prefix="/marketplace/bookings", tags=["marketplace"]
 )
 router.include_router(finance.router, prefix="/finance", tags=["finance"])
+# B+C: new features
+router.include_router(
+    treatment_plans.router, prefix="/treatment", tags=["treatment-plans"]
+)
+router.include_router(messaging.router, prefix="/messaging", tags=["messaging"])
+router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
+router.include_router(data_export.router, prefix="/export", tags=["export"])

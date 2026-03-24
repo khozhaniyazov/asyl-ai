@@ -20,3 +20,4 @@ class Parent(Base):
     # v3: marketplace
     reviews = relationship("Review", back_populates="parent")
     marketplace_bookings = relationship("MarketplaceBooking", back_populates="parent")
+    conversations = relationship("Conversation", back_populates="parent")

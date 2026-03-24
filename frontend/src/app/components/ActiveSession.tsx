@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Mic, MicOff, Square, Pause, Play, ArrowLeft, Loader2, Send, Save, CheckCircle } from "lucide-react";
+import { Mic, MicOff, Square, Pause, Play, ArrowLeft, Loader2, Send, Save, CheckCircle, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../api";
 import { SOAPTextArea } from "./SOAPTextArea";
+import type { HomeworkTemplate } from "../types";
 import { useTranslation } from "react-i18next";
 
 type Phase = "recording" | "processing" | "review";
@@ -40,6 +41,11 @@ export default function ActiveSession() {
     plan: "",
   });
   const [homework, setHomework] = useState("");
+  const [hwTemplates, setHwTemplates] = useState<HomeworkTemplate[]>([]);
+  const [hwDueDate, setHwDueDate] = useState("");
+  const [hwAssigning, setHwAssigning] = useState(false);
+  const [hwAssigned, setHwAssigned] = useState(false);
+  const [patientId, setPatientId] = useState<number | null>(null);
 
   // Load appointment info
   useEffect(() => {
@@ -49,7 +55,11 @@ export default function ActiveSession() {
         const appt = await api.getAppointment(parseInt(appointmentId));
         const patient = await api.getPatient(appt.patient_id);
         setPatientName(`${patient.first_name} ${patient.last_name}`);
+        setPatientId(appt.patient_id);
         setAppointmentInfo(new Date(appt.start_time).toLocaleString());
+        // Load homework templates for assignment step
+        const templates = await api.getHomeworkTemplates();
+        setHwTemplates(templates);
       } catch {
         // Appointment info not critical, continue
       }
@@ -202,6 +212,15 @@ export default function ActiveSession() {
         soap_plan: soap.plan,
         homework_for_parents: homework,
       });
+      // Create formal homework assignment if not already done
+      if (!hwAssigned && homework.trim() && patientId) {
+        await api.createHomeworkAssignment({
+          session_id: sessionId,
+          patient_id: patientId,
+          custom_instructions: homework,
+          due_date: hwDueDate || undefined,
+        });
+      }
       toast.success(t("session.sessionSaved"));
       navigate("/");
     } catch {
@@ -222,6 +241,15 @@ export default function ActiveSession() {
         soap_plan: soap.plan,
         homework_for_parents: homework,
       });
+      // Create formal homework assignment if not already done
+      if (!hwAssigned && homework.trim() && patientId) {
+        await api.createHomeworkAssignment({
+          session_id: sessionId,
+          patient_id: patientId,
+          custom_instructions: homework,
+          due_date: hwDueDate || undefined,
+        });
+      }
       await api.sendHomework(sessionId);
       toast.success(t("session.sessionSavedHomework"));
       navigate("/");
@@ -231,6 +259,26 @@ export default function ActiveSession() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleAssignFromTemplate = async (template: HomeworkTemplate) => {
+    if (!sessionId || !patientId) return;
+    setHwAssigning(true);
+    try {
+      await api.createHomeworkAssignment({
+        session_id: sessionId,
+        patient_id: patientId,
+        template_id: template.id,
+        custom_instructions: template.instructions || template.description || "",
+        due_date: hwDueDate || undefined,
+      });
+      setHomework(template.instructions || template.description || "");
+      setHwAssigned(true);
+      toast.success(t("session.homeworkAssigned"));
+    } catch {
+      toast.error(t("session.failedAssignHomework"));
+    }
+    setHwAssigning(false);
   };
 
   // Dynamic waveform
@@ -377,11 +425,37 @@ export default function ActiveSession() {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <h3>{t("session.homeworkForParent")}</h3>
+            <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-primary" />
+                  <h3>{t("session.homeworkForParent")}</h3>
+                </div>
+                {hwAssigned && <span className="text-[11px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t("session.assigned")}</span>}
               </div>
-              <textarea value={homework} onChange={(e) => setHomework(e.target.value)} rows={5} className="w-full px-4 py-3 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30 resize-none transition-all" />
+
+              {/* Template picker */}
+              {hwTemplates.length > 0 && !hwAssigned && (
+                <div>
+                  <p className="text-[12px] text-muted-foreground mb-2">{t("session.pickTemplate")}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {hwTemplates.slice(0, 6).map((tmpl) => (
+                      <button key={tmpl.id} onClick={() => handleAssignFromTemplate(tmpl)} disabled={hwAssigning} className="px-3 py-1.5 text-[12px] border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50">
+                        {tmpl.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Due date */}
+              <div>
+                <label className="text-[12px] text-muted-foreground block mb-1">{t("session.dueDate")}</label>
+                <input type="date" value={hwDueDate} onChange={(e) => setHwDueDate(e.target.value)} className="px-3 py-2 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+
+              {/* Custom instructions */}
+              <textarea value={homework} onChange={(e) => setHomework(e.target.value)} placeholder={t("session.homeworkPlaceholder")} rows={5} className="w-full px-4 py-3 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30 resize-none transition-all" />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">

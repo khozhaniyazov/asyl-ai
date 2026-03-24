@@ -39,3 +39,4 @@ class Patient(Base):
     waitlist_entry = relationship(
         "WaitlistEntry", back_populates="patient", uselist=False
     )
+    treatment_plans = relationship("TreatmentPlan", back_populates="patient")
