@@ -4,6 +4,7 @@ import { ArrowLeft, Phone, Calendar, MessageCircle, FileText } from "lucide-reac
 import { useState } from "react";
 import { toast } from "sonner";
 import { patients, appointments, transactions, sessionNotes } from "./mockData";
+import { useTranslation } from "react-i18next";
 
 const tabs = ["Info", "History", "Financials", "Documents"] as const;
 
@@ -11,14 +12,15 @@ export default function PatientProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Info");
+  const { t } = useTranslation();
 
   const patient = patients.find((p) => p.id === id);
   if (!patient) {
     return (
       <div className="text-center py-20">
-        <h2>Patient not found</h2>
+        <h2>{t("patientProfile.patientNotFound")}</h2>
         <button onClick={() => navigate("/patients")} className="mt-4 text-primary hover:underline text-[14px]">
-          Back to Patients
+          {t("patientProfile.backToPatients")}
         </button>
       </div>
     );
@@ -31,7 +33,7 @@ export default function PatientProfile() {
   return (
     <div className="space-y-6">
       <button onClick={() => navigate("/patients")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-[14px] transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Patients
+        <ArrowLeft className="w-4 h-4" /> {t("patientProfile.backToPatients")}
       </button>
 
       <motion.div
@@ -70,7 +72,7 @@ export default function PatientProfile() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-[13px] whitespace-nowrap transition-all ${activeTab === tab ? "bg-card shadow-sm" : "text-muted-foreground"}`}
           >
-            {tab}
+            {tab === "Info" ? t("patientProfile.info") : tab === "History" ? t("patientProfile.history") : tab === "Financials" ? t("patientProfile.financials") : t("patientProfile.documents")}
           </button>
         ))}
       </div>
@@ -80,13 +82,13 @@ export default function PatientProfile() {
         {activeTab === "Info" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { label: "Full Name", value: patient.name },
-              { label: "Age", value: `${patient.age} years old` },
-              { label: "Diagnosis", value: patient.diagnosis },
-              { label: "Status", value: patient.status, capitalize: true },
-              { label: "Parent Name", value: patient.parentName },
-              { label: "Parent Phone", value: patient.parentPhone, icon: Phone },
-              { label: "Next Appointment", value: patient.nextAppointment ? new Date(patient.nextAppointment).toLocaleString() : "None scheduled", icon: Calendar },
+              { label: t("patientProfile.fullName"), value: patient.name },
+              { label: t("patientProfile.age"), value: `${patient.age} years old` },
+              { label: t("patientProfile.diagnosis"), value: patient.diagnosis },
+              { label: t("patientProfile.status"), value: patient.status, capitalize: true },
+              { label: t("patientProfile.parentName"), value: patient.parentName },
+              { label: t("patientProfile.parentPhone"), value: patient.parentPhone, icon: Phone },
+              { label: t("patientProfile.nextAppointment"), value: patient.nextAppointment ? new Date(patient.nextAppointment).toLocaleString() : t("patientProfile.noneScheduled"), icon: Calendar },
             ].map((item, i) => (
               <motion.div
                 key={item.label}
@@ -104,12 +106,12 @@ export default function PatientProfile() {
             ))}
             {/* Quick action buttons */}
             <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-2">
-              <p className="text-[12px] text-muted-foreground mb-1">Quick Actions</p>
+              <p className="text-[12px] text-muted-foreground mb-1">{t("patientProfile.quickActions")}</p>
               <button
                 onClick={() => toast.success("WhatsApp message sent!")}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-600 text-white text-[13px] hover:bg-green-700 transition-colors"
               >
-                <MessageCircle className="w-4 h-4" /> Message Parent
+                <MessageCircle className="w-4 h-4" /> {t("patientProfile.messageParent")}
               </button>
             </div>
           </div>
@@ -120,7 +122,7 @@ export default function PatientProfile() {
             {patientAppointments.length === 0 ? (
               <div className="bg-card border border-border rounded-2xl p-8 text-center">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground text-[14px]">No session history yet.</p>
+                <p className="text-muted-foreground text-[14px]">{t("patientProfile.noHistory")}</p>
               </div>
             ) : (
               <div className="relative">
@@ -163,9 +165,9 @@ export default function PatientProfile() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { label: "Total Paid", value: `${patient.totalPaid.toLocaleString()} KZT`, color: "text-green-600" },
-                { label: "Outstanding", value: `${patient.outstanding.toLocaleString()} KZT`, color: patient.outstanding > 0 ? "text-red-600" : "text-green-600" },
-                { label: "Total Sessions", value: String(patientAppointments.length), color: "text-foreground" },
+                { label: t("patientProfile.totalPaid"), value: `${patient.totalPaid.toLocaleString()} KZT`, color: "text-green-600" },
+                { label: t("patientProfile.outstanding"), value: `${patient.outstanding.toLocaleString()} KZT`, color: patient.outstanding > 0 ? "text-red-600" : "text-green-600" },
+                { label: t("patientProfile.totalSessions"), value: String(patientAppointments.length), color: "text-foreground" },
               ].map((card, i) => (
                 <motion.div
                   key={card.label}
@@ -184,10 +186,10 @@ export default function PatientProfile() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border text-left">
-                      <th className="px-4 py-3 text-[12px] text-muted-foreground">Date</th>
-                      <th className="px-4 py-3 text-[12px] text-muted-foreground">Amount</th>
-                      <th className="px-4 py-3 text-[12px] text-muted-foreground">Method</th>
-                      <th className="px-4 py-3 text-[12px] text-muted-foreground">Status</th>
+                      <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.dateCol")}</th>
+                      <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.amountCol")}</th>
+                      <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.methodCol")}</th>
+                      <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.statusCol")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -219,7 +221,7 @@ export default function PatientProfile() {
             {patientNotes.length === 0 ? (
               <div className="bg-card border border-border rounded-2xl p-8 text-center">
                 <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground text-[14px]">No session notes yet.</p>
+                <p className="text-muted-foreground text-[14px]">{t("patientProfile.noNotes")}</p>
               </div>
             ) : (
               patientNotes.map((note, i) => (
@@ -232,7 +234,7 @@ export default function PatientProfile() {
                 >
                   <div className="px-5 py-3 border-b border-border bg-accent/30 flex items-center justify-between">
                     <p className="text-[13px]">{note.date}</p>
-                    <span className="text-[11px] text-muted-foreground">SOAP Note</span>
+                    <span className="text-[11px] text-muted-foreground">{t("patientProfile.soapNote")}</span>
                   </div>
                   <div className="p-5 space-y-3">
                     {(["subjective", "objective", "assessment", "plan"] as const).map((key) => (
@@ -242,7 +244,7 @@ export default function PatientProfile() {
                       </div>
                     ))}
                     <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mt-3">
-                      <p className="text-[11px] text-orange-600 uppercase tracking-wider mb-1">Homework</p>
+                      <p className="text-[11px] text-orange-600 uppercase tracking-wider mb-1">{t("patientProfile.homework")}</p>
                       <p className="text-[14px]">{note.homework}</p>
                     </div>
                   </div>

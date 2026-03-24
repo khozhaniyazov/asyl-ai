@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, Plus, UserPlus, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../api";
+import { useTranslation } from "react-i18next";
 
 interface Patient {
   id: number;
@@ -17,6 +18,7 @@ interface Patient {
 
 export default function Patients() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -31,7 +33,7 @@ export default function Patients() {
       const data = await api.getPatients(0, 200, search || undefined);
       setPatients(data);
     } catch {
-      toast.error("Failed to load patients.");
+      toast.error(t("patients.failedLoad"));
     } finally {
       setLoading(false);
     }
@@ -49,7 +51,7 @@ export default function Patients() {
     if (!form.lastName) newErrors.lastName = true;
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);
-      toast.error("Please fill in required fields.");
+      toast.error(t("patients.fillRequired"));
       return;
     }
     setSubmitting(true);
@@ -63,10 +65,10 @@ export default function Patients() {
       setForm({ firstName: "", lastName: "", diagnosis: "", parentPhone: "" });
       setErrors({});
       setShowAdd(false);
-      toast.success("Patient added successfully!");
+      toast.success(t("patients.patientAdded"));
       fetchPatients();
     } catch (err: any) {
-      toast.error(err?.response?.data?.detail || "Failed to add patient.");
+      toast.error(err?.response?.data?.detail || t("patients.failedAdd"));
     } finally {
       setSubmitting(false);
     }
@@ -79,15 +81,15 @@ export default function Patients() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1>Patients</h1>
-          <p className="text-[14px] text-muted-foreground">{patients.length} total</p>
+          <h1>{t("patients.title")}</h1>
+          <p className="text-[14px] text-muted-foreground">{patients.length} {t("patients.total")}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search patients..."
+              placeholder={t("patients.searchPatients")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 pr-4 py-2 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30 w-48 sm:w-60 transition-all"
@@ -98,7 +100,7 @@ export default function Patients() {
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity"
           >
             <Plus className="w-4 h-4" />
-            <span className="text-[14px] hidden sm:inline">Add Patient</span>
+            <span className="text-[14px] hidden sm:inline">{t("patients.addPatient")}</span>
           </button>
         </div>
       </div>
@@ -116,16 +118,16 @@ export default function Patients() {
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <UserPlus className="w-8 h-8 text-primary" />
           </div>
-          <h2>No patients {search ? "found" : "yet"}</h2>
+          <h2>{search ? t("patients.noPatientsFound") : t("patients.noPatientsYet")}</h2>
           <p className="text-muted-foreground text-[14px] mt-1">
-            {search ? `No results for "${search}"` : "Add your first patient to get started!"}
+            {search ? `${t("patients.noResultsFor")} "${search}"` : t("patients.addFirstPatient")}
           </p>
           {!search && (
             <button
               onClick={() => setShowAdd(true)}
               className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-[14px]"
             >
-              Add Patient
+              {t("patients.addPatient")}
             </button>
           )}
         </motion.div>
@@ -139,10 +141,10 @@ export default function Patients() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border text-left">
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Patient</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">Diagnosis</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden md:table-cell">Parent Phone</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Added</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("patients.title")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">{t("patients.diagnosis")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden md:table-cell">{t("patients.parentPhone")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("patients.added")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -192,14 +194,14 @@ export default function Patients() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
-                <h3>Add New Patient</h3>
+                <h3>{t("patients.addNewPatient")}</h3>
                 <button onClick={() => setShowAdd(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
               </div>
               {[
-                { key: "firstName", label: "First Name *", placeholder: "First name" },
-                { key: "lastName", label: "Last Name *", placeholder: "Last name" },
-                { key: "diagnosis", label: "Diagnosis", placeholder: "e.g. Dysarthria" },
-                { key: "parentPhone", label: "Parent Phone", placeholder: "+7 7XX XXX XXXX" },
+                { key: "firstName", label: t("patients.firstName"), placeholder: t("patients.firstName") },
+                { key: "lastName", label: t("patients.lastName"), placeholder: t("patients.lastName") },
+                { key: "diagnosis", label: t("patients.diagnosis"), placeholder: t("patients.diagnosis") },
+                { key: "parentPhone", label: t("patients.parentPhone"), placeholder: "+7 7XX XXX XXXX" },
               ].map((field) => (
                 <div key={field.key}>
                   <label className="text-[13px] mb-1 block">{field.label}</label>
@@ -212,7 +214,7 @@ export default function Patients() {
                       errors[field.key] ? "ring-2 ring-destructive" : ""
                     }`}
                   />
-                  {errors[field.key] && <p className="text-[11px] text-destructive mt-1">This field is required</p>}
+                  {errors[field.key] && <p className="text-[11px] text-destructive mt-1">{t("auth.fieldRequired")}</p>}
                 </div>
               ))}
               <button
@@ -221,7 +223,7 @@ export default function Patients() {
                 className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-[14px] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                Add Patient
+                {t("patients.addPatient")}
               </button>
             </motion.div>
           </motion.div>

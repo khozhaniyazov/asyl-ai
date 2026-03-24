@@ -19,6 +19,7 @@ import { AppointmentCard } from "./AppointmentCard";
 import { api } from "../api";
 import type { AppointmentWithPatient, Patient, Appointment } from "../types";
 import { statusDot } from "../types";
+import { useTranslation } from "react-i18next";
 
 function enrichAppointments(
   appointments: Appointment[],
@@ -42,6 +43,7 @@ function enrichAppointments(
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [view, setView] = useState<"week" | "day">("week");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithPatient | null>(null);
@@ -64,7 +66,7 @@ export default function Dashboard() {
       setPatients(pts);
       setAppointments(enrichAppointments(appts, pMap));
     } catch {
-      toast.error("Failed to load data.");
+      toast.error(t("dashboard.failedLoadData"));
     } finally {
       setLoading(false);
     }
@@ -103,7 +105,7 @@ export default function Dashboard() {
     } else if (action === "payment") {
       try {
         await api.generateKaspiLink(apt.id);
-        toast.success("Payment link generated!");
+        toast.success(t("dashboard.paymentLinkGenerated"));
         fetchData();
       } catch {
         toast.error("Failed to generate payment link.");
@@ -111,7 +113,7 @@ export default function Dashboard() {
     } else if (action === "cancel") {
       try {
         await api.updateAppointment(apt.id, { status: "CANCELLED" });
-        toast.info("Appointment cancelled.");
+        toast.info(t("dashboard.appointmentCancelled"));
         fetchData();
       } catch {
         toast.error("Failed to cancel appointment.");
@@ -134,11 +136,11 @@ export default function Dashboard() {
         start_time: startDt,
         end_time: endDt,
       });
-      toast.success("Appointment created!");
+      toast.success(t("dashboard.appointmentCreated"));
       setShowNewAppt(false);
       fetchData();
     } catch (err: any) {
-      toast.error(err?.response?.data?.detail || "Failed to create appointment.");
+      toast.error(err?.response?.data?.detail || t("dashboard.failedLoadData"));
     } finally {
       setCreating(false);
     }
@@ -162,7 +164,7 @@ export default function Dashboard() {
               <CalendarDays className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-[12px] text-muted-foreground">Today's Sessions</p>
+              <p className="text-[12px] text-muted-foreground">{t("dashboard.todaySessions")}</p>
               <p className="text-[22px]">{completedToday}/{totalToday}</p>
             </div>
           </div>
@@ -173,7 +175,7 @@ export default function Dashboard() {
               <Users className="w-5 h-5 text-green-600" />
             </div>
             <div>
-              <p className="text-[12px] text-muted-foreground">Total Patients</p>
+              <p className="text-[12px] text-muted-foreground">{t("dashboard.totalPatients")}</p>
               <p className="text-[22px]">{patients.length}</p>
             </div>
           </div>
@@ -184,7 +186,7 @@ export default function Dashboard() {
               <CalendarDays className="w-5 h-5 text-yellow-600" />
             </div>
             <div>
-              <p className="text-[12px] text-muted-foreground">Total Appointments</p>
+              <p className="text-[12px] text-muted-foreground">{t("dashboard.totalAppointments")}</p>
               <p className="text-[22px]">{appointments.length}</p>
             </div>
           </div>
@@ -194,20 +196,20 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1>Calendar</h1>
+          <h1>{t("dashboard.calendar")}</h1>
           <p className="text-muted-foreground text-[14px]">{format(currentDate, "EEEE, MMMM d, yyyy")}</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setShowNewAppt(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">
             <Plus className="w-4 h-4" />
-            <span className="text-[13px]">New Appointment</span>
+            <span className="text-[13px]">{t("dashboard.newAppointment")}</span>
           </button>
           <div className="flex bg-muted rounded-xl p-1">
-            <button onClick={() => setView("week")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "week" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>Week</button>
-            <button onClick={() => setView("day")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "day" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>Day</button>
+            <button onClick={() => setView("week")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "week" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>{t("common.week")}</button>
+            <button onClick={() => setView("day")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "day" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>{t("common.day")}</button>
           </div>
           <button onClick={navigate_prev} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-          <button onClick={() => setCurrentDate(new Date())} className="px-3 py-1.5 text-[13px] rounded-xl hover:bg-accent transition-colors">Today</button>
+          <button onClick={() => setCurrentDate(new Date())} className="px-3 py-1.5 text-[13px] rounded-xl hover:bg-accent transition-colors">{t("common.today")}</button>
           <button onClick={navigate_next} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
@@ -306,13 +308,13 @@ export default function Dashboard() {
               </div>
               <div className="space-y-2">
                 <button onClick={() => handleQuickAction("start", selectedAppointment)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
-                  <Play className="w-4 h-4" /><span className="text-[14px]">Start Session</span>
+                  <Play className="w-4 h-4" /><span className="text-[14px]">{t("dashboard.startSession")}</span>
                 </button>
                 <button onClick={() => handleQuickAction("payment", selectedAppointment)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:bg-accent transition-colors">
-                  <Link2 className="w-4 h-4" /><span className="text-[14px]">Generate Kaspi Payment Link</span>
+                  <Link2 className="w-4 h-4" /><span className="text-[14px]">{t("dashboard.generateKaspiLink")}</span>
                 </button>
                 <button onClick={() => handleQuickAction("cancel", selectedAppointment)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:bg-red-50 transition-colors text-destructive">
-                  <XCircle className="w-4 h-4" /><span className="text-[14px]">Cancel Appointment</span>
+                  <XCircle className="w-4 h-4" /><span className="text-[14px]">{t("dashboard.cancelAppointment")}</span>
                 </button>
               </div>
             </motion.div>
@@ -326,29 +328,29 @@ export default function Dashboard() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setShowNewAppt(false)}>
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} transition={{ duration: 0.15 }} className="bg-card rounded-2xl border border-border w-full max-w-sm p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between">
-                <h3>New Appointment</h3>
+                <h3>{t("dashboard.newAppointment")}</h3>
                 <button onClick={() => setShowNewAppt(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
               </div>
               <div>
-                <label className="text-[13px] mb-1 block">Patient</label>
+                <label className="text-[13px] mb-1 block">{t("dashboard.patient")}</label>
                 <select value={newAppt.patientId} onChange={(e) => setNewAppt({ ...newAppt, patientId: e.target.value })} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30">
-                  <option value="">Select patient...</option>
+                  <option value="">{t("dashboard.selectPatient")}</option>
                   {patients.map((p) => (
                     <option key={p.id} value={p.id}>{p.first_name} {p.last_name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-[13px] mb-1 block">Date</label>
+                <label className="text-[13px] mb-1 block">{t("dashboard.date")}</label>
                 <input type="date" value={newAppt.date} onChange={(e) => setNewAppt({ ...newAppt, date: e.target.value })} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30" />
               </div>
               <div>
-                <label className="text-[13px] mb-1 block">Start Time</label>
+                <label className="text-[13px] mb-1 block">{t("dashboard.startTime")}</label>
                 <input type="time" value={newAppt.startTime} onChange={(e) => setNewAppt({ ...newAppt, startTime: e.target.value })} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30" />
               </div>
               <button onClick={handleCreateAppointment} disabled={creating} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity text-[14px] flex items-center justify-center gap-2 disabled:opacity-60">
                 {creating && <Loader2 className="w-4 h-4 animate-spin" />}
-                Create Appointment
+                {t("dashboard.createAppointment")}
               </button>
             </motion.div>
           </motion.div>

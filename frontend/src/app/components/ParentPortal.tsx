@@ -4,12 +4,14 @@ import { motion, AnimatePresence } from "motion/react";
 import { CalendarDays, CreditCard, BookOpen, TrendingUp, LogOut, Stethoscope, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { sessionNotes } from "./mockData";
+import { useTranslation } from "react-i18next";
 
 const tabs = ["Home", "Homework", "Progress"] as const;
 
 export default function ParentPortal() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Home");
+  const { t } = useTranslation();
 
   const childName = "Aibek Nurlan";
   const nextSession = "Wednesday, March 18 at 10:00 AM";
@@ -53,7 +55,7 @@ export default function ParentPortal() {
                 >
                   <div className="flex items-center gap-2 text-red-700">
                     <CreditCard className="w-5 h-5" />
-                    <span className="text-[14px]">Payment Due</span>
+                    <span className="text-[14px]">{t("parent.paymentDue")}</span>
                   </div>
                   <p className="text-[28px] text-red-700">{unpaidAmount.toLocaleString()} KZT</p>
                   <p className="text-[12px] text-red-600">Session on March 15 — unpaid</p>
@@ -61,7 +63,7 @@ export default function ParentPortal() {
                     onClick={() => toast.success("Redirecting to Kaspi payment...")}
                     className="w-full py-3.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-[14px] shadow-sm"
                   >
-                    Pay via Kaspi
+                    {t("parent.payViaKaspi")}
                   </button>
                 </motion.div>
               )}
@@ -75,13 +77,13 @@ export default function ParentPortal() {
               >
                 <div className="flex items-center gap-2 text-muted-foreground mb-3">
                   <CalendarDays className="w-4 h-4" />
-                  <span className="text-[12px] uppercase tracking-wider">Next Session</span>
+                  <span className="text-[12px] uppercase tracking-wider">{t("parent.nextSession")}</span>
                 </div>
                 <p className="text-[16px]">{nextSession}</p>
                 <p className="text-[13px] text-muted-foreground mt-1">with {therapistName}</p>
                 <div className="mt-3 flex items-center gap-2 text-[12px] text-green-600">
                   <CheckCircle className="w-4 h-4" />
-                  <span>Confirmed</span>
+                  <span>{t("parent.confirmed")}</span>
                 </div>
               </motion.div>
 
@@ -95,13 +97,13 @@ export default function ParentPortal() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <BookOpen className="w-4 h-4" />
-                    <span className="text-[12px] uppercase tracking-wider">Latest Homework</span>
+                    <span className="text-[12px] uppercase tracking-wider">{t("parent.latestHomework")}</span>
                   </div>
                   <button
                     onClick={() => setActiveTab("Homework")}
                     className="text-[12px] text-primary hover:underline"
                   >
-                    View all
+                    {t("parent.viewAll")}
                   </button>
                 </div>
                 {sessionNotes[0] && (
@@ -124,7 +126,7 @@ export default function ParentPortal() {
               exit={{ opacity: 0, x: 10 }}
               className="space-y-4"
             >
-              <h2>Homework Feed</h2>
+              <h2>{t("parent.homeworkFeed")}</h2>
               <p className="text-[13px] text-muted-foreground -mt-2">All homework assignments from past sessions</p>
               {sessionNotes
                 .filter((n) => n.patientId === "1")
@@ -158,7 +160,7 @@ export default function ParentPortal() {
               exit={{ opacity: 0, x: 10 }}
               className="space-y-4"
             >
-              <h2>Progress</h2>
+              <h2>{t("parent.progress")}</h2>
               <p className="text-[13px] text-muted-foreground -mt-2">{childName}'s speech therapy progress</p>
 
               <motion.div
@@ -168,7 +170,7 @@ export default function ParentPortal() {
               >
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <TrendingUp className="w-4 h-4" />
-                  <span className="text-[12px] uppercase tracking-wider">Therapist Summary</span>
+                  <span className="text-[12px] uppercase tracking-wider">{t("parent.therapistSummary")}</span>
                 </div>
                 <p className="text-[14px]">
                   Aibek has shown excellent progress over the past 3 weeks. His /s/ sound accuracy has improved from 30% to 70% in initial word position. We are now introducing /s/ blends and expect continued improvement with daily practice at home.
@@ -181,7 +183,7 @@ export default function ParentPortal() {
                 transition={{ delay: 0.05 }}
                 className="bg-card border border-border rounded-2xl p-5 space-y-4"
               >
-                <h3>Skill Progress</h3>
+                <h3>{t("parent.skillProgress")}</h3>
                 {[
                   { label: "/s/ in isolation", progress: 90, color: "bg-green-500" },
                   { label: "/s/ initial position", progress: 70, color: "bg-primary" },
@@ -241,7 +243,7 @@ export default function ParentPortal() {
               }`}
             >
               <item.icon className="w-5 h-5" />
-              <span className="text-[11px]">{item.key}</span>
+              <span className="text-[11px]">{item.key === "Home" ? t("parent.home") : item.key === "Homework" ? t("parent.homeworkTab") : t("parent.progress")}</span>
               {activeTab === item.key && (
                 <motion.div
                   layoutId="parent-tab-indicator"

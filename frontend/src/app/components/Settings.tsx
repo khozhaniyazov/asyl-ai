@@ -2,11 +2,13 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Save, CheckCircle, Key, MessageCircle, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const tabs = ["Profile", "Integrations", "Templates"] as const;
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Profile");
+  const { t, i18n } = useTranslation();
   const [profile, setProfile] = useState({
     name: "Dr. Dana Karimova",
     clinic: "SpeechCare Almaty",
@@ -23,7 +25,7 @@ export default function Settings() {
 
   return (
     <div className="space-y-6">
-      <h1>Settings</h1>
+      <h1>{t("settings.title")}</h1>
 
       <div className="flex gap-1 bg-muted rounded-xl p-1 w-fit">
         {tabs.map((tab) => (
@@ -32,7 +34,7 @@ export default function Settings() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-[13px] transition-all ${activeTab === tab ? "bg-card shadow-sm" : "text-muted-foreground"}`}
           >
-            {tab}
+            {tab === "Profile" ? t("settings.profile") : tab === "Integrations" ? t("settings.integrations") : t("settings.templates")}
           </button>
         ))}
       </div>
@@ -50,12 +52,12 @@ export default function Settings() {
               </div>
             </div>
             {[
-              { key: "name", label: "Full Name" },
-              { key: "clinic", label: "Clinic Name" },
-              { key: "email", label: "Email", type: "email" },
-              { key: "phone", label: "Phone" },
-              { key: "defaultDuration", label: "Default Session Duration (min)", type: "number" },
-              { key: "defaultPrice", label: "Default Price per Session (KZT)", type: "number" },
+              { key: "name", label: t("settings.fullName") },
+              { key: "clinic", label: t("settings.clinicName") },
+              { key: "email", label: t("settings.email"), type: "email" },
+              { key: "phone", label: t("settings.phone") },
+              { key: "defaultDuration", label: t("settings.defaultDuration"), type: "number" },
+              { key: "defaultPrice", label: t("settings.defaultPrice"), type: "number" },
             ].map((field) => (
               <div key={field.key}>
                 <label className="text-[13px] mb-1 block">{field.label}</label>
@@ -67,12 +69,19 @@ export default function Settings() {
                 />
               </div>
             ))}
+            <div>
+              <label className="text-[13px] mb-1 block">{t("settings.language")}</label>
+              <div className="flex gap-2">
+                <button onClick={() => i18n.changeLanguage("ru")} className={`px-4 py-2 rounded-xl text-[14px] transition-all ${i18n.language === "ru" ? "bg-primary text-primary-foreground" : "bg-input-background"}`}>{t("settings.russian")}</button>
+                <button onClick={() => i18n.changeLanguage("kk")} className={`px-4 py-2 rounded-xl text-[14px] transition-all ${i18n.language === "kk" ? "bg-primary text-primary-foreground" : "bg-input-background"}`}>{t("settings.kazakh")}</button>
+              </div>
+            </div>
             <button
               onClick={() => toast.success("Profile saved!")}
               className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity"
             >
               <Save className="w-4 h-4" />
-              <span className="text-[14px]">Save Changes</span>
+              <span className="text-[14px]">{t("settings.saveChanges")}</span>
             </button>
           </div>
         )}
@@ -85,8 +94,8 @@ export default function Settings() {
                   <Key className="w-5 h-5 text-yellow-700" />
                 </div>
                 <div>
-                  <h3>Kaspi API</h3>
-                  <p className="text-[12px] text-muted-foreground">Generate payment links for parents</p>
+                  <h3>{t("settings.kaspiApi")}</h3>
+                  <p className="text-[12px] text-muted-foreground">{t("settings.kaspiDesc")}</p>
                 </div>
               </div>
               <input
@@ -100,7 +109,7 @@ export default function Settings() {
                 onClick={() => { toast.success("Kaspi API key saved!"); }}
                 className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-[14px] hover:opacity-90 transition-opacity"
               >
-                Save API Key
+                {t("settings.saveApiKey")}
               </button>
             </div>
 
@@ -110,21 +119,21 @@ export default function Settings() {
                   <MessageCircle className="w-5 h-5 text-green-700" />
                 </div>
                 <div>
-                  <h3>WhatsApp Business</h3>
-                  <p className="text-[12px] text-muted-foreground">Send homework & payment reminders</p>
+                  <h3>{t("settings.whatsappBusiness")}</h3>
+                  <p className="text-[12px] text-muted-foreground">{t("settings.whatsappDesc")}</p>
                 </div>
               </div>
               {whatsappConnected ? (
                 <div className="flex items-center gap-2 text-green-600 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
                   <CheckCircle className="w-5 h-5" />
-                  <span className="text-[14px]">Connected and active</span>
+                  <span className="text-[14px]">{t("settings.connectedActive")}</span>
                 </div>
               ) : (
                 <button
                   onClick={() => { setWhatsappConnected(true); toast.success("WhatsApp connected!"); }}
                   className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-[14px] hover:bg-green-700 transition-colors"
                 >
-                  Connect WhatsApp
+                  {t("settings.connectWhatsapp")}
                 </button>
               )}
             </div>
@@ -138,12 +147,12 @@ export default function Settings() {
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3>AI Prompt Preferences</h3>
-                <p className="text-[12px] text-muted-foreground">Customize how AI generates notes</p>
+                <h3>{t("settings.aiPromptPreferences")}</h3>
+                <p className="text-[12px] text-muted-foreground">{t("settings.aiPromptDesc")}</p>
               </div>
             </div>
             <p className="text-[13px] text-muted-foreground">
-              This text is prepended to the AI analysis as instructions. Customize it to match your preferred documentation style.
+              {t("settings.templateInstructions")}
             </p>
             <textarea
               value={templatePref}
@@ -161,7 +170,7 @@ export default function Settings() {
               className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity"
             >
               <Save className="w-4 h-4" />
-              <span className="text-[14px]">Save Preferences</span>
+              <span className="text-[14px]">{t("settings.savePreferences")}</span>
             </button>
           </div>
         )}

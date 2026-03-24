@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # Integrations
     KASPI_API_KEY: str = ""
     WHATSAPP_API_TOKEN: str = ""
+    WHATSAPP_PHONE_NUMBER_ID: str = ""
+    KASPI_MERCHANT_ID: str = ""
+    FRONTEND_URL: str = "http://localhost"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_ignore_empty=True, extra="ignore"

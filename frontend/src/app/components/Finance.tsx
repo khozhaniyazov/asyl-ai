@@ -4,6 +4,7 @@ import { DollarSign, TrendingUp, AlertTriangle, MessageCircle, ArrowUpRight, Arr
 import { toast } from "sonner";
 import { transactions, patients } from "./mockData";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useTranslation } from "react-i18next";
 
 const tabs = ["Overview", "Transactions", "Debtors"] as const;
 
@@ -18,6 +19,7 @@ const chartData = [
 
 export default function Finance() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("Overview");
+  const { t } = useTranslation();
 
   const totalEarned = 97500;
   const projected = 150000;
@@ -28,7 +30,7 @@ export default function Finance() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1>Finance</h1>
+        <h1>{t("finance.title")}</h1>
         <div className="flex gap-1 bg-muted rounded-xl p-1">
           {tabs.map((tab) => (
             <button
@@ -36,7 +38,7 @@ export default function Finance() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-lg text-[13px] transition-all ${activeTab === tab ? "bg-card shadow-sm" : "text-muted-foreground"}`}
             >
-              {tab}
+              {tab === "Overview" ? t("finance.overview") : tab === "Transactions" ? t("finance.transactions") : t("finance.debtors")}
             </button>
           ))}
         </div>
@@ -47,7 +49,7 @@ export default function Finance() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
               {
-                label: "Earned This Month",
+                label: t("finance.earnedThisMonth"),
                 value: `${totalEarned.toLocaleString()} KZT`,
                 icon: DollarSign,
                 color: "text-green-600",
@@ -55,7 +57,7 @@ export default function Finance() {
                 change: changePercent,
               },
               {
-                label: "Projected Income",
+                label: t("finance.projectedIncome"),
                 value: `${projected.toLocaleString()} KZT`,
                 icon: TrendingUp,
                 color: "text-blue-600",
@@ -63,7 +65,7 @@ export default function Finance() {
                 change: null,
               },
               {
-                label: "Outstanding Debts",
+                label: t("finance.outstandingDebts"),
                 value: `${outstanding.toLocaleString()} KZT`,
                 icon: AlertTriangle,
                 color: "text-red-600",
@@ -107,8 +109,8 @@ export default function Finance() {
             className="bg-card border border-border rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3>Monthly Revenue</h3>
-              <span className="text-[12px] text-muted-foreground">Last 6 months</span>
+              <h3>{t("finance.monthlyRevenue")}</h3>
+              <span className="text-[12px] text-muted-foreground">{t("finance.last6Months")}</span>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -117,7 +119,7 @@ export default function Finance() {
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `${v / 1000}k`} axisLine={false} tickLine={false} />
                   <Tooltip
-                    formatter={(value: number) => [`${value.toLocaleString()} KZT`, "Revenue"]}
+                    formatter={(value: number) => [`${value.toLocaleString()} KZT`, t("finance.revenue")]}
                     contentStyle={{
                       borderRadius: "12px",
                       border: "1px solid var(--border)",
@@ -142,11 +144,11 @@ export default function Finance() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border text-left">
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Date</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Patient</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Amount</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">Method</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Status</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.dateCol")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.patientCol")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.amountCol")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">{t("finance.methodCol")}</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">{t("finance.statusCol")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,8 +186,8 @@ export default function Finance() {
               <div className="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <DollarSign className="w-8 h-8 text-green-500" />
               </div>
-              <h2>All paid up!</h2>
-              <p className="text-muted-foreground text-[14px] mt-1">No outstanding debts. Great job!</p>
+              <h2>{t("finance.allPaidUp")}</h2>
+              <p className="text-muted-foreground text-[14px] mt-1">{t("finance.noDebts")}</p>
             </div>
           ) : (
             debtors.map((d, i) => (
@@ -211,7 +213,7 @@ export default function Finance() {
                   className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors self-start shadow-sm"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span className="text-[13px]">Send Reminder</span>
+                  <span className="text-[13px]">{t("finance.sendReminder")}</span>
                 </button>
               </motion.div>
             ))

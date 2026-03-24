@@ -152,4 +152,74 @@ export const api = {
     const response = await apiClient.post(`/sessions/${sessionId}/send-homework`);
     return response.data;
   },
+
+  // --- PARENT AUTH ---
+  parentRequestOtp: async (phone: string) => {
+    const response = await apiClient.post('/parent/request-otp', { phone });
+    return response.data;
+  },
+
+  parentVerifyOtp: async (phone: string, code: string) => {
+    const response = await apiClient.post('/parent/verify-otp', { phone, code });
+    if (response.data.access_token) {
+      localStorage.setItem('asyl_ai_parent_token', response.data.access_token);
+    }
+    return response.data;
+  },
+
+  parentLogout: () => {
+    localStorage.removeItem('asyl_ai_parent_token');
+  },
+
+  isParentAuthenticated: () => {
+    return !!localStorage.getItem('asyl_ai_parent_token');
+  },
+
+  // --- PARENT PORTAL ---
+  parentGetMe: async () => {
+    const token = localStorage.getItem('asyl_ai_parent_token');
+    const response = await apiClient.get('/parent/me', { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  },
+
+  parentGetChildren: async () => {
+    const token = localStorage.getItem('asyl_ai_parent_token');
+    const response = await apiClient.get('/parent/children', { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  },
+
+  parentGetAppointments: async () => {
+    const token = localStorage.getItem('asyl_ai_parent_token');
+    const response = await apiClient.get('/parent/appointments', { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  },
+
+  parentGetHomework: async () => {
+    const token = localStorage.getItem('asyl_ai_parent_token');
+    const response = await apiClient.get('/parent/homework', { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  },
+
+  parentGetProgress: async () => {
+    const token = localStorage.getItem('asyl_ai_parent_token');
+    const response = await apiClient.get('/parent/progress', { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  },
+
+  // --- BILLING ---
+  getBillingStatus: async () => {
+    const response = await apiClient.get('/billing/status');
+    return response.data;
+  },
+
+  subscribe: async (plan: string) => {
+    const response = await apiClient.post('/billing/subscribe', { plan });
+    return response.data;
+  },
+
+  // --- PROGRESS ---
+  getPatientProgress: async (patientId: number) => {
+    const response = await apiClient.get(`/progress/patients/${patientId}/progress`);
+    return response.data;
+  },
 };

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Stethoscope } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ParentLogin() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -21,8 +23,8 @@ export default function ParentLogin() {
           <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20">
             <Stethoscope className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1>Parent Portal</h1>
-          <p className="text-muted-foreground text-[14px] mt-1">View homework & pay for sessions</p>
+          <h1>{t("parent.portal")}</h1>
+          <p className="text-muted-foreground text-[14px] mt-1">{t("parent.portalDesc")}</p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -35,7 +37,7 @@ export default function ParentLogin() {
               className="space-y-4"
             >
               <div>
-                <label className="text-[13px] mb-1 block">Phone Number</label>
+                <label className="text-[13px] mb-1 block">{t("parent.phoneNumber")}</label>
                 <input
                   type="tel"
                   value={phone}
@@ -48,7 +50,7 @@ export default function ParentLogin() {
                 onClick={() => setOtpSent(true)}
                 className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity"
               >
-                Send Code via WhatsApp
+                {t("parent.sendCode")}
               </button>
             </motion.div>
           ) : (
@@ -60,10 +62,10 @@ export default function ParentLogin() {
               className="space-y-4"
             >
               <div className="bg-accent/50 rounded-xl p-3 text-center">
-                <p className="text-[13px] text-muted-foreground">Code sent to <span className="text-foreground">{phone || "+7 7XX XXX XXXX"}</span></p>
+                <p className="text-[13px] text-muted-foreground">{t("parent.codeSentTo")} <span className="text-foreground">{phone || "+7 7XX XXX XXXX"}</span></p>
               </div>
               <div>
-                <label className="text-[13px] mb-1 block">Enter 4-digit Code</label>
+                <label className="text-[13px] mb-1 block">{t("parent.enterCode")}</label>
                 <input
                   type="text"
                   value={otp}
@@ -77,10 +79,10 @@ export default function ParentLogin() {
                 onClick={() => navigate("/parent")}
                 className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity"
               >
-                Verify & Sign In
+                {t("parent.verifySignIn")}
               </button>
               <button onClick={() => setOtpSent(false)} className="w-full text-[13px] text-muted-foreground hover:underline">
-                Change phone number
+                {t("parent.changePhone")}
               </button>
             </motion.div>
           )}
@@ -88,11 +90,11 @@ export default function ParentLogin() {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-          <div className="relative flex justify-center"><span className="bg-background px-3 text-[12px] text-muted-foreground">or</span></div>
+          <div className="relative flex justify-center"><span className="bg-background px-3 text-[12px] text-muted-foreground">{t("common.or")}</span></div>
         </div>
         <p className="text-center text-[13px] text-muted-foreground">
-          Are you a therapist?{" "}
-          <button onClick={() => navigate("/login")} className="text-primary hover:underline">← Therapist Login</button>
+          {t("parent.areYouTherapist")}{" "}
+          <button onClick={() => navigate("/login")} className="text-primary hover:underline">{t("parent.therapistLogin")}</button>
         </p>
       </motion.div>
     </div>
