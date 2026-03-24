@@ -547,4 +547,111 @@ export const api = {
     const response = await apiClient.put(`/marketplace/bookings/${bookingId}/reject`);
     return response.data;
   },
+
+  // --- TREATMENT PLANS ---
+  getTreatmentPlans: async (patientId?: number) => {
+    let url = '/treatment/plans';
+    if (patientId) url += `?patient_id=${patientId}`;
+    const response = await apiClient.get(url);
+    return response.data;
+  },
+
+  getTreatmentPlan: async (planId: number) => {
+    const response = await apiClient.get(`/treatment/plans/${planId}`);
+    return response.data;
+  },
+
+  createTreatmentPlan: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/treatment/plans', data);
+    return response.data;
+  },
+
+  updateTreatmentPlan: async (planId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.put(`/treatment/plans/${planId}`, data);
+    return response.data;
+  },
+
+  addGoal: async (planId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.post(`/treatment/plans/${planId}/goals`, data);
+    return response.data;
+  },
+
+  updateGoal: async (goalId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.put(`/treatment/goals/${goalId}`, data);
+    return response.data;
+  },
+
+  deleteGoal: async (goalId: number) => {
+    const response = await apiClient.delete(`/treatment/goals/${goalId}`);
+    return response.data;
+  },
+
+  getGoalTemplates: async (category?: string) => {
+    let url = '/treatment/goal-templates';
+    if (category) url += `?category=${encodeURIComponent(category)}`;
+    const response = await apiClient.get(url);
+    return response.data;
+  },
+
+  createGoalTemplate: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/treatment/goal-templates', data);
+    return response.data;
+  },
+
+  deleteGoalTemplate: async (id: number) => {
+    const response = await apiClient.delete(`/treatment/goal-templates/${id}`);
+    return response.data;
+  },
+
+  // --- MESSAGING ---
+  getConversations: async () => {
+    const response = await apiClient.get('/messaging/conversations');
+    return response.data;
+  },
+
+  getOrCreateConversation: async (parentId: number) => {
+    const response = await apiClient.post(`/messaging/conversations/${parentId}`);
+    return response.data;
+  },
+
+  getMessages: async (conversationId: number, skip = 0, limit = 50) => {
+    const response = await apiClient.get(`/messaging/conversations/${conversationId}/messages?skip=${skip}&limit=${limit}`);
+    return response.data;
+  },
+
+  sendMessage: async (conversationId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.post(`/messaging/conversations/${conversationId}/messages`, data);
+    return response.data;
+  },
+
+  parentGetConversations: async () => {
+    const response = await apiClient.get('/messaging/parent/conversations', parentHeaders());
+    return response.data;
+  },
+
+  parentGetMessages: async (conversationId: number) => {
+    const response = await apiClient.get(`/messaging/parent/conversations/${conversationId}/messages`, parentHeaders());
+    return response.data;
+  },
+
+  parentSendMessage: async (conversationId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.post(`/messaging/parent/conversations/${conversationId}/messages`, data, parentHeaders());
+    return response.data;
+  },
+
+  // --- ANALYTICS ---
+  getAnalyticsSummary: async () => {
+    const response = await apiClient.get('/analytics/summary');
+    return response.data;
+  },
+
+  getAnalyticsTrends: async (weeks = 12) => {
+    const response = await apiClient.get(`/analytics/trends?weeks=${weeks}`);
+    return response.data;
+  },
+
+  // --- DATA EXPORT ---
+  exportPatientsCsv: () => `${apiClient.defaults.baseURL}/export/patients`,
+  exportSessionsCsv: () => `${apiClient.defaults.baseURL}/export/sessions`,
+  exportPatientRecord: (patientId: number) => `${apiClient.defaults.baseURL}/export/patient/${patientId}`,
 };

@@ -64,7 +64,9 @@
     "homework": "Тапсырмалар",
     "waitlist": "Күту тізімі",
     "marketplace": "Маркетплейс",
-    "bookings": "Өтінімдер"
+    "bookings": "Өтінімдер",
+    "messages": "Хабарламалар",
+    "analytics": "Аналитика"
   },
   "dashboard": {
     "calendar": "Күнтізбе",
@@ -489,5 +491,97 @@
       "cancelled": "Болдырылмады",
       "completed": "Аяқталды"
     }
+  },
+  "treatment": {
+    "plans": "Емдеу жоспарлары",
+    "newPlan": "Жаңа жоспар",
+    "diagnosis": "Диагноз",
+    "startDate": "Басталу күні",
+    "targetEnd": "Мақсатты аяқталу күні",
+    "notes": "Жазбалар",
+    "noPlans": "Емдеу жоспарлары әлі жоқ",
+    "untitled": "Атаусыз",
+    "goals": "мақсат",
+    "addGoal": "Мақсат қосу",
+    "longTerm": "Ұзақ мерзімді",
+    "shortTerm": "Қысқа мерзімді",
+    "targetSound": "Мақсатты дыбыс",
+    "goalDescription": "Мақсат сипаттамасы",
+    "measurableCriteria": "Өлшенетін критерийлер",
+    "criteria": "Критерийлер",
+    "markAchieved": "Жетілді деп белгілеу",
+    "markInProgress": "Жұмыста",
+    "goalStatus": {
+      "not_started": "Басталмаған",
+      "in_progress": "Жұмыста",
+      "achieved": "Жетілді",
+      "discontinued": "Тоқтатылды"
+    }
+  },
+  "messages": {
+    "title": "Хабарламалар",
+    "conversations": "Диалогтар",
+    "noConversations": "Диалогтар әлі жоқ",
+    "selectConversation": "Диалогты таңдаңыз",
+    "typeMessage": "Хабарлама жазыңыз..."
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "sessionsWeek": "Аптадағы сеанстар",
+    "sessionsMonth": "Айдағы сеанстар",
+    "totalPatients": "Барлық пациенттер",
+    "cancellationRate": "Болдырмау пайызы",
+    "revenueMonth": "Айлық табыс",
+    "avgSessions": "Орташа сеанс саны",
+    "patientsByStatus": "Мәртебе бойынша пациенттер",
+    "weeklySessions": "Апталық сеанстар",
+    "monthlyRevenue": "Айлық табыс",
+    "newPatients": "Жаңа пациенттер"
+  },
+  "session": {
+    "assigned": "Тағайындалды",
+    "pickTemplate": "Үлгіден таңдау",
+    "dueDate": "Орындау мерзімі",
+    "homeworkPlaceholder": "Ата-аналарға тапсырма жазыңыз...",
+    "homeworkAssigned": "Тапсырма тағайындалды",
+    "failedAssignHomework": "Тапсырманы тағайындау сәтсіз"
+  },
+  "finance": {
+    "sessionsThisMonth": "Айдағы сеанстар",
+    "patients": "пациент",
+    "outstanding": "қарыз",
+    "noTransactions": "Транзакциялар әлі жоқ",
+    "reminderQueued": "Еске салу кезекке қойылды"
+  },
+  "parent": {
+    "invalidPhone": "Дұрыс нөмірді енгізіңіз",
+    "codeSent": "Код жіберілді",
+    "failedSendCode": "Кодты жіберу сәтсіз",
+    "invalidCode": "Қате код",
+    "noInstructions": "Нұсқаулар жоқ",
+    "homeworkCompleted": "Тапсырма орындалды деп белгіленді",
+    "failedComplete": "Белгілеу сәтсіз",
+    "markDone": "Орындалды",
+    "noHomework": "Тапсырмалар әлі жоқ",
+    "speechProgress": "сөйлеу прогресі",
+    "sessionsSummary": "Қорытынды",
+    "completedSessions": "Аяқталған сеанстар",
+    "verifiedHomework": "Тексерілген тапсырмалар",
+    "child": "Бала"
+  },
+  "patientProfile": {
+    "dob": "Туған күні",
+    "sessionNum": "Сеанс",
+    "allPackages": "Барлық пакеттер",
+    "sessions": "Сеанстар",
+    "price": "Бағасы",
+    "dueDate": "Мерзімі",
+    "feedback": "Маман пікірі",
+    "exportData": "Деректерді экспорттау",
+    "exportRecord": "Пациент жазбасын жүктеу",
+    "status_active": "Белсенді",
+    "status_discharged": "Шығарылды",
+    "status_waitlisted": "Күту тізімінде",
+    "status_paused": "Тоқтатылды"
   }
 }

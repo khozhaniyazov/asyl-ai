@@ -64,7 +64,9 @@
     "homework": "Задания",
     "waitlist": "Лист ожидания",
     "marketplace": "Маркетплейс",
-    "bookings": "Заявки"
+    "bookings": "Заявки",
+    "messages": "Сообщения",
+    "analytics": "Аналитика"
   },
   "dashboard": {
     "calendar": "Календарь",
@@ -489,5 +491,97 @@
       "cancelled": "Отменён",
       "completed": "Завершён"
     }
+  },
+  "treatment": {
+    "plans": "Планы лечения",
+    "newPlan": "Новый план",
+    "diagnosis": "Диагноз",
+    "startDate": "Дата начала",
+    "targetEnd": "Целевая дата окончания",
+    "notes": "Заметки",
+    "noPlans": "Планов лечения пока нет",
+    "untitled": "Без названия",
+    "goals": "целей",
+    "addGoal": "Добавить цель",
+    "longTerm": "Долгосрочная",
+    "shortTerm": "Краткосрочная",
+    "targetSound": "Целевой звук",
+    "goalDescription": "Описание цели",
+    "measurableCriteria": "Измеримые критерии",
+    "criteria": "Критерии",
+    "markAchieved": "Отметить достигнутой",
+    "markInProgress": "В работе",
+    "goalStatus": {
+      "not_started": "Не начата",
+      "in_progress": "В работе",
+      "achieved": "Достигнута",
+      "discontinued": "Прекращена"
+    }
+  },
+  "messages": {
+    "title": "Сообщения",
+    "conversations": "Диалоги",
+    "noConversations": "Диалогов пока нет",
+    "selectConversation": "Выберите диалог",
+    "typeMessage": "Введите сообщение..."
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "sessionsWeek": "Сеансов за неделю",
+    "sessionsMonth": "Сеансов за месяц",
+    "totalPatients": "Всего пациентов",
+    "cancellationRate": "Процент отмен",
+    "revenueMonth": "Доход за месяц",
+    "avgSessions": "Среднее кол-во сеансов",
+    "patientsByStatus": "Пациенты по статусу",
+    "weeklySessions": "Сеансы по неделям",
+    "monthlyRevenue": "Доход по месяцам",
+    "newPatients": "Новые пациенты"
+  },
+  "session": {
+    "assigned": "Назначено",
+    "pickTemplate": "Выбрать из шаблонов",
+    "dueDate": "Срок выполнения",
+    "homeworkPlaceholder": "Напишите задание для родителей...",
+    "homeworkAssigned": "Задание назначено",
+    "failedAssignHomework": "Не удалось назначить задание"
+  },
+  "finance": {
+    "sessionsThisMonth": "Сеансов за месяц",
+    "patients": "пациентов",
+    "outstanding": "задолженность",
+    "noTransactions": "Транзакций пока нет",
+    "reminderQueued": "Напоминание поставлено в очередь"
+  },
+  "parent": {
+    "invalidPhone": "Введите корректный номер",
+    "codeSent": "Код отправлен",
+    "failedSendCode": "Не удалось отправить код",
+    "invalidCode": "Неверный код",
+    "noInstructions": "Нет инструкций",
+    "homeworkCompleted": "Задание отмечено выполненным",
+    "failedComplete": "Не удалось отметить",
+    "markDone": "Выполнено",
+    "noHomework": "Заданий пока нет",
+    "speechProgress": "прогресс речи",
+    "sessionsSummary": "Итоги",
+    "completedSessions": "Завершённых сеансов",
+    "verifiedHomework": "Проверенных заданий",
+    "child": "Ребёнок"
+  },
+  "patientProfile": {
+    "dob": "Дата рождения",
+    "sessionNum": "Сеанс",
+    "allPackages": "Все пакеты",
+    "sessions": "Сеансы",
+    "price": "Цена",
+    "dueDate": "Срок",
+    "feedback": "Отзыв специалиста",
+    "exportData": "Экспорт данных",
+    "exportRecord": "Скачать запись пациента",
+    "status_active": "Активный",
+    "status_discharged": "Выписан",
+    "status_waitlisted": "В листе ожидания",
+    "status_paused": "Приостановлен"
   }
 }

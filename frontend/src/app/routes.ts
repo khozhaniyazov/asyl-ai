@@ -18,6 +18,9 @@ import MarketplaceSearch from "./components/MarketplaceSearch";
 import TherapistPublicProfile from "./components/TherapistPublicProfile";
 import MarketplaceProfile from "./components/MarketplaceProfile";
 import IncomingBookings from "./components/IncomingBookings";
+// B+C: new features
+import MessagesView from "./components/MessagesView";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -42,6 +45,9 @@ export const router = createBrowserRouter([
       // v3: marketplace management
       { path: "profile", Component: MarketplaceProfile },
       { path: "bookings", Component: IncomingBookings },
+      // B+C: new features
+      { path: "messages", Component: MessagesView },
+      { path: "analytics", Component: AnalyticsDashboard },
       { path: "settings", Component: Settings },
     ],
   },

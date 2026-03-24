@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { ArrowLeft, Phone, Calendar, FileText, Package, TrendingUp, Loader2 } from "lucide-react";
+import { ArrowLeft, Phone, Calendar, FileText, Package, TrendingUp, Loader2, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "../api";
 import type { Patient, Appointment, SessionPackage, HomeworkAssignment, SoundProgress } from "../types";
 import PackageCard from "./PackageCard";
 import SoundProgressChart from "./SoundProgressChart";
+import TreatmentPlanView from "./TreatmentPlanView";
 import { useTranslation } from "react-i18next";
 
 const tabs = ["Info", "History", "Financials", "Documents"] as const;
@@ -120,6 +121,19 @@ export default function PatientProfile() {
             {/* Sound Progress */}
             <div className="bg-card border border-border rounded-2xl p-5">
               <SoundProgressChart patientId={patient.id} />
+            </div>
+
+            {/* Treatment Plans */}
+            <div className="bg-card border border-border rounded-2xl p-5">
+              <TreatmentPlanView patientId={patient.id} />
+            </div>
+
+            {/* Export */}
+            <div className="bg-card border border-border rounded-xl p-4">
+              <p className="text-[12px] text-muted-foreground mb-2">{t("patientProfile.exportData")}</p>
+              <a href={api.exportPatientRecord(patient.id)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-[13px] hover:bg-accent transition-colors w-fit">
+                <Download className="w-4 h-4" />{t("patientProfile.exportRecord")}
+              </a>
             </div>
           </div>
         )}
