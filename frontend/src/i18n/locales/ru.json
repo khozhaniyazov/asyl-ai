@@ -66,7 +66,8 @@
     "marketplace": "Маркетплейс",
     "bookings": "Заявки",
     "messages": "Сообщения",
-    "analytics": "Аналитика"
+    "analytics": "Аналитика",
+    "clinic": "Клиника"
   },
   "dashboard": {
     "calendar": "Календарь",
@@ -579,9 +580,31 @@
     "feedback": "Отзыв специалиста",
     "exportData": "Экспорт данных",
     "exportRecord": "Скачать запись пациента",
+    "progressReport": "Отчёт о прогрессе",
+    "pmpkReport": "Заключение ПМПК",
     "status_active": "Активный",
     "status_discharged": "Выписан",
     "status_waitlisted": "В листе ожидания",
     "status_paused": "Приостановлен"
+  },
+  "clinic": {
+    "title": "Управление клиникой",
+    "description": "Добавляйте специалистов и управляйте доступом",
+    "createClinic": "Создать клинику",
+    "clinicName": "Название клиники",
+    "address": "Адрес",
+    "phone": "Телефон",
+    "noClinics": "Клиник пока нет. Создайте первую!",
+    "created": "Клиника создана",
+    "createFailed": "Не удалось создать клинику",
+    "invite": "Пригласить",
+    "invited": "Специалист приглашён",
+    "inviteFailed": "Не удалось пригласить",
+    "therapistEmail": "Email специалиста",
+    "role": {
+      "owner": "Владелец",
+      "admin": "Администратор",
+      "therapist": "Специалист"
+    }
   }
 }

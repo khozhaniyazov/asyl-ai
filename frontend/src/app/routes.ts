@@ -21,6 +21,7 @@ import IncomingBookings from "./components/IncomingBookings";
 // B+C: new features
 import MessagesView from "./components/MessagesView";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import ClinicManagement from "./components/ClinicManagement";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
       // B+C: new features
       { path: "messages", Component: MessagesView },
       { path: "analytics", Component: AnalyticsDashboard },
+      { path: "clinic", Component: ClinicManagement },
       { path: "settings", Component: Settings },
     ],
   },

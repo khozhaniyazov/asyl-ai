@@ -66,7 +66,8 @@
     "marketplace": "Маркетплейс",
     "bookings": "Өтінімдер",
     "messages": "Хабарламалар",
-    "analytics": "Аналитика"
+    "analytics": "Аналитика",
+    "clinic": "Клиника"
   },
   "dashboard": {
     "calendar": "Күнтізбе",
@@ -579,9 +580,31 @@
     "feedback": "Маман пікірі",
     "exportData": "Деректерді экспорттау",
     "exportRecord": "Пациент жазбасын жүктеу",
+    "progressReport": "Прогресс есебі",
+    "pmpkReport": "ПМПК қорытындысы",
     "status_active": "Белсенді",
     "status_discharged": "Шығарылды",
     "status_waitlisted": "Күту тізімінде",
     "status_paused": "Тоқтатылды"
+  },
+  "clinic": {
+    "title": "Клиниканы басқару",
+    "description": "Мамандарды қосыңыз және рұқсатты басқарыңыз",
+    "createClinic": "Клиника жасау",
+    "clinicName": "Клиника атауы",
+    "address": "Мекенжай",
+    "phone": "Телефон",
+    "noClinics": "Клиникалар әлі жоқ. Біріншісін жасаңыз!",
+    "created": "Клиника жасалды",
+    "createFailed": "Клиниканы жасау сәтсіз",
+    "invite": "Шақыру",
+    "invited": "Маман шақырылды",
+    "inviteFailed": "Шақыру сәтсіз",
+    "therapistEmail": "Маман email",
+    "role": {
+      "owner": "Иесі",
+      "admin": "Әкімші",
+      "therapist": "Маман"
+    }
   }
 }

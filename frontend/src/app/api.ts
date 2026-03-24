@@ -654,4 +654,55 @@ export const api = {
   exportPatientsCsv: () => `${apiClient.defaults.baseURL}/export/patients`,
   exportSessionsCsv: () => `${apiClient.defaults.baseURL}/export/sessions`,
   exportPatientRecord: (patientId: number) => `${apiClient.defaults.baseURL}/export/patient/${patientId}`,
+
+  // --- VIDEO SESSIONS ---
+  createVideoSession: async (appointmentId: number) => {
+    const response = await apiClient.post(`/video/${appointmentId}`);
+    return response.data;
+  },
+
+  getVideoSession: async (appointmentId: number) => {
+    const response = await apiClient.get(`/video/${appointmentId}`);
+    return response.data;
+  },
+
+  startVideoSession: async (appointmentId: number) => {
+    const response = await apiClient.post(`/video/${appointmentId}/start`);
+    return response.data;
+  },
+
+  endVideoSession: async (appointmentId: number) => {
+    const response = await apiClient.post(`/video/${appointmentId}/end`);
+    return response.data;
+  },
+
+  // --- REPORTS ---
+  getProgressReport: (patientId: number) => `${apiClient.defaults.baseURL}/reports/progress/${patientId}`,
+  getPmpkReport: (patientId: number) => `${apiClient.defaults.baseURL}/reports/pmpk/${patientId}`,
+
+  // --- CLINICS ---
+  getMyClinics: async () => {
+    const response = await apiClient.get('/clinics/my');
+    return response.data;
+  },
+
+  createClinic: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/clinics/', data);
+    return response.data;
+  },
+
+  updateClinic: async (clinicId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.put(`/clinics/${clinicId}`, data);
+    return response.data;
+  },
+
+  inviteToClinic: async (clinicId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.post(`/clinics/${clinicId}/invite`, data);
+    return response.data;
+  },
+
+  removeClinicMember: async (clinicId: number, membershipId: number) => {
+    const response = await apiClient.delete(`/clinics/${clinicId}/members/${membershipId}`);
+    return response.data;
+  },
 };

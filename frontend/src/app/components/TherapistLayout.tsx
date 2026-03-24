@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Outlet, NavLink, useNavigate, Navigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { CalendarDays, Users, DollarSign, Settings, Search, Bell, Menu, X, LogOut, Stethoscope, Plus, Globe, BookOpen, ClipboardList, UserCircle, Inbox, MessageCircle, BarChart3 } from "lucide-react";
+import { CalendarDays, Users, DollarSign, Settings, Search, Bell, Menu, X, LogOut, Stethoscope, Plus, Globe, BookOpen, ClipboardList, UserCircle, Inbox, MessageCircle, BarChart3, Building2 } from "lucide-react";
 import { useAuth } from "../AuthContext";
 import { api } from "../api";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,7 @@ export default function TherapistLayout() {
     { to: "/analytics", icon: BarChart3, label: t("nav.analytics") },
     { to: "/profile", icon: UserCircle, label: t("nav.marketplace") },
     { to: "/bookings", icon: Inbox, label: t("nav.bookings") },
+    { to: "/clinic", icon: Building2, label: t("nav.clinic") },
     { to: "/settings", icon: Settings, label: t("nav.settings") },
   ];
 

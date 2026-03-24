@@ -131,9 +131,17 @@ export default function PatientProfile() {
             {/* Export */}
             <div className="bg-card border border-border rounded-xl p-4">
               <p className="text-[12px] text-muted-foreground mb-2">{t("patientProfile.exportData")}</p>
-              <a href={api.exportPatientRecord(patient.id)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-[13px] hover:bg-accent transition-colors w-fit">
-                <Download className="w-4 h-4" />{t("patientProfile.exportRecord")}
-              </a>
+              <div className="flex flex-wrap gap-2">
+                <a href={api.exportPatientRecord(patient.id)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-[13px] hover:bg-accent transition-colors">
+                  <Download className="w-4 h-4" />{t("patientProfile.exportRecord")}
+                </a>
+                <a href={api.getProgressReport(patient.id)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-[13px] hover:bg-accent transition-colors">
+                  <FileText className="w-4 h-4" />{t("patientProfile.progressReport")}
+                </a>
+                <a href={api.getPmpkReport(patient.id)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border text-[13px] hover:bg-accent transition-colors">
+                  <FileText className="w-4 h-4" />{t("patientProfile.pmpkReport")}
+                </a>
+              </div>
             </div>
           </div>
         )}

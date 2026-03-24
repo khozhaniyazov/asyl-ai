@@ -86,7 +86,7 @@ async def create_plan(
     db.add(plan)
     await db.commit()
     await db.refresh(plan)
-    return _plan_to_dict(plan)
+    return _plan_to_dict(plan, goals=[])
 
 
 @router.get("/plans")
@@ -289,7 +289,7 @@ async def delete_goal_template(
 # --- Helpers ---
 
 
-def _plan_to_dict(plan: TreatmentPlan) -> dict:
+def _plan_to_dict(plan: TreatmentPlan, goals=None) -> dict:
     return {
         "id": plan.id,
         "patient_id": plan.patient_id,
@@ -301,9 +301,9 @@ def _plan_to_dict(plan: TreatmentPlan) -> dict:
         else None,
         "status": plan.status.value if plan.status else "active",
         "notes": plan.notes,
-        "goals": [_goal_to_dict(g) for g in plan.goals]
-        if hasattr(plan, "goals") and plan.goals
-        else [],
+        "goals": [_goal_to_dict(g) for g in goals]
+        if goals is not None
+        else [_goal_to_dict(g) for g in (plan.goals or [])],
         "created_at": plan.created_at.isoformat() if plan.created_at else None,
     }
 
