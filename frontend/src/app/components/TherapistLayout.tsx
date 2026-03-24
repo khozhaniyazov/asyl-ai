@@ -17,6 +17,20 @@ export default function TherapistLayout() {
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!searchQuery.trim()) { setSearchResults([]); return; }
+    const timeout = setTimeout(async () => {
+      try { const patients = await api.getPatients(0, 5, searchQuery); setSearchResults(patients); } catch { setSearchResults([]); }
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchFocused(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
   }
@@ -39,20 +53,6 @@ export default function TherapistLayout() {
     { to: "/clinic", icon: Building2, label: t("nav.clinic") },
     { to: "/settings", icon: Settings, label: t("nav.settings") },
   ];
-
-  useEffect(() => {
-    if (!searchQuery.trim()) { setSearchResults([]); return; }
-    const timeout = setTimeout(async () => {
-      try { const patients = await api.getPatients(0, 5, searchQuery); setSearchResults(patients); } catch { setSearchResults([]); }
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => { if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchFocused(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
 
   const notifications = [
     { id: 1, text: t("notifications.aiCompleted"), time: "2 мин", unread: true },
