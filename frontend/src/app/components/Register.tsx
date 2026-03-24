@@ -1,15 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { Stethoscope } from "lucide-react";
+import { Stethoscope, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "../AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { register, login, user, loading: authLoading } = useAuth();
   const [form, setForm] = useState({ name: "", clinic: "", email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (!authLoading && user) {
+    navigate("/", { replace: true });
+    return null;
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, boolean> = {};
     if (!form.name) newErrors.name = true;
@@ -20,7 +29,24 @@ export default function Register() {
       toast.error("Please fill in all required fields.");
       return;
     }
-    navigate("/onboarding");
+    setLoading(true);
+    try {
+      await register({
+        email: form.email,
+        password: form.password,
+        full_name: form.name,
+        clinic_name: form.clinic || undefined,
+      });
+      // Auto-login after registration
+      await login(form.email, form.password);
+      toast.success("Account created successfully!");
+      navigate("/onboarding");
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || "Registration failed. Please try again.";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +83,12 @@ export default function Register() {
               {errors[field.key] && <p className="text-[11px] text-destructive mt-1">This field is required</p>}
             </div>
           ))}
-          <button type="submit" className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             Create Account
           </button>
         </form>

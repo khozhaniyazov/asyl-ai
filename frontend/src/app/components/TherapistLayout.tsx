@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Outlet, NavLink, useNavigate } from "react-router";
+import { Outlet, NavLink, useNavigate, Navigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   CalendarDays,
@@ -14,7 +14,8 @@ import {
   Stethoscope,
   Plus,
 } from "lucide-react";
-import { patients } from "./mockData";
+import { useAuth } from "../AuthContext";
+import { api } from "../api";
 
 const navItems = [
   { to: "/", icon: CalendarDays, label: "Dashboard" },
@@ -24,18 +25,49 @@ const navItems = [
 ];
 
 export default function TherapistLayout() {
+  const { user, loading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    return patients
-      .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      .slice(0, 5);
+  // Auth guard
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const initials = user.full_name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  // Search patients from API
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const timeout = setTimeout(async () => {
+      try {
+        const patients = await api.getPatients(0, 5, searchQuery);
+        setSearchResults(patients);
+      } catch {
+        setSearchResults([]);
+      }
+    }, 300);
+    return () => clearTimeout(timeout);
   }, [searchQuery]);
 
   // Close search dropdown on outside click
@@ -50,13 +82,16 @@ export default function TherapistLayout() {
   }, []);
 
   const notifications = [
-    { id: 1, text: "AI analysis completed for Aibek Nurlan", time: "2 min ago", unread: true },
-    { id: 2, text: "Payment received: 15,000 KZT from Madina Kanat", time: "1 hour ago", unread: true },
-    { id: 3, text: "Reminder: Session with Daulet Marat at 11:00", time: "3 hours ago", unread: false },
-    { id: 4, text: "Homework sent to Aliya Serik's parent via WhatsApp", time: "Yesterday", unread: false },
+    { id: 1, text: "AI analysis completed", time: "2 min ago", unread: true },
+    { id: 2, text: "Payment received", time: "1 hour ago", unread: true },
   ];
 
   const unreadCount = notifications.filter((n) => n.unread).length;
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -128,15 +163,15 @@ export default function TherapistLayout() {
         <div className="px-3 py-4 border-t border-sidebar-border">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px]">
-              DK
+              {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] truncate">Dr. Dana Karimova</p>
-              <p className="text-[11px] text-muted-foreground truncate">SpeechCare Almaty</p>
+              <p className="text-[13px] truncate">{user.full_name}</p>
+              <p className="text-[11px] text-muted-foreground truncate">{user.clinic_name || user.email}</p>
             </div>
           </div>
           <button
-            onClick={() => navigate("/login")}
+            onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2 mt-1 rounded-xl text-muted-foreground hover:bg-accent/50 w-full transition-all"
           >
             <LogOut className="w-4 h-4" />
@@ -178,7 +213,7 @@ export default function TherapistLayout() {
                       No patients found for "{searchQuery}"
                     </div>
                   ) : (
-                    searchResults.map((p) => (
+                    searchResults.map((p: any) => (
                       <button
                         key={p.id}
                         onClick={() => {
@@ -189,11 +224,11 @@ export default function TherapistLayout() {
                         className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors text-left"
                       >
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[12px] shrink-0">
-                          {p.name.split(" ").map((n) => n[0]).join("")}
+                          {(p.first_name?.[0] || "") + (p.last_name?.[0] || "")}
                         </div>
                         <div>
-                          <p className="text-[13px]">{p.name}</p>
-                          <p className="text-[11px] text-muted-foreground">{p.diagnosis} · Age {p.age}</p>
+                          <p className="text-[13px]">{p.first_name} {p.last_name}</p>
+                          <p className="text-[11px] text-muted-foreground">{p.diagnosis || "No diagnosis"}</p>
                         </div>
                       </button>
                     ))
@@ -252,7 +287,7 @@ export default function TherapistLayout() {
           </div>
 
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px] cursor-pointer">
-            DK
+            {initials}
           </div>
         </header>
 

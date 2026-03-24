@@ -1,71 +1,86 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Plus, UserPlus, X, Filter } from "lucide-react";
+import { Search, Plus, UserPlus, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { patients as initialPatients } from "./mockData";
-import type { Patient } from "./mockData";
+import { api } from "../api";
+
+interface Patient {
+  id: number;
+  first_name: string;
+  last_name: string;
+  diagnosis: string | null;
+  parent_phone: string | null;
+  therapist_id: number;
+  created_at: string;
+}
 
 export default function Patients() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [showAdd, setShowAdd] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
-  const [patientList, setPatientList] = useState(initialPatients);
-  const [page, setPage] = useState(1);
-  const perPage = 10;
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const filtered = useMemo(
-    () =>
-      patientList.filter(
-        (p) =>
-          (p.name.toLowerCase().includes(search.toLowerCase()) ||
-            p.diagnosis.toLowerCase().includes(search.toLowerCase())) &&
-          (statusFilter === "all" || p.status === statusFilter)
-      ),
-    [search, patientList, statusFilter]
-  );
-
-  const paginated = filtered.slice(0, page * perPage);
-
-  const [form, setForm] = useState({ name: "", age: "", diagnosis: "", parentName: "", parentPhone: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", diagnosis: "", parentPhone: "" });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-  const handleAdd = () => {
+  const fetchPatients = useCallback(async () => {
+    try {
+      const data = await api.getPatients(0, 200, search || undefined);
+      setPatients(data);
+    } catch {
+      toast.error("Failed to load patients.");
+    } finally {
+      setLoading(false);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    setLoading(true);
+    const timeout = setTimeout(fetchPatients, search ? 300 : 0);
+    return () => clearTimeout(timeout);
+  }, [fetchPatients]);
+
+  const handleAdd = async () => {
     const newErrors: Record<string, boolean> = {};
-    if (!form.name) newErrors.name = true;
-    if (!form.age) newErrors.age = true;
-    if (!form.parentPhone) newErrors.parentPhone = true;
+    if (!form.firstName) newErrors.firstName = true;
+    if (!form.lastName) newErrors.lastName = true;
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);
-      toast.error("Please fill in all required fields.");
+      toast.error("Please fill in required fields.");
       return;
     }
-    const newPatient: Patient = {
-      id: String(Date.now()),
-      name: form.name,
-      age: parseInt(form.age),
-      diagnosis: form.diagnosis || "Not specified",
-      parentName: form.parentName,
-      parentPhone: form.parentPhone,
-      status: "active",
-      nextAppointment: null,
-      totalPaid: 0,
-      outstanding: 0,
-    };
-    setPatientList([newPatient, ...patientList]);
-    setForm({ name: "", age: "", diagnosis: "", parentName: "", parentPhone: "" });
-    setErrors({});
-    setShowAdd(false);
-    toast.success(`${newPatient.name} added successfully!`);
+    setSubmitting(true);
+    try {
+      await api.createPatient({
+        first_name: form.firstName,
+        last_name: form.lastName,
+        diagnosis: form.diagnosis || undefined,
+        parent_phone: form.parentPhone || undefined,
+      });
+      setForm({ firstName: "", lastName: "", diagnosis: "", parentPhone: "" });
+      setErrors({});
+      setShowAdd(false);
+      toast.success("Patient added successfully!");
+      fetchPatients();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || "Failed to add patient.");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  const getInitials = (p: Patient) =>
+    ((p.first_name?.[0] || "") + (p.last_name?.[0] || "")).toUpperCase();
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1>Patients</h1>
-          <p className="text-[14px] text-muted-foreground">{patientList.length} total · {patientList.filter((p) => p.status === "active").length} active</p>
+          <p className="text-[14px] text-muted-foreground">{patients.length} total</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -88,23 +103,11 @@ export default function Patients() {
         </div>
       </div>
 
-      {/* Filter chips */}
-      <div className="flex items-center gap-2">
-        <Filter className="w-4 h-4 text-muted-foreground" />
-        {(["all", "active", "inactive"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setStatusFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-[12px] capitalize transition-all ${
-              statusFilter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        </div>
+      ) : patients.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -139,12 +142,11 @@ export default function Patients() {
                   <th className="px-4 py-3 text-[12px] text-muted-foreground">Patient</th>
                   <th className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">Diagnosis</th>
                   <th className="px-4 py-3 text-[12px] text-muted-foreground hidden md:table-cell">Parent Phone</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Status</th>
-                  <th className="px-4 py-3 text-[12px] text-muted-foreground hidden lg:table-cell">Balance</th>
+                  <th className="px-4 py-3 text-[12px] text-muted-foreground">Added</th>
                 </tr>
               </thead>
               <tbody>
-                {paginated.map((p) => (
+                {patients.map((p) => (
                   <tr
                     key={p.id}
                     onClick={() => navigate(`/patients/${p.id}`)}
@@ -153,44 +155,21 @@ export default function Patients() {
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[12px] shrink-0">
-                          {p.name.split(" ").map((n) => n[0]).join("")}
+                          {getInitials(p)}
                         </div>
-                        <div>
-                          <p className="text-[14px]">{p.name}</p>
-                          <p className="text-[12px] text-muted-foreground">Age {p.age}</p>
-                        </div>
+                        <p className="text-[14px]">{p.first_name} {p.last_name}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3.5 text-[14px] hidden sm:table-cell">{p.diagnosis}</td>
-                    <td className="px-4 py-3.5 text-[14px] hidden md:table-cell text-muted-foreground">{p.parentPhone}</td>
-                    <td className="px-4 py-3.5">
-                      <span
-                        className={`px-2.5 py-1 rounded-lg text-[11px] ${
-                          p.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 hidden lg:table-cell">
-                      {p.outstanding > 0 ? (
-                        <span className="text-[13px] text-red-600">-{p.outstanding.toLocaleString()} KZT</span>
-                      ) : (
-                        <span className="text-[13px] text-green-600">Paid</span>
-                      )}
+                    <td className="px-4 py-3.5 text-[14px] hidden sm:table-cell">{p.diagnosis || "—"}</td>
+                    <td className="px-4 py-3.5 text-[14px] hidden md:table-cell text-muted-foreground">{p.parent_phone || "—"}</td>
+                    <td className="px-4 py-3.5 text-[13px] text-muted-foreground">
+                      {new Date(p.created_at).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {paginated.length < filtered.length && (
-            <div className="p-4 text-center border-t border-border">
-              <button onClick={() => setPage((p) => p + 1)} className="text-[14px] text-primary hover:underline">
-                Load more ({filtered.length - paginated.length} remaining)
-              </button>
-            </div>
-          )}
         </motion.div>
       )}
 
@@ -217,16 +196,15 @@ export default function Patients() {
                 <button onClick={() => setShowAdd(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
               </div>
               {[
-                { key: "name", label: "Patient Name *", placeholder: "Full name" },
-                { key: "age", label: "Age *", placeholder: "Age", type: "number" },
+                { key: "firstName", label: "First Name *", placeholder: "First name" },
+                { key: "lastName", label: "Last Name *", placeholder: "Last name" },
                 { key: "diagnosis", label: "Diagnosis", placeholder: "e.g. Dysarthria" },
-                { key: "parentName", label: "Parent Name", placeholder: "Parent full name" },
-                { key: "parentPhone", label: "Parent Phone *", placeholder: "+7 7XX XXX XXXX" },
+                { key: "parentPhone", label: "Parent Phone", placeholder: "+7 7XX XXX XXXX" },
               ].map((field) => (
                 <div key={field.key}>
                   <label className="text-[13px] mb-1 block">{field.label}</label>
                   <input
-                    type={field.type || "text"}
+                    type="text"
                     placeholder={field.placeholder}
                     value={(form as any)[field.key]}
                     onChange={(e) => { setForm({ ...form, [field.key]: e.target.value }); setErrors({ ...errors, [field.key]: false }); }}
@@ -237,7 +215,12 @@ export default function Patients() {
                   {errors[field.key] && <p className="text-[11px] text-destructive mt-1">This field is required</p>}
                 </div>
               ))}
-              <button onClick={handleAdd} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-[14px] hover:opacity-90 transition-opacity">
+              <button
+                onClick={handleAdd}
+                disabled={submitting}
+                className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-[14px] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Add Patient
               </button>
             </motion.div>

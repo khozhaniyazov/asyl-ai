@@ -1,16 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { Stethoscope } from "lucide-react";
+import { Stethoscope, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "../AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login, user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (!authLoading && user) {
+    navigate("/", { replace: true });
+    return null;
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/");
+    if (!email || !password) {
+      toast.error("Please enter email and password.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || "Login failed. Check your credentials.";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,9 +53,9 @@ export default function Login() {
         </div>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="text-[13px] mb-1 block">Email or Phone</label>
+            <label className="text-[13px] mb-1 block">Email</label>
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="dana@clinic.kz"
@@ -49,10 +72,12 @@ export default function Login() {
               className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
-          <div className="text-right">
-            <button type="button" className="text-[13px] text-primary hover:underline">Forgot Password?</button>
-          </div>
-          <button type="submit" className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-primary/20">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             Sign In
           </button>
         </form>
@@ -66,7 +91,7 @@ export default function Login() {
         </div>
         <p className="text-center text-[13px] text-muted-foreground">
           Are you a parent?{" "}
-          <button onClick={() => navigate("/parent/login")} className="text-primary hover:underline">Parent Portal →</button>
+          <button onClick={() => navigate("/parent/login")} className="text-primary hover:underline">Parent Portal</button>
         </p>
       </motion.div>
     </div>
