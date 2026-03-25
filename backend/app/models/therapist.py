@@ -15,6 +15,7 @@ class Therapist(Base):
     default_session_duration = Column(Integer, nullable=True)  # minutes
     default_price = Column(Numeric(10, 2), nullable=True)  # KZT
     onboarding_completed = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     patients = relationship("Patient", back_populates="therapist")
@@ -34,3 +35,7 @@ class Therapist(Base):
         "MarketplaceBooking", back_populates="therapist"
     )
     conversations = relationship("Conversation", back_populates="therapist")
+    payouts = relationship("Payout", back_populates="therapist")
+    bank_account = relationship(
+        "BankAccount", back_populates="therapist", uselist=False
+    )

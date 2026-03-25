@@ -34,3 +34,4 @@ from .treatment_plan import (
 )
 from .messaging import Conversation, Message, SenderType
 from .clinic import Clinic, ClinicMembership, ClinicRole
+from .payout import Payout, PayoutStatus, BankAccount

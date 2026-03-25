@@ -43,6 +43,11 @@ class MarketplaceBooking(Base):
     appointment_id = Column(
         Integer, ForeignKey("appointments.id"), nullable=True
     )  # set when confirmed
+    # Commission tracking
+    commission_rate = Column(Numeric(5, 2), default=7.5)  # platform % (5-10%)
+    commission_amount = Column(Numeric(10, 2), nullable=True)
+    net_amount = Column(Numeric(10, 2), nullable=True)
+    payout_id = Column(Integer, ForeignKey("payouts.id"), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     parent = relationship("Parent", back_populates="marketplace_bookings")

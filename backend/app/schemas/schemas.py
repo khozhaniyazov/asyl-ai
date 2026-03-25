@@ -13,6 +13,7 @@ from app.models.waitlist import WaitlistStatus
 from app.models.reminder import ReminderType, ReminderChannel, ReminderStatus
 from app.models.therapist_profile import VerificationStatus
 from app.models.marketplace_booking import BookingType, BookingStatus
+from app.models.payout import PayoutStatus
 
 
 class Token(BaseModel):
@@ -622,4 +623,60 @@ class MarketplaceBookingResponse(BaseModel):
     kaspi_link: Optional[str] = None
     notes: Optional[str] = None
     appointment_id: Optional[int] = None
+    commission_rate: Optional[float] = None
+    commission_amount: Optional[float] = None
+    net_amount: Optional[float] = None
     created_at: datetime
+
+
+# --- Payouts & Bank Accounts ---
+
+
+class BankAccountCreate(BaseModel):
+    bank_name: str
+    account_holder: str
+    account_number: str
+    kaspi_phone: Optional[str] = None
+
+
+class BankAccountResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    therapist_id: int
+    bank_name: str
+    account_holder: str
+    account_number: str
+    kaspi_phone: Optional[str] = None
+    is_verified: bool
+    created_at: datetime
+
+
+class PayoutRequest(BaseModel):
+    amount: float
+
+
+class PayoutResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    therapist_id: int
+    amount: float
+    commission_amount: float
+    net_amount: float
+    status: str
+    bank_account_id: Optional[int] = None
+    admin_notes: Optional[str] = None
+    requested_at: datetime
+    processed_at: Optional[datetime] = None
+
+
+class PayoutApprovalRequest(BaseModel):
+    admin_notes: Optional[str] = None
+
+
+# --- Admin: Verification ---
+
+
+class VerificationApprovalRequest(BaseModel):
+    verification_notes: Optional[str] = None
