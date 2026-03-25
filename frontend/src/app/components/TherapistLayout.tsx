@@ -37,6 +37,9 @@ export default function TherapistLayout() {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+  if (!user.onboarding_completed) {
+    return <Navigate to="/onboarding" replace />;
+  }
 
   const initials = user.full_name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 

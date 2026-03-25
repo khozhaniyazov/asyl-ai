@@ -7,6 +7,9 @@ export interface Therapist {
   email: string;
   full_name: string;
   clinic_name: string | null;
+  default_session_duration: number | null;
+  default_price: number | null;
+  onboarding_completed: boolean;
 }
 
 interface AuthContextType {
