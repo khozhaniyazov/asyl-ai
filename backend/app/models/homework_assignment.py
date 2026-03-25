@@ -24,6 +24,7 @@ class HomeworkAssignment(Base):
     due_date = Column(DateTime, nullable=True)
     parent_completed_at = Column(DateTime, nullable=True)
     parent_notes = Column(Text, nullable=True)
+    parent_video_url = Column(String, nullable=True)
     therapist_verified_at = Column(DateTime, nullable=True)
     therapist_feedback = Column(Text, nullable=True)
     status = Column(Enum(HomeworkStatus), default=HomeworkStatus.ASSIGNED)

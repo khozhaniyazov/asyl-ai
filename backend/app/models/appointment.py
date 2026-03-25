@@ -18,6 +18,12 @@ class RequestedBy(str, enum.Enum):
     PARENT = "parent"
 
 
+class SessionType(str, enum.Enum):
+    IN_PERSON = "in_person"
+    ONLINE = "online"
+    HYBRID = "hybrid"
+
+
 class Appointment(Base):
     __tablename__ = "appointments"
 
@@ -28,12 +34,14 @@ class Appointment(Base):
     end_time = Column(DateTime)
     status = Column(Enum(AppointmentStatus), default=AppointmentStatus.PLANNED)
     kaspi_link = Column(String, nullable=True)
+    meeting_link = Column(String, nullable=True)
 
     # v2 fields
     session_number = Column(Integer, nullable=True)
     package_id = Column(Integer, ForeignKey("session_packages.id"), nullable=True)
     reminder_sent = Column(Boolean, default=False)
     requested_by = Column(Enum(RequestedBy), default=RequestedBy.THERAPIST)
+    session_type = Column(Enum(SessionType), default=SessionType.IN_PERSON)
 
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
@@ -45,6 +53,3 @@ class Appointment(Base):
         "CancellationRecord", back_populates="appointment", uselist=False
     )
     reminders = relationship("Reminder", back_populates="appointment")
-    video_session = relationship(
-        "VideoSession", back_populates="appointment", uselist=False
-    )

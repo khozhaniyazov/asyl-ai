@@ -1,6 +1,6 @@
 from .therapist import Therapist
 from .patient import Patient, PatientStatus
-from .appointment import Appointment, AppointmentStatus, RequestedBy
+from .appointment import Appointment, AppointmentStatus, RequestedBy, SessionType
 from .session import Session
 from .parent import Parent
 from .subscription import Subscription
@@ -34,4 +34,3 @@ from .treatment_plan import (
 )
 from .messaging import Conversation, Message, SenderType
 from .clinic import Clinic, ClinicMembership, ClinicRole
-from .video_session import VideoSession

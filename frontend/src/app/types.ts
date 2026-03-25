@@ -5,6 +5,9 @@ export interface Therapist {
   email: string;
   full_name: string;
   clinic_name: string | null;
+  default_session_duration: number | null;
+  default_price: number | null;
+  onboarding_completed: boolean;
 }
 
 export interface Patient {
@@ -226,10 +229,14 @@ export interface TherapistProfileData {
   therapist_id: number;
   bio: string | null;
   photo_url: string | null;
+  video_intro_url: string | null;
   specializations: string[] | null;
   education: string | null;
   certifications: string[] | null;
+  license_number: string | null;
+  credential_documents: string[] | null;
   years_of_experience: number | null;
+  age_groups: string[] | null;
   city: string | null;
   district: string | null;
   online_available: boolean;
@@ -238,7 +245,7 @@ export interface TherapistProfileData {
   session_duration: number | null;
   languages: string[] | null;
   gender: string | null;
-  verification_status: "unverified" | "pending" | "verified";
+  verification_status: "unverified" | "pending" | "verified" | "rejected";
   is_published: boolean;
   created_at: string;
   updated_at: string | null;
@@ -249,6 +256,9 @@ export interface TherapistProfilePublic extends TherapistProfileData {
   clinic_name: string | null;
   avg_rating: number | null;
   review_count: number;
+  next_available_slot: string | null;
+  total_patients: number | null;
+  total_sessions: number | null;
 }
 
 export interface ReviewData {
@@ -264,6 +274,8 @@ export interface ReviewData {
   is_verified: boolean;
   created_at: string;
   parent_name: string | null;
+  therapist_reply: string | null;
+  therapist_reply_at: string | null;
 }
 
 export interface ReviewAggregation {
@@ -324,4 +336,10 @@ export const KZ_CITIES = [
   "Актау",
   "Темиртау",
   "Туркестан",
+] as const;
+
+export const AGE_GROUPS = [
+  "children",
+  "adolescents",
+  "adults",
 ] as const;

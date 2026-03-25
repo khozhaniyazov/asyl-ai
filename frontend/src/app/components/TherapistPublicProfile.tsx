@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { Star, MapPin, Globe, Clock, Award, ArrowLeft, Calendar, MessageSquare } from "lucide-react";
+import { Star, MapPin, Globe, Clock, Award, ArrowLeft, Calendar, MessageSquare, ShieldCheck, Users, Play, FileText } from "lucide-react";
 import { api } from "../api";
 import type { TherapistProfilePublic, ReviewData, ReviewAggregation, Availability } from "../types";
 import { useTranslation } from "react-i18next";
@@ -66,7 +66,7 @@ export default function TherapistPublicProfile() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-semibold">{profile.therapist_name}</h1>
-                {profile.verification_status === "verified" && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">✓ {t("marketplace.verified")}</span>}
+                {profile.verification_status === "verified" && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full flex items-center gap-1"><ShieldCheck className="w-3 h-3" />{t("marketplace.verified")}</span>}
               </div>
               {profile.clinic_name && <p className="text-sm text-muted-foreground">{profile.clinic_name}</p>}
               <div className="flex items-center gap-4 mt-2 text-sm">
@@ -83,6 +83,12 @@ export default function TherapistPublicProfile() {
                 {profile.years_of_experience && <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5" />{profile.years_of_experience} {t("marketplace.yearsExp")}</span>}
                 {profile.session_duration && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{profile.session_duration} {t("common.minutes")}</span>}
                 {profile.price_range_min && <span>{Number(profile.price_range_min).toLocaleString()}–{Number(profile.price_range_max).toLocaleString()} ₸</span>}
+              </div>
+              {/* Stats row */}
+              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                {profile.total_patients != null && profile.total_patients > 0 && <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{profile.total_patients} {t("marketplace.patients")}</span>}
+                {profile.total_sessions != null && profile.total_sessions > 0 && <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" />{profile.total_sessions} {t("marketplace.sessions")}</span>}
+                {profile.next_available_slot && <span className="flex items-center gap-1 text-primary"><Calendar className="w-3.5 h-3.5" />{t("marketplace.nextSlot")}: {new Date(profile.next_available_slot).toLocaleDateString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>}
               </div>
             </div>
           </div>
@@ -101,13 +107,43 @@ export default function TherapistPublicProfile() {
         {tab === "about" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
             {profile.bio && <div className="bg-card border border-border rounded-xl p-5"><h3 className="text-sm font-medium mb-2">{t("marketplace.about")}</h3><p className="text-sm text-muted-foreground whitespace-pre-line">{profile.bio}</p></div>}
+
+            {/* Video intro */}
+            {profile.video_intro_url && (
+              <div className="bg-card border border-border rounded-xl p-5">
+                <h3 className="text-sm font-medium mb-2 flex items-center gap-2"><Play className="w-4 h-4" />{t("marketplace.videoIntro")}</h3>
+                <video src={profile.video_intro_url} controls className="w-full rounded-lg max-h-64" />
+              </div>
+            )}
+
             {profile.specializations && profile.specializations.length > 0 && (
               <div className="bg-card border border-border rounded-xl p-5">
                 <h3 className="text-sm font-medium mb-2">{t("marketplace.specializations")}</h3>
                 <div className="flex flex-wrap gap-2">{profile.specializations.map((s) => <span key={s} className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">{t(`marketplace.spec.${s}`)}</span>)}</div>
               </div>
             )}
+
+            {/* Age groups */}
+            {profile.age_groups && profile.age_groups.length > 0 && (
+              <div className="bg-card border border-border rounded-xl p-5">
+                <h3 className="text-sm font-medium mb-2">{t("marketplace.ageGroups")}</h3>
+                <div className="flex flex-wrap gap-2">{profile.age_groups.map((g) => <span key={g} className="text-xs bg-accent px-3 py-1 rounded-full">{t(`marketplace.age.${g}`)}</span>)}</div>
+              </div>
+            )}
+
             {profile.education && <div className="bg-card border border-border rounded-xl p-5"><h3 className="text-sm font-medium mb-2">{t("marketplace.education")}</h3><p className="text-sm text-muted-foreground whitespace-pre-line">{profile.education}</p></div>}
+
+            {/* Credentials */}
+            {profile.license_number && (
+              <div className="bg-card border border-border rounded-xl p-5">
+                <h3 className="text-sm font-medium mb-2 flex items-center gap-2"><ShieldCheck className="w-4 h-4" />{t("marketplace.credentials")}</h3>
+                <p className="text-sm text-muted-foreground">{t("marketplace.licenseNumber")}: {profile.license_number}</p>
+                {profile.certifications && profile.certifications.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">{profile.certifications.map((c, i) => <span key={i} className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full">{c}</span>)}</div>
+                )}
+              </div>
+            )}
+
             {profile.languages && profile.languages.length > 0 && (
               <div className="bg-card border border-border rounded-xl p-5">
                 <h3 className="text-sm font-medium mb-2">{t("marketplace.languages")}</h3>
@@ -148,6 +184,14 @@ export default function TherapistPublicProfile() {
                 </div>
                 {renderStars(r.rating_overall)}
                 {r.text && <p className="text-sm text-muted-foreground mt-2">{r.text}</p>}
+                {/* Therapist reply */}
+                {r.therapist_reply && (
+                  <div className="mt-3 ml-4 pl-3 border-l-2 border-primary/30">
+                    <p className="text-xs text-primary font-medium mb-1">{t("marketplace.therapistReply")}</p>
+                    <p className="text-sm text-muted-foreground">{r.therapist_reply}</p>
+                    {r.therapist_reply_at && <p className="text-[10px] text-muted-foreground mt-1">{new Date(r.therapist_reply_at).toLocaleDateString("ru-RU")}</p>}
+                  </div>
+                )}
               </div>
             ))}
           </motion.div>

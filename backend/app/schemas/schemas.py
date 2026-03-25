@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional
 from datetime import datetime, date
-from app.models.appointment import AppointmentStatus, RequestedBy
+from app.models.appointment import AppointmentStatus, RequestedBy, SessionType
 from app.models.patient import PatientStatus
 from app.models.session_package import PaymentStatus
 from app.models.homework_template import HomeworkCategory
@@ -34,6 +34,14 @@ class TherapistResponse(BaseModel):
     email: EmailStr
     full_name: str
     clinic_name: Optional[str] = None
+    default_session_duration: Optional[int] = None
+    default_price: Optional[float] = None
+    onboarding_completed: bool = False
+
+
+class OnboardingUpdate(BaseModel):
+    default_session_duration: int
+    default_price: float
 
 
 # --- Patients ---
@@ -81,11 +89,13 @@ class AppointmentBase(BaseModel):
     start_time: datetime
     end_time: datetime
     status: AppointmentStatus = AppointmentStatus.PLANNED
+    session_type: SessionType = SessionType.IN_PERSON
 
 
 class AppointmentCreate(AppointmentBase):
     package_id: Optional[int] = None
     requested_by: RequestedBy = RequestedBy.THERAPIST
+    meeting_link: Optional[str] = None
 
 
 class AppointmentUpdate(BaseModel):
@@ -93,6 +103,8 @@ class AppointmentUpdate(BaseModel):
     end_time: Optional[datetime] = None
     status: Optional[AppointmentStatus] = None
     package_id: Optional[int] = None
+    session_type: Optional[SessionType] = None
+    meeting_link: Optional[str] = None
 
 
 class AppointmentResponse(AppointmentBase):
@@ -101,6 +113,7 @@ class AppointmentResponse(AppointmentBase):
     id: int
     therapist_id: int
     kaspi_link: Optional[str] = None
+    meeting_link: Optional[str] = None
     session_number: Optional[int] = None
     package_id: Optional[int] = None
     reminder_sent: Optional[bool] = False
@@ -243,12 +256,14 @@ class HomeworkAssignmentCreate(BaseModel):
 class HomeworkAssignmentUpdate(BaseModel):
     custom_instructions: Optional[str] = None
     due_date: Optional[datetime] = None
+    parent_video_url: Optional[str] = None
     therapist_feedback: Optional[str] = None
     status: Optional[HomeworkStatus] = None
 
 
 class HomeworkCompletionRequest(BaseModel):
     parent_notes: Optional[str] = None
+    parent_video_url: Optional[str] = None
 
 
 class HomeworkVerifyRequest(BaseModel):
@@ -267,6 +282,7 @@ class HomeworkAssignmentResponse(BaseModel):
     due_date: Optional[datetime] = None
     parent_completed_at: Optional[datetime] = None
     parent_notes: Optional[str] = None
+    parent_video_url: Optional[str] = None
     therapist_verified_at: Optional[datetime] = None
     therapist_feedback: Optional[str] = None
     status: HomeworkStatus
@@ -430,12 +446,19 @@ class WaitlistResponse(BaseModel):
 # --- v3: Therapist Profile ---
 
 
+class SuccessStory(BaseModel):
+    title: str
+    text: str
+
+
 class TherapistProfileCreate(BaseModel):
     bio: Optional[str] = None
     specializations: Optional[list[str]] = None
     education: Optional[str] = None
     certifications: Optional[list[str]] = None
+    license_number: Optional[str] = None
     years_of_experience: Optional[int] = None
+    age_groups: Optional[list[str]] = None
     city: Optional[str] = None
     district: Optional[str] = None
     online_available: bool = False
@@ -444,6 +467,7 @@ class TherapistProfileCreate(BaseModel):
     session_duration: Optional[int] = None
     languages: Optional[list[str]] = None
     gender: Optional[str] = None
+    success_stories: Optional[list[SuccessStory]] = None
     is_published: bool = False
 
 
@@ -452,7 +476,10 @@ class TherapistProfileUpdate(BaseModel):
     specializations: Optional[list[str]] = None
     education: Optional[str] = None
     certifications: Optional[list[str]] = None
+    license_number: Optional[str] = None
+    video_intro_url: Optional[str] = None
     years_of_experience: Optional[int] = None
+    age_groups: Optional[list[str]] = None
     city: Optional[str] = None
     district: Optional[str] = None
     online_available: Optional[bool] = None
@@ -461,6 +488,7 @@ class TherapistProfileUpdate(BaseModel):
     session_duration: Optional[int] = None
     languages: Optional[list[str]] = None
     gender: Optional[str] = None
+    success_stories: Optional[list[SuccessStory]] = None
     is_published: Optional[bool] = None
 
 
@@ -471,10 +499,14 @@ class TherapistProfileResponse(BaseModel):
     therapist_id: int
     bio: Optional[str] = None
     photo_url: Optional[str] = None
+    video_intro_url: Optional[str] = None
     specializations: Optional[list[str]] = None
     education: Optional[str] = None
     certifications: Optional[list[str]] = None
+    license_number: Optional[str] = None
+    credential_documents: Optional[list[str]] = None
     years_of_experience: Optional[int] = None
+    age_groups: Optional[list[str]] = None
     city: Optional[str] = None
     district: Optional[str] = None
     online_available: bool = False
@@ -483,6 +515,8 @@ class TherapistProfileResponse(BaseModel):
     session_duration: Optional[int] = None
     languages: Optional[list[str]] = None
     gender: Optional[str] = None
+    response_time_hours: Optional[int] = None
+    success_stories: Optional[list[dict]] = None
     verification_status: VerificationStatus = VerificationStatus.UNVERIFIED
     is_published: bool = False
     created_at: datetime
@@ -496,6 +530,9 @@ class TherapistProfilePublic(TherapistProfileResponse):
     clinic_name: Optional[str] = None
     avg_rating: Optional[float] = None
     review_count: int = 0
+    next_available_slot: Optional[datetime] = None
+    total_patients: Optional[int] = None
+    total_sessions: Optional[int] = None
 
 
 class MarketplaceSearchParams(BaseModel):
@@ -507,7 +544,7 @@ class MarketplaceSearchParams(BaseModel):
     online_only: bool = False
     gender: Optional[str] = None
     min_rating: Optional[float] = None
-    sort_by: str = "rating"  # rating, price_asc, price_desc, experience
+    sort_by: str = "rating"  # rating, price_asc, price_desc, experience, response_time
     skip: int = 0
     limit: int = 20
 
@@ -542,6 +579,13 @@ class ReviewResponse(BaseModel):
     created_at: datetime
     # anonymized parent info
     parent_name: Optional[str] = None
+    # therapist reply
+    therapist_reply: Optional[str] = None
+    therapist_reply_at: Optional[datetime] = None
+
+
+class ReviewReplyRequest(BaseModel):
+    reply: str
 
 
 class ReviewAggregation(BaseModel):

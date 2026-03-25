@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
-import { Search, MapPin, Star, Globe, Filter, X } from "lucide-react";
+import { Search, MapPin, Star, Globe, Filter, X, Clock, Users, Award, Calendar, ShieldCheck } from "lucide-react";
 import { api } from "../api";
 import type { TherapistProfilePublic } from "../types";
-import { KZ_CITIES, SPECIALIZATIONS } from "../types";
+import { KZ_CITIES, SPECIALIZATIONS, AGE_GROUPS } from "../types";
 import { useTranslation } from "react-i18next";
 
 export default function MarketplaceSearch() {
@@ -16,6 +16,7 @@ export default function MarketplaceSearch() {
   const [filters, setFilters] = useState({
     city: "", specialization: "", language: "", gender: "",
     price_min: "", price_max: "", online_only: false, min_rating: "",
+    age_group: "", verified_only: false,
     sort_by: "rating",
   });
 
@@ -31,6 +32,8 @@ export default function MarketplaceSearch() {
       if (filters.price_max) params.price_max = Number(filters.price_max);
       if (filters.online_only) params.online_only = true;
       if (filters.min_rating) params.min_rating = Number(filters.min_rating);
+      if (filters.age_group) params.age_group = filters.age_group;
+      if (filters.verified_only) params.verified_only = true;
       params.sort_by = filters.sort_by;
       const data = await api.searchProfiles(params);
       setProfiles(data);
@@ -41,6 +44,11 @@ export default function MarketplaceSearch() {
   useEffect(() => { load(); }, []);
 
   const handleSearch = () => load();
+
+  const activeFilterCount = [
+    filters.language, filters.gender, filters.price_min, filters.price_max,
+    filters.min_rating, filters.age_group, filters.online_only, filters.verified_only,
+  ].filter(Boolean).length;
 
   const renderStars = (rating: number | null) => {
     if (!rating) return <span className="text-xs text-muted-foreground">{t("marketplace.noRatings")}</span>;
@@ -73,8 +81,9 @@ export default function MarketplaceSearch() {
             <button onClick={handleSearch} className="px-6 py-3 bg-primary text-primary-foreground rounded-xl text-sm hover:bg-primary/90 flex items-center gap-2">
               <Search className="w-4 h-4" />{t("marketplace.search")}
             </button>
-            <button onClick={() => setShowFilters(!showFilters)} className="px-3 py-3 border border-border rounded-xl hover:bg-accent">
+            <button onClick={() => setShowFilters(!showFilters)} className="px-3 py-3 border border-border rounded-xl hover:bg-accent relative">
               <Filter className="w-4 h-4" />
+              {activeFilterCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] rounded-full flex items-center justify-center">{activeFilterCount}</span>}
             </button>
           </div>
 
@@ -103,10 +112,23 @@ export default function MarketplaceSearch() {
                   <input type="number" placeholder="до" value={filters.price_max} onChange={(e) => setFilters({ ...filters, price_max: e.target.value })} className="w-full px-2 py-1.5 bg-input-background rounded-lg text-sm" />
                 </div>
               </div>
+              <div>
+                <label className="text-xs text-muted-foreground">{t("marketplace.ageGroup")}</label>
+                <select value={filters.age_group} onChange={(e) => setFilters({ ...filters, age_group: e.target.value })} className="w-full px-2 py-1.5 bg-input-background rounded-lg text-sm mt-1">
+                  <option value="">{t("common.all")}</option>
+                  {AGE_GROUPS.map((g) => <option key={g} value={g}>{t(`marketplace.age.${g}`)}</option>)}
+                </select>
+              </div>
               <div className="flex items-end">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
                   <input type="checkbox" checked={filters.online_only} onChange={(e) => setFilters({ ...filters, online_only: e.target.checked })} className="rounded" />
                   <Globe className="w-3.5 h-3.5" />{t("marketplace.onlineOnly")}
+                </label>
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="checkbox" checked={filters.verified_only} onChange={(e) => setFilters({ ...filters, verified_only: e.target.checked })} className="rounded" />
+                  <ShieldCheck className="w-3.5 h-3.5" />{t("marketplace.verifiedOnly")}
                 </label>
               </div>
             </motion.div>
@@ -123,6 +145,7 @@ export default function MarketplaceSearch() {
             <option value="price_asc">{t("marketplace.sortByPriceAsc")}</option>
             <option value="price_desc">{t("marketplace.sortByPriceDesc")}</option>
             <option value="experience">{t("marketplace.sortByExperience")}</option>
+            <option value="newest">{t("marketplace.sortByNewest")}</option>
           </select>
         </div>
 
@@ -145,10 +168,15 @@ export default function MarketplaceSearch() {
                     {p.photo_url ? <img src={p.photo_url} alt="" className="w-full h-full rounded-full object-cover" /> : p.therapist_name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-medium truncate">{p.therapist_name}</h3>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-sm font-medium truncate">{p.therapist_name}</h3>
+                      {p.verification_status === "verified" && <ShieldCheck className="w-3.5 h-3.5 text-blue-600 shrink-0" />}
+                    </div>
                     {p.clinic_name && <p className="text-xs text-muted-foreground truncate">{p.clinic_name}</p>}
-                    {renderStars(p.avg_rating)}
-                    <span className="text-xs text-muted-foreground ml-1">({p.review_count})</span>
+                    <div className="flex items-center gap-1">
+                      {renderStars(p.avg_rating)}
+                      <span className="text-xs text-muted-foreground">({p.review_count})</span>
+                    </div>
                   </div>
                 </div>
                 {p.specializations && p.specializations.length > 0 && (
@@ -159,12 +187,15 @@ export default function MarketplaceSearch() {
                     {p.specializations.length > 3 && <span className="text-[10px] text-muted-foreground">+{p.specializations.length - 3}</span>}
                   </div>
                 )}
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{p.city || t("marketplace.cityNotSet")}</span>
                   {p.price_range_min && <span>{Number(p.price_range_min).toLocaleString()}–{Number(p.price_range_max).toLocaleString()} ₸</span>}
                 </div>
-                {p.online_available && <span className="inline-flex items-center gap-1 text-[10px] text-green-600 mt-1"><Globe className="w-3 h-3" />{t("marketplace.online")}</span>}
-                {p.verification_status === "verified" && <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 ml-2 mt-1">✓ {t("marketplace.verified")}</span>}
+                <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                  {p.online_available && <span className="flex items-center gap-1 text-green-600"><Globe className="w-3 h-3" />{t("marketplace.online")}</span>}
+                  {p.total_sessions != null && p.total_sessions > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{p.total_sessions} {t("marketplace.sessions")}</span>}
+                  {p.next_available_slot && <span className="flex items-center gap-1 text-primary"><Calendar className="w-3 h-3" />{new Date(p.next_available_slot).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}</span>}
+                </div>
               </motion.div>
             ))}
           </div>

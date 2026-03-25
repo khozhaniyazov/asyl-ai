@@ -1,8 +1,9 @@
-"""Marketplace reviews — parent creates (session-verified), public reads."""
+"""Marketplace reviews — parent creates (session-verified), public reads, therapist replies."""
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
+from datetime import datetime, timezone
 
 from app.core.database import get_db
 from app.models import (
@@ -17,8 +18,10 @@ from app.schemas.schemas import (
     ReviewCreate,
     ReviewResponse,
     ReviewAggregation,
+    ReviewReplyRequest,
 )
 from app.api.v1.parent_portal import get_current_parent
+from app.api.deps import get_current_user
 
 router = APIRouter()
 
@@ -76,6 +79,8 @@ async def get_therapist_reviews(
             is_verified=r.is_verified,
             created_at=r.created_at,
             parent_name=parent_map.get(r.parent_id, "Родитель"),
+            therapist_reply=r.therapist_reply,
+            therapist_reply_at=r.therapist_reply_at,
         )
         for r in reviews
     ]
@@ -197,6 +202,8 @@ async def create_review(
         is_verified=review.is_verified,
         created_at=review.created_at,
         parent_name=None,
+        therapist_reply=None,
+        therapist_reply_at=None,
     )
 
 
@@ -225,6 +232,8 @@ async def get_my_reviews(
             is_verified=r.is_verified,
             created_at=r.created_at,
             parent_name=None,
+            therapist_reply=r.therapist_reply,
+            therapist_reply_at=r.therapist_reply_at,
         )
         for r in result.scalars().all()
     ]
@@ -250,3 +259,49 @@ async def delete_review(
     await db.delete(review)
     await db.commit()
     return {"detail": "Review deleted"}
+
+
+# --- Therapist reply to reviews ---
+
+
+@router.post("/{review_id}/reply", response_model=ReviewResponse)
+async def reply_to_review(
+    review_id: int,
+    body: ReviewReplyRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: Therapist = Depends(get_current_user),
+):
+    """Therapist: reply to a review on their profile."""
+    result = await db.execute(
+        select(Review).where(
+            Review.id == review_id,
+            Review.therapist_id == current_user.id,
+        )
+    )
+    review = result.scalars().first()
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    if review.therapist_reply:
+        raise HTTPException(status_code=400, detail="Already replied to this review")
+
+    review.therapist_reply = body.reply
+    review.therapist_reply_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(review)
+
+    return ReviewResponse(
+        id=review.id,
+        therapist_id=review.therapist_id,
+        session_id=review.session_id,
+        rating_overall=review.rating_overall,
+        rating_results=review.rating_results,
+        rating_approach=review.rating_approach,
+        rating_communication=review.rating_communication,
+        rating_punctuality=review.rating_punctuality,
+        text=review.text,
+        is_verified=review.is_verified,
+        created_at=review.created_at,
+        parent_name=None,
+        therapist_reply=review.therapist_reply,
+        therapist_reply_at=review.therapist_reply_at,
+    )

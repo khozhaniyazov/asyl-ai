@@ -26,7 +26,6 @@ from . import (
     messaging,
     analytics,
     data_export,
-    video_sessions,
     reports,
     clinics,
 )
@@ -80,6 +79,5 @@ router.include_router(
 router.include_router(messaging.router, prefix="/messaging", tags=["messaging"])
 router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 router.include_router(data_export.router, prefix="/export", tags=["export"])
-router.include_router(video_sessions.router, prefix="/video", tags=["video"])
 router.include_router(reports.router, prefix="/reports", tags=["reports"])
 router.include_router(clinics.router, prefix="/clinics", tags=["clinics"])

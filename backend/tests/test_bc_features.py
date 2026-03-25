@@ -156,46 +156,57 @@ async def test_export_patient_record(
 
 
 @pytest.mark.asyncio
-async def test_video_session(client: AsyncClient, token_headers: dict, test_therapist):
-    # Create patient + appointment
+async def test_session_type_in_appointment(
+    client: AsyncClient, token_headers: dict, test_therapist
+):
+    """Test that appointments support session_type (in_person, online, hybrid)."""
+    # Create patient
     patient_resp = await client.post(
         "/api/v1/patients/",
-        json={"first_name": "Видео", "last_name": "Тест"},
+        json={"first_name": "Сессия", "last_name": "Тип"},
         headers=token_headers,
     )
     patient_id = patient_resp.json()["id"]
 
+    # Create in-person appointment
     appt_resp = await client.post(
         "/api/v1/appointments/",
         json={
             "patient_id": patient_id,
             "start_time": "2026-04-01T10:00:00",
             "end_time": "2026-04-01T10:45:00",
+            "session_type": "in_person",
         },
         headers=token_headers,
     )
-    appt_id = appt_resp.json()["id"]
+    assert appt_resp.status_code == 200
+    appt = appt_resp.json()
+    assert appt["session_type"] == "in_person"
 
-    # Create video session
-    resp = await client.post(f"/api/v1/video/{appt_id}", headers=token_headers)
-    assert resp.status_code == 200
-    assert "room_url" in resp.json()
-    assert "therapist_join_url" in resp.json()
+    # Create online appointment
+    appt_resp = await client.post(
+        "/api/v1/appointments/",
+        json={
+            "patient_id": patient_id,
+            "start_time": "2026-04-02T10:00:00",
+            "end_time": "2026-04-02T10:45:00",
+            "session_type": "online",
+        },
+        headers=token_headers,
+    )
+    assert appt_resp.status_code == 200
+    appt = appt_resp.json()
+    assert appt["session_type"] == "online"
 
-    # Get video session
-    resp = await client.get(f"/api/v1/video/{appt_id}", headers=token_headers)
-    assert resp.status_code == 200
-
-    # Start
-    resp = await client.post(f"/api/v1/video/{appt_id}/start", headers=token_headers)
-    assert resp.status_code == 200
-    assert resp.json()["started_at"] is not None
-
-    # End
-    resp = await client.post(f"/api/v1/video/{appt_id}/end", headers=token_headers)
-    assert resp.status_code == 200
-    assert resp.json()["ended_at"] is not None
-    assert resp.json()["duration_seconds"] is not None
+    # Update to hybrid
+    appt_id = appt["id"]
+    update_resp = await client.put(
+        f"/api/v1/appointments/{appt_id}",
+        json={"session_type": "hybrid"},
+        headers=token_headers,
+    )
+    assert update_resp.status_code == 200
+    assert update_resp.json()["session_type"] == "hybrid"
 
 
 @pytest.mark.asyncio

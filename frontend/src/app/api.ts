@@ -61,6 +61,11 @@ export const api = {
     return response.data;
   },
 
+  completeOnboarding: async (data: { default_session_duration: number; default_price: number }) => {
+    const response = await apiClient.put('/auth/onboarding', data);
+    return response.data;
+  },
+
   isAuthenticated: () => {
     return !!localStorage.getItem('asyl_ai_token');
   },
@@ -510,6 +515,26 @@ export const api = {
     return response.data;
   },
 
+  replyToReview: async (reviewId: number, reply: string) => {
+    const response = await apiClient.post(`/marketplace/reviews/${reviewId}/reply`, { reply });
+    return response.data;
+  },
+
+  // --- VERIFICATION ---
+  requestVerification: async () => {
+    const response = await apiClient.post('/marketplace/profiles/my/verify');
+    return response.data;
+  },
+
+  uploadCredentialDocument: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await apiClient.post('/marketplace/profiles/my/credentials', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
   // --- v3: MARKETPLACE BOOKINGS ---
   createMarketplaceBooking: async (data: Record<string, unknown>) => {
     const response = await apiClient.post('/marketplace/bookings/', data, parentHeaders());
@@ -654,27 +679,6 @@ export const api = {
   exportPatientsCsv: () => `${apiClient.defaults.baseURL}/export/patients`,
   exportSessionsCsv: () => `${apiClient.defaults.baseURL}/export/sessions`,
   exportPatientRecord: (patientId: number) => `${apiClient.defaults.baseURL}/export/patient/${patientId}`,
-
-  // --- VIDEO SESSIONS ---
-  createVideoSession: async (appointmentId: number) => {
-    const response = await apiClient.post(`/video/${appointmentId}`);
-    return response.data;
-  },
-
-  getVideoSession: async (appointmentId: number) => {
-    const response = await apiClient.get(`/video/${appointmentId}`);
-    return response.data;
-  },
-
-  startVideoSession: async (appointmentId: number) => {
-    const response = await apiClient.post(`/video/${appointmentId}/start`);
-    return response.data;
-  },
-
-  endVideoSession: async (appointmentId: number) => {
-    const response = await apiClient.post(`/video/${appointmentId}/end`);
-    return response.data;
-  },
 
   // --- REPORTS ---
   getProgressReport: (patientId: number) => `${apiClient.defaults.baseURL}/reports/progress/${patientId}`,

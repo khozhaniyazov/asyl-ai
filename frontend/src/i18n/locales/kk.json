@@ -415,6 +415,7 @@
     "sortByPriceAsc": "Баға ↑",
     "sortByPriceDesc": "Баға ↓",
     "sortByExperience": "Тәжірибе бойынша",
+    "sortByNewest": "Жаңалар",
     "backToSearch": "Іздеуге",
     "profileNotFound": "Профиль табылмады",
     "yearsExp": "жыл тәжірибе",
@@ -491,6 +492,44 @@
       "confirmed": "Расталды",
       "cancelled": "Болдырылмады",
       "completed": "Аяқталды"
+    },
+    "ageGroup": "Жас",
+    "ageGroups": "Жас топтары",
+    "age": {
+      "children": "Балалар",
+      "adolescents": "Жасөспірімдер",
+      "adults": "Ересектер"
+    },
+    "verifiedOnly": "Тек расталғандар",
+    "sessions": "сеанс",
+    "patients": "пациент",
+    "nextSlot": "Жақын уақыт",
+    "videoIntro": "Бейне-визитка",
+    "videoIntroUrl": "Бейне-визитка сілтемесі",
+    "credentials": "Құжаттар мен лицензия",
+    "licenseNumber": "Лицензия нөмірі",
+    "credentialDocs": "Құжаттар (дипломдар, сертификаттар)",
+    "document": "Құжат",
+    "uploadDocument": "Құжат жүктеу",
+    "docUploaded": "Құжат жүктелді",
+    "docFailed": "Құжат жүктеу қатесі",
+    "photoUploaded": "Фото жүктелді",
+    "photoFailed": "Фото жүктеу қатесі",
+    "requestVerification": "Верификация сұрау",
+    "verificationSubmitted": "Верификация сұранысы жіберілді",
+    "verificationFailed": "Верификация қатесі",
+    "therapistReply": "Маман жауабы",
+    "verStatus": {
+      "unverified": "Расталмаған",
+      "pending": "Тексеруде",
+      "verified": "Расталған",
+      "rejected": "Қабылданбады"
+    },
+    "verStatusDesc": {
+      "unverified": "Верификация үшін лицензия мен құжаттарды жүктеңіз",
+      "pending": "Құжаттарыңыз тексеруде. Әдетте 1-3 күн алады.",
+      "verified": "Профиліңіз расталды. Ата-аналар верификация белгісін көреді.",
+      "rejected": "Верификация қабылданбады. Құжаттарды тексеріп, қайта жіберіңіз."
     }
   },
   "treatment": {

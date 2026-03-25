@@ -158,6 +158,8 @@ async def complete_assignment(
     hw.status = HomeworkStatus.COMPLETED
     hw.parent_completed_at = datetime.now(timezone.utc)
     hw.parent_notes = body.parent_notes
+    if body.parent_video_url:
+        hw.parent_video_url = body.parent_video_url
 
     await db.commit()
     await db.refresh(hw)

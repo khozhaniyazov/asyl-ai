@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Numeric, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.core.database import Base
@@ -12,6 +12,9 @@ class Therapist(Base):
     hashed_password = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
     clinic_name = Column(String, nullable=True)
+    default_session_duration = Column(Integer, nullable=True)  # minutes
+    default_price = Column(Numeric(10, 2), nullable=True)  # KZT
+    onboarding_completed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     patients = relationship("Patient", back_populates="therapist")
