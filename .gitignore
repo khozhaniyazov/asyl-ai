@@ -58,3 +58,6 @@ pnpm-debug.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Windows reserved names (prevent accidental creation)
+nul

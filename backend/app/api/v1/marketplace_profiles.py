@@ -364,6 +364,25 @@ async def update_my_profile(
     return profile
 
 
+@router.patch("/my/publish")
+async def toggle_publish(
+    db: AsyncSession = Depends(get_db),
+    current_user: Therapist = Depends(get_current_user),
+):
+    """Therapist: toggle is_published on their marketplace profile."""
+    result = await db.execute(
+        select(TherapistProfile).where(TherapistProfile.therapist_id == current_user.id)
+    )
+    profile = result.scalars().first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Create profile first")
+
+    profile.is_published = not profile.is_published
+    await db.commit()
+    await db.refresh(profile)
+    return {"is_published": profile.is_published}
+
+
 @router.post("/my/photo")
 async def upload_profile_photo(
     file: UploadFile = File(...),

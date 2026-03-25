@@ -489,6 +489,11 @@ export const api = {
     return response.data;
   },
 
+  togglePublish: async () => {
+    const response = await apiClient.patch('/marketplace/profiles/my/publish');
+    return response.data;
+  },
+
   // --- v3: MARKETPLACE REVIEWS ---
   getTherapistReviews: async (therapistId: number, skip = 0, limit = 20) => {
     const response = await apiClient.get(`/marketplace/reviews/therapist/${therapistId}?skip=${skip}&limit=${limit}`);

@@ -85,14 +85,18 @@ export default function MarketplaceProfile() {
   };
 
   const handleCredentialUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
     setUploadingDoc(true);
     try {
-      const result = await api.uploadCredentialDocument(file);
+      const uploadedDocs: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const result = await api.uploadCredentialDocument(files[i]);
+        uploadedDocs.push(result.document_url);
+      }
       setProfile((prev) => prev ? {
         ...prev,
-        credential_documents: [...(prev.credential_documents || []), result.document_url],
+        credential_documents: [...(prev.credential_documents || []), ...uploadedDocs],
       } : prev);
       toast.success(t("marketplace.docUploaded"));
     } catch { toast.error(t("marketplace.docFailed")); }
@@ -148,7 +152,14 @@ export default function MarketplaceProfile() {
           <p className="text-sm text-muted-foreground mt-1">{t("marketplace.myProfileDesc")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setForm({ ...form, is_published: !form.is_published })} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border transition-colors ${form.is_published ? "bg-green-100 border-green-300 text-green-700" : "border-border text-muted-foreground"}`}>
+          <button onClick={async () => {
+            try {
+              const result = await api.togglePublish();
+              setProfile((prev) => prev ? { ...prev, is_published: result.is_published } : prev);
+              setForm({ ...form, is_published: result.is_published });
+              toast.success(result.is_published ? t("marketplace.published") : t("marketplace.draft"));
+            } catch { toast.error(t("common.saveFailed")); }
+          }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border transition-colors ${form.is_published ? "bg-green-100 border-green-300 text-green-700" : "border-border text-muted-foreground"}`}>
             {form.is_published ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
             {form.is_published ? t("marketplace.published") : t("marketplace.draft")}
           </button>
@@ -292,7 +303,7 @@ export default function MarketplaceProfile() {
           <label className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-sm cursor-pointer hover:bg-accent">
             {uploadingDoc ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileUp className="w-4 h-4" />}
             {t("marketplace.uploadDocument")}
-            <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleCredentialUpload} className="hidden" disabled={uploadingDoc} />
+            <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" onChange={handleCredentialUpload} className="hidden" disabled={uploadingDoc} multiple />
           </label>
         </div>
       </div>
