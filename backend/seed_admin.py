@@ -17,11 +17,11 @@ async def seed_admin():
         existing = result.scalars().first()
 
         if existing:
-            print("✓ Admin user already exists")
+            print("Admin user already exists")
             if not existing.is_admin:
                 existing.is_admin = True
                 await db.commit()
-                print("✓ Updated existing user to admin")
+                print("Updated existing user to admin")
             return
 
         # Create admin
@@ -35,7 +35,7 @@ async def seed_admin():
         )
         db.add(admin)
         await db.commit()
-        print("✓ Created admin user: admin@samga.ai / admin123")
+        print("Created admin user: admin@samga.ai / admin123")
 
 
 if __name__ == "__main__":
