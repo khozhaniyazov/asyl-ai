@@ -709,4 +709,71 @@ export const api = {
     const response = await apiClient.delete(`/clinics/${clinicId}/members/${membershipId}`);
     return response.data;
   },
+
+  // --- PAYOUTS ---
+  getEarnings: async () => {
+    const response = await apiClient.get('/payouts/earnings');
+    return response.data;
+  },
+
+  requestPayout: async (amount: number) => {
+    const response = await apiClient.post('/payouts/request', { amount });
+    return response.data;
+  },
+
+  getPayouts: async () => {
+    const response = await apiClient.get('/payouts/');
+    return response.data;
+  },
+
+  createBankAccount: async (data: Record<string, unknown>) => {
+    const response = await apiClient.post('/payouts/bank-account', data);
+    return response.data;
+  },
+
+  getBankAccount: async () => {
+    const response = await apiClient.get('/payouts/bank-account');
+    return response.data;
+  },
+
+  // --- ADMIN ---
+  adminGetStats: async () => {
+    const response = await apiClient.get('/admin/stats');
+    return response.data;
+  },
+
+  adminGetPendingVerifications: async () => {
+    const response = await apiClient.get('/admin/verification/pending');
+    return response.data;
+  },
+
+  adminApproveVerification: async (profileId: number, notes?: string) => {
+    const response = await apiClient.post(`/admin/verification/${profileId}/approve`, { verification_notes: notes });
+    return response.data;
+  },
+
+  adminRejectVerification: async (profileId: number, notes?: string) => {
+    const response = await apiClient.post(`/admin/verification/${profileId}/reject`, { verification_notes: notes });
+    return response.data;
+  },
+
+  adminGetPendingPayouts: async () => {
+    const response = await apiClient.get('/admin/payouts/pending');
+    return response.data;
+  },
+
+  adminApprovePayout: async (payoutId: number, notes?: string) => {
+    const response = await apiClient.post(`/admin/payouts/${payoutId}/approve`, { admin_notes: notes });
+    return response.data;
+  },
+
+  adminMarkPayoutPaid: async (payoutId: number) => {
+    const response = await apiClient.post(`/admin/payouts/${payoutId}/paid`);
+    return response.data;
+  },
+
+  adminRejectPayout: async (payoutId: number, notes?: string) => {
+    const response = await apiClient.post(`/admin/payouts/${payoutId}/reject`, { admin_notes: notes });
+    return response.data;
+  },
 };

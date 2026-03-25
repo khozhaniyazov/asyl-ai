@@ -22,6 +22,8 @@ import IncomingBookings from "./components/IncomingBookings";
 import MessagesView from "./components/MessagesView";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import ClinicManagement from "./components/ClinicManagement";
+import PayoutDashboard from "./components/PayoutDashboard";
+import AdminDashboard from "./components/AdminDashboard";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -51,6 +53,9 @@ export const router = createBrowserRouter([
       { path: "analytics", Component: AnalyticsDashboard },
       { path: "clinic", Component: ClinicManagement },
       { path: "settings", Component: Settings },
+      // Payouts & Admin
+      { path: "payouts", Component: PayoutDashboard },
+      { path: "admin", Component: AdminDashboard },
     ],
   },
 ]);

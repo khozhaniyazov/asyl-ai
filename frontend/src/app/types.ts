@@ -8,6 +8,7 @@ export interface Therapist {
   default_session_duration: number | null;
   default_price: number | null;
   onboarding_completed: boolean;
+  is_admin?: boolean;
 }
 
 export interface Patient {
@@ -343,3 +344,68 @@ export const AGE_GROUPS = [
   "adolescents",
   "adults",
 ] as const;
+
+// --- Payout & Admin types ---
+
+export interface BankAccountData {
+  id: number;
+  therapist_id: number;
+  bank_name: string;
+  account_holder: string;
+  account_number: string;
+  kaspi_phone: string | null;
+  is_verified: boolean;
+  created_at: string;
+}
+
+export interface PayoutData {
+  id: number;
+  therapist_id: number;
+  amount: number;
+  commission_amount: number;
+  net_amount: number;
+  status: "pending" | "approved" | "paid" | "rejected";
+  bank_account_id: number | null;
+  admin_notes: string | null;
+  requested_at: string;
+  processed_at: string | null;
+}
+
+export interface EarningsSummary {
+  available_balance: number;
+  pending_payout: number;
+  total_earned: number;
+  total_commission: number;
+}
+
+export interface PendingVerification {
+  profile_id: number;
+  therapist_id: number;
+  therapist_name: string;
+  therapist_email: string;
+  license_number: string | null;
+  credential_documents: string[] | null;
+  education: string | null;
+  certifications: string[] | null;
+  specializations: string[] | null;
+  city: string | null;
+  submitted_at: string | null;
+}
+
+export interface PendingPayout {
+  id: number;
+  therapist_id: number;
+  therapist_name: string;
+  therapist_email: string;
+  amount: number;
+  commission_amount: number;
+  net_amount: number;
+  status: string;
+  requested_at: string | null;
+}
+
+export interface AdminStats {
+  pending_verifications: number;
+  pending_payouts: number;
+  total_commission_earned: number;
+}

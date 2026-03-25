@@ -38,6 +38,7 @@ class TherapistResponse(BaseModel):
     default_session_duration: Optional[int] = None
     default_price: Optional[float] = None
     onboarding_completed: bool = False
+    is_admin: bool = False
 
 
 class OnboardingUpdate(BaseModel):
