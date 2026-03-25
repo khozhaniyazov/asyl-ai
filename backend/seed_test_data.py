@@ -46,7 +46,7 @@ PROFILES = [
         "bio": "Experienced speech therapist specializing in childhood dysarthria and stuttering.",
         "specializations": ["dysarthria", "stuttering", "phonological_disorders"],
         "education": "KazNU, Defectology, 2015",
-        "city": "Almaty",
+        "city": "Алматы",
         "languages": ["ru", "kk"],
         "gender": "female",
         "years_of_experience": 9,
@@ -63,7 +63,7 @@ PROFILES = [
         "bio": "Helping children find their voice through play-based therapy.",
         "specializations": ["articulation", "language_delay", "autism_spectrum"],
         "education": "Nazarbayev University, Speech Pathology, 2018",
-        "city": "Almaty",
+        "city": "Алматы",
         "languages": ["ru", "en"],
         "gender": "female",
         "years_of_experience": 6,
@@ -80,7 +80,7 @@ PROFILES = [
         "bio": "Adult speech rehabilitation after stroke and TBI.",
         "specializations": ["aphasia", "dysarthria", "voice_disorders"],
         "education": "MSU, Clinical Psychology, 2012",
-        "city": "Astana",
+        "city": "Астана",
         "languages": ["ru", "kk", "en"],
         "gender": "male",
         "years_of_experience": 12,
@@ -97,7 +97,7 @@ PROFILES = [
         "bio": "Pediatric speech therapist with focus on early intervention.",
         "specializations": ["language_delay", "phonological_disorders", "fluency"],
         "education": "ENU, Special Education, 2016",
-        "city": "Astana",
+        "city": "Астана",
         "languages": ["kk", "ru"],
         "gender": "female",
         "years_of_experience": 8,
@@ -114,7 +114,7 @@ PROFILES = [
         "bio": "Bilingual therapist working with Kazakh and Russian speaking families.",
         "specializations": ["stuttering", "articulation", "bilingual_therapy"],
         "education": "SKSU, Defectology, 2017",
-        "city": "Shymkent",
+        "city": "Шымкент",
         "languages": ["kk", "ru"],
         "gender": "male",
         "years_of_experience": 7,
@@ -127,6 +127,7 @@ PROFILES = [
         "verification_status": VerificationStatus.VERIFIED,
         "age_groups": ["children", "adolescents", "adults"],
     },
+
 ]
 
 PARENTS = [
