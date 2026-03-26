@@ -26,12 +26,12 @@ async def test_register_existing_user(client: AsyncClient, test_therapist):
         "/api/v1/auth/register",
         json={
             "email": test_therapist.email,
-            "password": "somepassword",
+            "password": "somepassword123",
             "full_name": "Test Therapist duplicate",
         },
     )
     assert response.status_code == 400
-    assert "already exists" in response.json()["detail"]
+    assert "failed" in response.json()["detail"].lower()
 
 
 @pytest.mark.asyncio

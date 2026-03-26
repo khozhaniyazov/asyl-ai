@@ -10,6 +10,8 @@ from pydantic import BaseModel
 
 from app.core.database import get_db
 from app.core.security import create_access_token
+from app.core.rate_limit import rate_limit_otp
+from app.core.config import settings
 from app.models import Parent, Patient
 from app.integrations.whatsapp_service import whatsapp_service
 
@@ -36,7 +38,13 @@ def hash_otp(code: str) -> str:
 
 def normalize_phone(phone: str) -> str:
     """Normalize phone number to E.164-ish format (+77XXXXXXXXX)."""
-    p = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    p = (
+        phone.strip()
+        .replace(" ", "")
+        .replace("-", "")
+        .replace("(", "")
+        .replace(")", "")
+    )
     if p.startswith("8"):
         p = "+7" + p[1:]
     if p.startswith("7") and len(p) == 11:
@@ -49,6 +57,9 @@ async def request_otp(data: OTPRequest, db: AsyncSession = Depends(get_db)):
     phone = normalize_phone(data.phone)
     if not phone:
         raise HTTPException(status_code=400, detail="Phone number is required")
+
+    # Rate limit OTP requests
+    await rate_limit_otp(phone)
 
     # Find or create parent
     result = await db.execute(select(Parent).filter(Parent.phone == phone))
@@ -74,10 +85,12 @@ async def request_otp(data: OTPRequest, db: AsyncSession = Depends(get_db)):
         )
         db.add(parent)
 
-    # Generate OTP
-    code = str(random.randint(1000, 9999))
+    # Generate 6-digit OTP with random jitter on expiry
+    code = str(random.randint(100000, 999999))
+    jitter = random.randint(240, 360)  # 4-6 minutes
     parent.otp_code_hash = hash_otp(code)
-    parent.otp_expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
+    parent.otp_expires_at = datetime.now(timezone.utc) + timedelta(seconds=jitter)
+    parent.otp_attempts = 0  # Reset attempts on new OTP
     await db.commit()
 
     # Send via WhatsApp
@@ -92,28 +105,33 @@ async def verify_otp(data: OTPVerify, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Parent).filter(Parent.phone == phone))
     parent = result.scalars().first()
 
-    if not parent:
-        raise HTTPException(
-            status_code=404, detail="Phone not found. Request OTP first."
-        )
-
-    if not parent.otp_code_hash or not parent.otp_expires_at:
-        raise HTTPException(status_code=400, detail="No OTP requested")
+    if not parent or not parent.otp_code_hash or not parent.otp_expires_at:
+        # Generic error to prevent enumeration
+        raise HTTPException(status_code=400, detail="Invalid credentials")
 
     if datetime.now(timezone.utc) > parent.otp_expires_at:
-        raise HTTPException(status_code=400, detail="OTP expired. Request a new one.")
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    # Check attempt limit
+    if parent.otp_attempts >= 3:
+        raise HTTPException(
+            status_code=429, detail="Too many attempts. Request a new OTP."
+        )
 
     if hash_otp(data.code) != parent.otp_code_hash:
-        raise HTTPException(status_code=400, detail="Invalid OTP code")
+        parent.otp_attempts += 1
+        await db.commit()
+        raise HTTPException(status_code=400, detail="Invalid credentials")
 
     # Clear OTP
     parent.otp_code_hash = None
     parent.otp_expires_at = None
+    parent.otp_attempts = 0
     await db.commit()
 
     # Create token with parent scope
     token = create_access_token(
         subject=f"parent:{parent.id}",
-        expires_delta=timedelta(days=30),
+        expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
     )
     return {"access_token": token, "token_type": "bearer"}

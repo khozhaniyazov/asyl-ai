@@ -8,7 +8,8 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.core.security import SECRET_KEY, ALGORITHM
+from app.core.config import settings
+from app.core.security import ALGORITHM
 from app.models import (
     Parent,
     Patient,
@@ -34,7 +35,7 @@ async def get_current_parent(
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
         sub = payload.get("sub", "")
         if not sub.startswith("parent:"):
             raise HTTPException(status_code=403, detail="Invalid token scope")

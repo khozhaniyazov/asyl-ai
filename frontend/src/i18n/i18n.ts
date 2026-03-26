@@ -14,7 +14,7 @@ i18n
     },
     fallbackLng: 'ru',
     supportedLngs: ['ru', 'kk'],
-    interpolation: { escapeValue: false },
+    interpolation: { escapeValue: true },
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],

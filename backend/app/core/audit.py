@@ -21,10 +21,11 @@ class AuditMiddleware(BaseHTTPMiddleware):
         if auth_header.startswith("Bearer "):
             try:
                 from jose import jwt
-                from app.core.security import SECRET_KEY, ALGORITHM
+                from app.core.config import settings
+                from app.core.security import ALGORITHM
 
                 token = auth_header.split(" ")[1]
-                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
                 user_id = payload.get("sub", "unknown")
             except Exception:
                 pass

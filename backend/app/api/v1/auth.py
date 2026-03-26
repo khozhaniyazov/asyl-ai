@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -7,7 +7,14 @@ from pydantic import BaseModel
 from typing import Optional
 
 from app.core.database import get_db
-from app.core.security import verify_password, get_password_hash, create_access_token
+from app.core.config import settings
+from app.core.security import (
+    verify_password,
+    get_password_hash,
+    create_access_token,
+    validate_password_strength,
+)
+from app.core.rate_limit import rate_limit_login
 from app.models import Therapist
 from app.schemas.schemas import (
     TherapistCreate,
@@ -27,13 +34,19 @@ class LoginRequest(BaseModel):
 
 @router.post("/register", response_model=TherapistResponse)
 async def register(user_in: TherapistCreate, db: AsyncSession = Depends(get_db)):
+    # Validate password strength
+    is_valid, msg = validate_password_strength(user_in.password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=msg)
+
     result = await db.execute(
         select(Therapist).filter(Therapist.email == user_in.email)
     )
     if result.scalars().first():
+        # Generic error to prevent user enumeration
         raise HTTPException(
             status_code=400,
-            detail="The user with this email already exists in the system.",
+            detail="Registration failed. Please check your details and try again.",
         )
     user = Therapist(
         email=user_in.email,
@@ -54,7 +67,7 @@ async def _authenticate(email: str, password: str, db: AsyncSession) -> dict:
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
 
-    access_token_expires = timedelta(minutes=60 * 24 * 8)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
         "access_token": create_access_token(
             user.id, expires_delta=access_token_expires
@@ -65,19 +78,23 @@ async def _authenticate(email: str, password: str, db: AsyncSession) -> dict:
 
 @router.post("/login", response_model=Token)
 async def login(
+    request: Request,
     db: AsyncSession = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """Login via application/x-www-form-urlencoded (OAuth2 standard)."""
+    await rate_limit_login(request)
     return await _authenticate(form_data.username, form_data.password, db)
 
 
 @router.post("/login/json", response_model=Token)
 async def login_json(
+    request: Request,
     data: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
     """Login via JSON body (for convenience)."""
+    await rate_limit_login(request)
     return await _authenticate(data.username, data.password, db)
 
 

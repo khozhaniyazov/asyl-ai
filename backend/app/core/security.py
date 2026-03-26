@@ -3,13 +3,10 @@ from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
 from app.core.config import settings
+import re
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
-
-SECRET_KEY = getattr(
-    settings, "SECRET_KEY", "your-super-secret-jwt-key-replace-in-production"
-)
 
 
 def create_access_token(
@@ -19,10 +16,10 @@ def create_access_token(
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(
-            minutes=getattr(settings, "ACCESS_TOKEN_EXPIRE_MINUTES", 60 * 24 * 8)
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
     to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
@@ -32,3 +29,20 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+
+def validate_password_strength(password: str) -> tuple[bool, str]:
+    """Validate password meets security requirements."""
+    if len(password) < settings.PASSWORD_MIN_LENGTH:
+        return (
+            False,
+            f"Password must be at least {settings.PASSWORD_MIN_LENGTH} characters",
+        )
+
+    if not re.search(r"[A-Za-z]", password):
+        return False, "Password must contain at least one letter"
+
+    if not re.search(r"\d", password):
+        return False, "Password must contain at least one number"
+
+    return True, "Password is strong"
