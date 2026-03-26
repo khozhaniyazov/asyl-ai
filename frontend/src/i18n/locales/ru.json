@@ -669,7 +669,9 @@
     "dueDate": "Срок выполнения",
     "homeworkPlaceholder": "Напишите задание для родителей...",
     "homeworkAssigned": "Задание назначено",
-    "failedAssignHomework": "Не удалось назначить задание"
+    "failedAssignHomework": "Не удалось назначить задание",
+    "fillAllSoapFields": "Заполните все поля SOAP",
+    "joinVideoCall": "Присоединиться к видеозвонку"
   },
   "clinic": {
     "title": "Управление клиникой",

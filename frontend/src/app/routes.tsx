@@ -12,6 +12,8 @@ import ParentLogin from "./components/ParentLogin";
 import ParentPortal from "./components/ParentPortal";
 import OnboardingWizard from "./components/OnboardingWizard";
 import HomeworkLibrary from "./components/HomeworkLibrary";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ParentProtectedRoute } from "./components/ParentProtectedRoute";
 
 // Phase 2 imports (hidden for MVP)
 // import WaitlistView from "./components/WaitlistView";
@@ -29,13 +31,34 @@ import HomeworkLibrary from "./components/HomeworkLibrary";
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
   { path: "/register", Component: Register },
-  { path: "/onboarding", Component: OnboardingWizard },
+  {
+    path: "/onboarding",
+    element: (
+      <ProtectedRoute>
+        <OnboardingWizard />
+      </ProtectedRoute>
+    ),
+  },
   { path: "/parent/login", Component: ParentLogin },
-  { path: "/parent", Component: ParentPortal },
-  { path: "/parent/portal", Component: ParentPortal },
+  {
+    path: "/parent",
+    element: (
+      <ParentProtectedRoute>
+        <ParentPortal />
+      </ParentProtectedRoute>
+    ),
+  },
+  {
+    path: "/parent/portal",
+    element: (
+      <ParentProtectedRoute>
+        <ParentPortal />
+      </ParentProtectedRoute>
+    ),
+  },
   {
     path: "/",
-    Component: TherapistLayout,
+    Component: TherapistLayout, // TherapistLayout has built-in auth check
     children: [
       { index: true, Component: Dashboard },
       { path: "patients", Component: Patients },

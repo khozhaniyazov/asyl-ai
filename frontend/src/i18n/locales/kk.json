@@ -669,7 +669,9 @@
     "dueDate": "Орындау мерзімі",
     "homeworkPlaceholder": "Ата-аналарға тапсырма жазыңыз...",
     "homeworkAssigned": "Тапсырма тағайындалды",
-    "failedAssignHomework": "Тапсырманы тағайындау сәтсіз"
+    "failedAssignHomework": "Тапсырманы тағайындау сәтсіз",
+    "fillAllSoapFields": "Барлық SOAP өрістерін толтырыңыз",
+    "joinVideoCall": "Бейне қоңырауға қосылу"
   },
   "clinic": {
     "title": "Клиниканы басқару",

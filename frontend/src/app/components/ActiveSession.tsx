@@ -9,6 +9,7 @@ import SoundProgressPicker from "./SoundProgressPicker";
 import type { HomeworkTemplate, SoundProgress, Appointment } from "../types";
 import { SOUND_STAGES } from "../types";
 import { useTranslation } from "react-i18next";
+import { soapSchema } from "../validation";
 
 export default function ActiveSession() {
   const { appointmentId } = useParams();
@@ -34,6 +35,7 @@ export default function ActiveSession() {
   const [hwAssigning, setHwAssigning] = useState(false);
   const [hwAssigned, setHwAssigned] = useState(false);
   const [soundUpdates, setSoundUpdates] = useState<{ sound: string; stage: any }[]>([]);
+  const [soapErrors, setSoapErrors] = useState<Record<string, string>>({});
 
   // Load appointment info
   useEffect(() => {
@@ -71,6 +73,21 @@ export default function ActiveSession() {
 
   const handleSave = async () => {
     if (!appointmentId) return;
+    
+    // Validate SOAP notes
+    const result = soapSchema.safeParse(soap);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        errors[field] = err.message;
+      });
+      setSoapErrors(errors);
+      toast.error(t("session.fillAllSoapFields"));
+      return;
+    }
+    setSoapErrors({});
+    
     setSaving(true);
     try {
       // Create or update session with SOAP notes
@@ -119,6 +136,21 @@ export default function ActiveSession() {
 
   const handleSaveAndSend = async () => {
     if (!appointmentId) return;
+    
+    // Validate SOAP notes
+    const result = soapSchema.safeParse(soap);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        errors[field] = err.message;
+      });
+      setSoapErrors(errors);
+      toast.error(t("session.fillAllSoapFields"));
+      return;
+    }
+    setSoapErrors({});
+    
     setSaving(true);
     try {
       // Create or update session
@@ -224,6 +256,7 @@ export default function ActiveSession() {
               value={soap[key]}
               onChange={(v) => setSoap({ ...soap, [key]: v })}
               rows={key === "plan" ? 5 : 3}
+              error={soapErrors[key]}
             />
           ))}
         </div>

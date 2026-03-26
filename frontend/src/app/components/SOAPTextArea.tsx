@@ -6,6 +6,7 @@ interface SOAPTextAreaProps {
   value: string;
   onChange: (value: string) => void;
   rows?: number;
+  error?: string;
 }
 
 const sectionColors: Record<string, string> = {
@@ -15,7 +16,7 @@ const sectionColors: Record<string, string> = {
   plan: "border-l-purple-400",
 };
 
-export function SOAPTextArea({ label, sectionKey, value, onChange, rows = 3 }: SOAPTextAreaProps) {
+export function SOAPTextArea({ label, sectionKey, value, onChange, rows = 3, error }: SOAPTextAreaProps) {
   const { t } = useTranslation();
   const color = sectionColors[sectionKey] || "border-l-gray-400";
   const fullName = t(`soap.${sectionKey}` as any);
@@ -31,7 +32,8 @@ export function SOAPTextArea({ label, sectionKey, value, onChange, rows = 3 }: S
           <span className="text-[11px] text-muted-foreground">{hint}</span>
         </div>
       </div>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} className="w-full px-4 py-3 bg-input-background rounded-lg text-[14px] outline-none focus:ring-2 focus:ring-ring resize-none transition-all" />
+      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} className={`w-full px-4 py-3 bg-input-background rounded-lg text-[14px] outline-none focus:ring-2 resize-none transition-all ${error ? "ring-2 ring-destructive" : "focus:ring-ring"}`} />
+      {error && <p className="text-[11px] text-destructive mt-1">{error}</p>}
     </div>
   );
 }

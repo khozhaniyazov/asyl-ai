@@ -6,13 +6,13 @@ import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "./ui/LanguageSwitcher";
+import { registerSchema } from "../validation";
 
 export default function Register() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { register, login, user, loading: authLoading } = useAuth();
   const [form, setForm] = useState({ name: "", clinic: "", email: "", password: "" });
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(false);
 
   if (!authLoading && user) {
@@ -22,13 +22,14 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: Record<string, boolean> = {};
-    if (!form.name) newErrors.name = true;
-    if (!form.email) newErrors.email = true;
-    if (!form.password) newErrors.password = true;
-    if (Object.keys(newErrors).length) {
-      setErrors(newErrors);
-      toast.error(t("auth.fillRequired"));
+    const result = registerSchema.safeParse({
+      email: form.email,
+      password: form.password,
+      full_name: form.name,
+      clinic_name: form.clinic || undefined,
+    });
+    if (!result.success) {
+      toast.error(result.error.errors[0]?.message || t("auth.fillRequired"));
       return;
     }
     setLoading(true);
@@ -66,8 +67,7 @@ export default function Register() {
           ].map((field) => (
             <div key={field.key}>
               <label className="text-[13px] mb-1 block">{field.label}</label>
-              <input type={field.type || "text"} value={(form as any)[field.key]} onChange={(e) => { setForm({ ...form, [field.key]: e.target.value }); setErrors({ ...errors, [field.key]: false }); }} placeholder={field.placeholder} className={`w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all ${errors[field.key] ? "ring-2 ring-destructive" : ""}`} />
-              {errors[field.key] && <p className="text-[11px] text-destructive mt-1">{t("auth.fieldRequired")}</p>}
+              <input type={field.type || "text"} value={(form as any)[field.key]} onChange={(e) => setForm({ ...form, [field.key]: e.target.value })} placeholder={field.placeholder} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
             </div>
           ))}
           <button type="submit" disabled={loading} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60">

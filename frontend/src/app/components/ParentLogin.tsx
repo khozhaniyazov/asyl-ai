@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { api } from "../api";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "./ui/LanguageSwitcher";
+import { otpRequestSchema, otpVerifySchema } from "../validation";
 
 export default function ParentLogin() {
   const navigate = useNavigate();
@@ -16,8 +17,9 @@ export default function ParentLogin() {
   const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async () => {
-    if (!phone || phone.length < 10) {
-      toast.error(t("parent.invalidPhone"));
+    const result = otpRequestSchema.safeParse({ phone });
+    if (!result.success) {
+      toast.error(result.error.errors[0]?.message || t("parent.invalidPhone"));
       return;
     }
     setLoading(true);
@@ -33,8 +35,9 @@ export default function ParentLogin() {
   };
 
   const handleVerifyOtp = async () => {
-    if (!otp || otp.length !== 4) {
-      toast.error(t("parent.invalidCode"));
+    const result = otpVerifySchema.safeParse({ phone, code: otp });
+    if (!result.success) {
+      toast.error(result.error.errors[0]?.message || t("parent.invalidCode"));
       return;
     }
     setLoading(true);
@@ -81,7 +84,7 @@ export default function ParentLogin() {
               </div>
               <div>
                 <label className="text-[13px] mb-1 block">{t("parent.enterCode")}</label>
-                <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="• • • •" maxLength={4} className="w-full px-3 py-3 rounded-xl bg-input-background text-[18px] outline-none focus:ring-2 focus:ring-primary/30 text-center tracking-[0.6em] transition-all" />
+                <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="• • • • • •" maxLength={6} className="w-full px-3 py-3 rounded-xl bg-input-background text-[18px] outline-none focus:ring-2 focus:ring-primary/30 text-center tracking-[0.6em] transition-all" />
               </div>
               <button onClick={handleVerifyOtp} disabled={loading} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60">
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}

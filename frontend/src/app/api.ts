@@ -4,15 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
-});
-
-// Automatically attach JWT token to every request
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('asyl_ai_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  withCredentials: true, // Send/receive httpOnly cookies
 });
 
 // Redirect to login on 401/403
@@ -20,7 +12,6 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      localStorage.removeItem('asyl_ai_token');
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
       }
@@ -41,9 +32,7 @@ export const api = {
     formData.append('username', email);
     formData.append('password', password);
     const response = await apiClient.post('/auth/login', formData);
-    if (response.data.access_token) {
-      localStorage.setItem('asyl_ai_token', response.data.access_token);
-    }
+    // Token is now in httpOnly cookie, no localStorage needed
     return response.data;
   },
 
@@ -52,8 +41,8 @@ export const api = {
     return response.data;
   },
 
-  logout: () => {
-    localStorage.removeItem('asyl_ai_token');
+  logout: async () => {
+    await apiClient.post('/auth/logout');
   },
 
   getMe: async () => {
@@ -66,8 +55,13 @@ export const api = {
     return response.data;
   },
 
-  isAuthenticated: () => {
-    return !!localStorage.getItem('asyl_ai_token');
+  isAuthenticated: async () => {
+    try {
+      await apiClient.get('/auth/me');
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   // --- PATIENTS ---

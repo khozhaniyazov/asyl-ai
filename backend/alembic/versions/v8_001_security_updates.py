@@ -16,12 +16,11 @@ depends_on = None
 
 
 def upgrade():
-    # Add otp_attempts column to parents table
-    op.add_column("parents", sa.Column("otp_attempts", sa.Integer(), nullable=True))
-    # Set default value for existing rows
-    op.execute("UPDATE parents SET otp_attempts = 0 WHERE otp_attempts IS NULL")
-    # Make it non-nullable
-    op.alter_column("parents", "otp_attempts", nullable=False, server_default="0")
+    # Add otp_attempts column with default value (SQLite compatible)
+    op.add_column(
+        "parents",
+        sa.Column("otp_attempts", sa.Integer(), nullable=False, server_default="0"),
+    )
 
 
 def downgrade():

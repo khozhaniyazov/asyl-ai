@@ -17,7 +17,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (data: { email: string; password: string; full_name: string; clinic_name?: string }) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -29,15 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     try {
-      if (!api.isAuthenticated()) {
-        setUser(null);
-        return;
-      }
       const me = await api.getMe();
       setUser(me);
     } catch {
       setUser(null);
-      api.logout();
     }
   }, []);
 
@@ -54,8 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await api.register(data);
   };
 
-  const logout = () => {
-    api.logout();
+  const logout = async () => {
+    await api.logout();
     setUser(null);
   };
 

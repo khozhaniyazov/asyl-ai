@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "./ui/LanguageSwitcher";
+import { loginSchema } from "../validation";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -22,8 +23,9 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error(t("auth.enterEmailPassword"));
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      toast.error(result.error.errors[0]?.message || t("auth.enterEmailPassword"));
       return;
     }
     setLoading(true);
@@ -54,11 +56,11 @@ export default function Login() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="text-[13px] mb-1 block">{t("auth.email")}</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="dana@clinic.kz" className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="dana@clinic.kz" autoComplete="email" className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
           </div>
           <div>
             <label className="text-[13px] mb-1 block">{t("auth.password")}</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.password")} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.password")} autoComplete="current-password" className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
           </div>
           <button type="submit" disabled={loading} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60">
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}

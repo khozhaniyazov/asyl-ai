@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -30,6 +30,25 @@ router = APIRouter()
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+
+def _set_auth_cookie(response: Response, token: str) -> None:
+    """Set httpOnly cookie with the access token."""
+    is_prod = settings.ENVIRONMENT == "production"
+    response.set_cookie(
+        key="asyl_ai_token",
+        value=token,
+        httponly=True,
+        secure=is_prod,
+        samesite="lax",
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
+
+
+def _clear_auth_cookie(response: Response) -> None:
+    """Clear the auth cookie."""
+    response.delete_cookie(key="asyl_ai_token", path="/")
 
 
 @router.post("/register", response_model=TherapistResponse)
@@ -68,34 +87,43 @@ async def _authenticate(email: str, password: str, db: AsyncSession) -> dict:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {
-        "access_token": create_access_token(
-            user.id, expires_delta=access_token_expires
-        ),
-        "token_type": "bearer",
-    }
+    token = create_access_token(user.id, expires_delta=access_token_expires)
+    return {"access_token": token, "token_type": "bearer"}
 
 
 @router.post("/login", response_model=Token)
 async def login(
     request: Request,
+    response: Response,
     db: AsyncSession = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """Login via application/x-www-form-urlencoded (OAuth2 standard)."""
     await rate_limit_login(request)
-    return await _authenticate(form_data.username, form_data.password, db)
+    result = await _authenticate(form_data.username, form_data.password, db)
+    _set_auth_cookie(response, result["access_token"])
+    return result
 
 
 @router.post("/login/json", response_model=Token)
 async def login_json(
     request: Request,
+    response: Response,
     data: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
     """Login via JSON body (for convenience)."""
     await rate_limit_login(request)
-    return await _authenticate(data.username, data.password, db)
+    result = await _authenticate(data.username, data.password, db)
+    _set_auth_cookie(response, result["access_token"])
+    return result
+
+
+@router.post("/logout")
+async def logout(response: Response):
+    """Clear auth cookie."""
+    _clear_auth_cookie(response)
+    return {"detail": "Logged out"}
 
 
 @router.get("/me", response_model=TherapistResponse)

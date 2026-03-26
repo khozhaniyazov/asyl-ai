@@ -5,6 +5,7 @@ import { Search, Plus, UserPlus, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "../api";
 import { useTranslation } from "react-i18next";
+import { patientSchema } from "../validation";
 
 interface Patient {
   id: number;
@@ -46,12 +47,20 @@ export default function Patients() {
   }, [fetchPatients]);
 
   const handleAdd = async () => {
-    const newErrors: Record<string, boolean> = {};
-    if (!form.firstName) newErrors.firstName = true;
-    if (!form.lastName) newErrors.lastName = true;
-    if (Object.keys(newErrors).length) {
-      setErrors(newErrors);
-      toast.error(t("patients.fillRequired"));
+    const result = patientSchema.safeParse({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      parent_phone: form.parentPhone || undefined,
+    });
+    if (!result.success) {
+      const fieldErrors: Record<string, boolean> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0];
+        if (field === "first_name") fieldErrors.firstName = true;
+        if (field === "last_name") fieldErrors.lastName = true;
+      });
+      setErrors(fieldErrors);
+      toast.error(result.error.errors[0]?.message || t("patients.fillRequired"));
       return;
     }
     setSubmitting(true);
