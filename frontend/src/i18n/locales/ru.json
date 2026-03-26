@@ -23,7 +23,25 @@
     "minutes": "мин",
     "noData": "Нет данных",
     "create": "Создать",
-    "saving": "Сохранение..."
+    "saving": "Сохранение...",
+    "filters": {
+      "title": "Фильтры",
+      "apply": "Применить",
+      "reset": "Сбросить",
+      "city": "Город",
+      "specialization": "Специализация",
+      "priceRange": "Ценовой диапазон",
+      "priceFrom": "Цена от",
+      "priceTo": "Цена до",
+      "ageGroup": "Возрастная группа",
+      "language": "Язык",
+      "onlineOnly": "Только онлайн",
+      "verifiedOnly": "Только подтверждённые",
+      "minRating": "Минимальный рейтинг",
+      "sortBy": "Сортировка",
+      "noResults": "Ничего не найдено",
+      "clearAll": "Очистить все"
+    }
   },
   "auth": {
     "welcomeBack": "С возвращением",
@@ -645,24 +663,6 @@
       "admin": "Администратор",
       "therapist": "Специалист"
     }
-  },
-  "filters": {
-    "title": "Фильтры",
-    "apply": "Применить",
-    "reset": "Сбросить",
-    "city": "Город",
-    "specialization": "Специализация",
-    "priceRange": "Ценовой диапазон",
-    "priceFrom": "Цена от",
-    "priceTo": "Цена до",
-    "ageGroup": "Возрастная группа",
-    "language": "Язык",
-    "onlineOnly": "Только онлайн",
-    "verifiedOnly": "Только подтверждённые",
-    "minRating": "Минимальный рейтинг",
-    "sortBy": "Сортировка",
-    "noResults": "Ничего не найдено",
-    "clearAll": "Очистить все"
   },
   "portal": {
     "title": "Портал родителя",
