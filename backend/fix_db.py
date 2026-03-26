@@ -1,36 +1,33 @@
-import asyncio
-import sys
+import sqlite3
 import os
-sys.path.append(os.getcwd())
 
-from app.core.database import AsyncSessionLocal
-from app.models.therapist_profile import TherapistProfile, VerificationStatus
-from app.models.therapist import Therapist
-from app.core.security import get_password_hash
-from sqlalchemy import select, update
+db_path = 'c:/asyl-ai/backend/asyl_ai.db'
+if not os.path.exists(db_path):
+    print(f"Error: {db_path} not found")
+    exit(1)
 
-async def fix():
-    async with AsyncSessionLocal() as db:
-        # 1. Publish all profiles
-        await db.execute(update(TherapistProfile).values(is_published=True))
-        
-        # 2. Ensure we have an admin user
-        res = await db.execute(select(Therapist).where(Therapist.email == "admin@samga.ai"))
-        admin = res.scalars().first()
-        if not admin:
-            admin = Therapist(
-                full_name="Admin",
-                email="admin@samga.ai",
-                hashed_password=get_password_hash("admin123"),
-                is_admin=True
-            )
-            db.add(admin)
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+
+columns = [
+    ('verification_status', 'VARCHAR'),
+    ('verification_submitted_at', 'DATETIME'),
+    ('verification_notes', 'TEXT'),
+    ('verified_at', 'DATETIME'),
+    ('verified_by_id', 'INTEGER'),
+    ('rejection_reason', 'TEXT')
+]
+
+for col_name, col_type in columns:
+    try:
+        cursor.execute(f"ALTER TABLE therapist_profiles ADD COLUMN {col_name} {col_type}")
+        print(f"Added column: {col_name}")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print(f"Column {col_name} already exists, skipping.")
         else:
-            admin.is_admin = True
-            admin.hashed_password = get_password_hash("admin123")
-        
-        await db.commit()
-        print("Updated profiles to Published=True and ensured admin@samga.ai (pass: admin123) is admin.")
+            print(f"Error adding {col_name}: {e}")
 
-if __name__ == "__main__":
-    asyncio.run(fix())
+conn.commit()
+conn.close()
+print("Database schema update complete.")

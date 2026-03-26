@@ -208,8 +208,8 @@ HOMEWORK_INSTRUCTIONS = [
 
 async def seed_test_data():
     # Create all tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as db:
         now = datetime.now(timezone.utc)

@@ -190,7 +190,7 @@ async def search_profiles(
         )
     if verified_only:
         query = query.where(
-            TherapistProfile.verification_status == VerificationStatus.VERIFIED
+            TherapistProfile.verification_status == "verified"
         )
     if q:
         # Text search across therapist name, bio, and specializations
