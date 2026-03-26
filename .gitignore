@@ -59,5 +59,11 @@ pnpm-debug.log*
 ehthumbs.db
 Thumbs.db
 
+# Temp and scratch files
+tmp/
+
+# Linter cache
+.ruff_cache/
+
 # Windows reserved names (prevent accidental creation)
 nul

@@ -359,6 +359,14 @@
   "soundProgress": {
     "title": "Прогресс звуков",
     "noData": "Данных о прогрессе звуков пока нет",
+    "addRecord": "Добавить запись",
+    "soundLabel": "Звук",
+    "stageLabel": "Этап",
+    "accuracyLabel": "Точность",
+    "enterSound": "Введите звук",
+    "saved": "Прогресс звука сохранён",
+    "updateProgress": "Обновить прогресс",
+    "noActiveSounds": "Нет активных звуков",
     "stage": {
       "not_started": "Не начат",
       "isolation": "Изоляция",
@@ -367,6 +375,15 @@
       "phrases": "Фразы",
       "connected_speech": "Связная речь",
       "automated": "Автоматизирован"
+    },
+    "stage_short": {
+      "not_started": "Не начат",
+      "isolation": "Изол.",
+      "syllables": "Слоги",
+      "words": "Слова",
+      "phrases": "Фразы",
+      "connected_speech": "Связн.",
+      "automated": "Авто"
     }
   },
   "availability": {

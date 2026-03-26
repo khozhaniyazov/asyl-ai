@@ -34,9 +34,19 @@ def hash_otp(code: str) -> str:
     return hashlib.sha256(code.encode()).hexdigest()
 
 
+def normalize_phone(phone: str) -> str:
+    """Normalize phone number to E.164-ish format (+77XXXXXXXXX)."""
+    p = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    if p.startswith("8"):
+        p = "+7" + p[1:]
+    if p.startswith("7") and len(p) == 11:
+        p = "+" + p
+    return p
+
+
 @router.post("/request-otp")
 async def request_otp(data: OTPRequest, db: AsyncSession = Depends(get_db)):
-    phone = data.phone.strip().replace(" ", "").replace("-", "")
+    phone = normalize_phone(data.phone)
     if not phone:
         raise HTTPException(status_code=400, detail="Phone number is required")
 
@@ -78,7 +88,7 @@ async def request_otp(data: OTPRequest, db: AsyncSession = Depends(get_db)):
 
 @router.post("/verify-otp", response_model=ParentTokenResponse)
 async def verify_otp(data: OTPVerify, db: AsyncSession = Depends(get_db)):
-    phone = data.phone.strip().replace(" ", "").replace("-", "")
+    phone = normalize_phone(data.phone)
     result = await db.execute(select(Parent).filter(Parent.phone == phone))
     parent = result.scalars().first()
 

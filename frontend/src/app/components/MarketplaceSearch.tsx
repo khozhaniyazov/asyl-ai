@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Star, Globe, Filter, X, Clock, Users, Award, Calendar, ShieldCheck } from "lucide-react";
+import { LanguageSwitcher } from "./ui/LanguageSwitcher";
 import { api } from "../api";
 import type { TherapistProfilePublic } from "../types";
 import { KZ_CITIES, SPECIALIZATIONS, AGE_GROUPS } from "../types";
@@ -74,9 +75,12 @@ export default function MarketplaceSearch() {
 
         <div className="max-w-5xl mx-auto text-center relative">
           <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{t("marketplace.title")}</motion.h1>
+          <div className="absolute top-0 right-0">
+            <LanguageSwitcher className="bg-white/50 backdrop-blur-sm border border-white/20 shadow-sm" />
+          </div>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">{t("marketplace.subtitle")}</motion.p>
           
-          <div className="flex flex-col md:flex-row gap-3 max-w-3xl mx-auto bg-card/60 backdrop-blur-xl border border-border/50 p-3 rounded-2xl shadow-xl shadow-primary/5">
+          <div className="flex flex-col md:flex-row gap-3 max-w-4xl mx-auto glass shadow-luxe p-3 rounded-2xl">
             <div className="flex flex-1 gap-2">
               <div className="relative flex-1">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/60" />
@@ -195,9 +199,9 @@ export default function MarketplaceSearch() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {profiles.map((p, idx) => (
-              <motion.div key={p.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.05 }}
+              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}
                 onClick={() => navigate(`/marketplace/${p.therapist_id}`)}
-                className="group bg-card border border-border/50 rounded-2xl p-6 cursor-pointer hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
+                className="group glass p-6 cursor-pointer hover:shadow-luxe hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 rounded-2xl"
               >
                 <div className="flex items-start gap-4 mb-4">
                   <div className="relative shrink-0">
@@ -206,8 +210,9 @@ export default function MarketplaceSearch() {
                     </div>
                     {p.verification_status === "verified" && (
                       <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-md">
-                        <div className="bg-blue-600 rounded-full p-1 shadow-inner">
+                        <div className="bg-blue-600 rounded-full p-1 shadow-inner relative overflow-hidden">
                           <ShieldCheck className="w-2.5 h-2.5 text-white" />
+                          <div className="absolute inset-0 badge-shimmer" />
                         </div>
                       </div>
                     )}

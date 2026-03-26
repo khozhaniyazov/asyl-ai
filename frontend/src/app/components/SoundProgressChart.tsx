@@ -17,9 +17,10 @@ const STAGE_COLORS: Record<string, string> = {
 
 interface Props {
   patientId: number;
+  refreshKey?: number;
 }
 
-export default function SoundProgressChart({ patientId }: Props) {
+export default function SoundProgressChart({ patientId, refreshKey = 0 }: Props) {
   const { t } = useTranslation();
   const [records, setRecords] = useState<SoundProgress[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ export default function SoundProgressChart({ patientId }: Props) {
       } catch { /* empty */ }
       setLoading(false);
     })();
-  }, [patientId]);
+  }, [patientId, refreshKey]);
 
   // Group by sound, get latest stage per sound
   const soundMap = useMemo(() => {

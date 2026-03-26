@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { api } from "../api";
 import SoundProgressChart from "./SoundProgressChart";
 import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./ui/LanguageSwitcher";
 
 const tabs = ["Home", "Homework", "Progress"] as const;
 
@@ -85,7 +86,10 @@ export default function ParentPortal() {
             <span className="text-[11px] text-muted-foreground">{parentInfo?.full_name || ""}</span>
           </div>
         </div>
-        <button onClick={handleLogout} className="text-muted-foreground p-2"><LogOut className="w-5 h-5" /></button>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <button onClick={handleLogout} className="text-muted-foreground p-2"><LogOut className="w-5 h-5" /></button>
+        </div>
       </header>
 
       <div className="max-w-lg mx-auto p-4 space-y-4 pb-24">

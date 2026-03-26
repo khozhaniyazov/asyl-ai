@@ -76,7 +76,7 @@ export default function TherapistLayout() {
         {sidebarOpen && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
       </AnimatePresence>
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-card border-r border-sidebar-border flex flex-col transition-transform duration-200 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 glass border-r border-sidebar-border flex flex-col transition-transform duration-200 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center"><Stethoscope className="w-5 h-5 text-primary-foreground" /></div>
           <div>
@@ -116,7 +116,7 @@ export default function TherapistLayout() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-border flex items-center px-4 lg:px-6 gap-4 bg-card shrink-0">
+        <header className="h-16 border-b border-border flex items-center px-4 lg:px-6 gap-4 bg-card shadow-luxe shrink-0">
           <button className="lg:hidden" onClick={() => setSidebarOpen(true)}><Menu className="w-5 h-5" /></button>
           <div className="flex-1 max-w-md relative" ref={searchRef}>
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />

@@ -7,7 +7,10 @@ import type { Patient, Appointment, SessionPackage, HomeworkAssignment, SoundPro
 import PackageCard from "./PackageCard";
 import SoundProgressChart from "./SoundProgressChart";
 import TreatmentPlanView from "./TreatmentPlanView";
+import AddSoundProgressModal from "./AddSoundProgressModal";
+import AssignHomeworkModal from "./AssignHomeworkModal";
 import { useTranslation } from "react-i18next";
+import { Plus } from "lucide-react";
 
 const tabs = ["Info", "History", "Financials", "Documents"] as const;
 
@@ -22,26 +25,32 @@ export default function PatientProfile() {
   const [packages, setPackages] = useState<SessionPackage[]>([]);
   const [homework, setHomework] = useState<HomeworkAssignment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => {
+  const [isSoundModalOpen, setIsSoundModalOpen] = useState(false);
+  const [isHwModalOpen, setIsHwModalOpen] = useState(false);
+
+  const fetchData = async () => {
     if (!id) return;
     const patientId = parseInt(id);
-    (async () => {
-      try {
-        const [p, appts, pkgs, hw] = await Promise.all([
-          api.getPatient(patientId),
-          api.getAppointments(0, 500),
-          api.getPackages(patientId),
-          api.getHomeworkAssignments(patientId),
-        ]);
-        setPatient(p);
-        setAppointments(appts.filter((a: Appointment) => a.patient_id === patientId));
-        setPackages(pkgs);
-        setHomework(hw);
-      } catch { /* empty */ }
-      setLoading(false);
-    })();
-  }, [id]);
+    try {
+      const [p, appts, pkgs, hw] = await Promise.all([
+        api.getPatient(patientId),
+        api.getAppointments(0, 500),
+        api.getPackages(patientId),
+        api.getHomeworkAssignments(patientId),
+      ]);
+      setPatient(p);
+      setAppointments(appts.filter((a: Appointment) => a.patient_id === patientId));
+      setPackages(pkgs);
+      setHomework(hw);
+    } catch { /* empty */ }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [id, refreshKey]);
 
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
@@ -119,8 +128,15 @@ export default function PatientProfile() {
             </div>
 
             {/* Sound Progress */}
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <SoundProgressChart patientId={patient.id} />
+            <div className="bg-card border border-border rounded-2xl p-5 relative">
+              <button 
+                onClick={() => setIsSoundModalOpen(true)}
+                className="absolute top-5 right-5 p-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all shadow-sm"
+                title={t("soundProgress.addRecord")}
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+              <SoundProgressChart patientId={patient.id} refreshKey={refreshKey} />
             </div>
 
             {/* Treatment Plans */}
@@ -224,6 +240,15 @@ export default function PatientProfile() {
 
         {activeTab === "Documents" && (
           <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h3 className="text-[14px] font-medium">{t("patientProfile.homeworkTitle") || "Homework"}</h3>
+              <button 
+                onClick={() => setIsHwModalOpen(true)}
+                className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-[13px] hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm"
+              >
+                <Plus className="w-4 h-4" /> {t("patientProfile.assignHomework") || "Assign"}
+              </button>
+            </div>
             {homework.length === 0 ? (
               <div className="bg-card border border-border rounded-2xl p-8 text-center">
                 <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
@@ -254,6 +279,20 @@ export default function PatientProfile() {
           </div>
         )}
       </motion.div>
+
+      {/* Modals */}
+      <AddSoundProgressModal 
+        patientId={patient.id}
+        isOpen={isSoundModalOpen}
+        onClose={() => setIsSoundModalOpen(false)}
+        onSuccess={() => setRefreshKey(k => k + 1)}
+      />
+      <AssignHomeworkModal
+        patientId={patient.id}
+        isOpen={isHwModalOpen}
+        onClose={() => setIsHwModalOpen(false)}
+        onSuccess={() => setRefreshKey(k => k + 1)}
+      />
     </div>
   );
 }

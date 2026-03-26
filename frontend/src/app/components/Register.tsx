@@ -5,6 +5,7 @@ import { Stethoscope, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../AuthContext";
 import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./ui/LanguageSwitcher";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -46,7 +47,10 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="w-full max-w-sm space-y-8">
-        <div className="text-center">
+        <div className="text-center relative">
+          <div className="absolute top-0 right-0 -mr-4">
+            <LanguageSwitcher />
+          </div>
           <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20">
             <Stethoscope className="w-8 h-8 text-primary-foreground" />
           </div>

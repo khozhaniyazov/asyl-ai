@@ -359,6 +359,14 @@
   "soundProgress": {
     "title": "Дыбыстар прогресі",
     "noData": "Дыбыстар прогресі туралы деректер әлі жоқ",
+    "addRecord": "Жазба қосу",
+    "soundLabel": "Дыбыс",
+    "stageLabel": "Кезең",
+    "accuracyLabel": "Дәлдік",
+    "enterSound": "Дыбысты енгізіңіз",
+    "saved": "Дыбыс прогресі сақталды",
+    "updateProgress": "Прогресті жаңарту",
+    "noActiveSounds": "Белсенді дыбыстар жоқ",
     "stage": {
       "not_started": "Басталмаған",
       "isolation": "Оқшаулау",
@@ -367,6 +375,15 @@
       "phrases": "Сөз тіркестері",
       "connected_speech": "Байланысты сөйлеу",
       "automated": "Автоматтандырылған"
+    },
+    "stage_short": {
+      "not_started": "Бастал.",
+      "isolation": "Оқшау.",
+      "syllables": "Буын.",
+      "words": "Сөздер",
+      "phrases": "Тіркес.",
+      "connected_speech": "Байл.",
+      "automated": "Авто"
     }
   },
   "availability": {

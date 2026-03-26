@@ -1,15 +1,19 @@
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --font-size: 16px;
+  
+  /* Premium HSL Palette */
+  --primary-h: 259;
+  --primary-s: 48%;
+  --primary-l: 55%;
+  --primary: hsl(var(--primary-h) var(--primary-s) var(--primary-l));
+  --primary-foreground: 0 0% 100%;
+
   --background: #fafaf9;
   --foreground: #1c1917;
   --card: #ffffff;
   --card-foreground: #1c1917;
   --popover: #ffffff;
   --popover-foreground: #1c1917;
-  --primary: #7c5cbf;
-  --primary-foreground: #ffffff;
   --secondary: #f3f0fa;
   --secondary-foreground: #1c1917;
   --muted: #f0eeeb;
@@ -22,23 +26,47 @@
   --input: transparent;
   --input-background: #f5f3f0;
   --switch-background: #cbced4;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --ring: #7c5cbf;
-  --chart-1: #7c5cbf;
-  --chart-2: #38bdf8;
-  --chart-3: #f59e0b;
-  --chart-4: #10b981;
-  --chart-5: #f43f5e;
-  --radius: 0.625rem;
+  --radius: 1rem; /* Bolder corners */
   --sidebar: #ffffff;
   --sidebar-foreground: #1c1917;
-  --sidebar-primary: #7c5cbf;
+  --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f3f0fa;
   --sidebar-accent-foreground: #1c1917;
-  --sidebar-border: rgba(0, 0, 0, 0.06);
-  --sidebar-ring: #7c5cbf;
+  --sidebar-border: rgba(0, 0, 0, 0.04);
+}
+
+/* Base Luxury Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/30 saturate-[180%];
+  }
+  
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 saturate-[150%];
+  }
+
+  .shadow-luxe {
+    box-shadow: 
+      0 10px 40px -10px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.12),
+      0 5px 20px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  .badge-shimmer {
+    background: linear-gradient(
+      90deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.4) 50%, 
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-swipe 3s infinite linear;
+  }
+
+  @keyframes shimmer-swipe {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
 }
 
 .dark {
