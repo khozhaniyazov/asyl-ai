@@ -40,7 +40,7 @@ class Reminder(Base):
     sent_at = Column(DateTime, nullable=True)
     status = Column(Enum(ReminderStatus), default=ReminderStatus.SCHEDULED)
     error_message = Column(String, nullable=True)
-    celery_task_id = Column(String, nullable=True)  # track the Celery task
+    celery_task_id = Column(String, nullable=True)  # legacy field, unused
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     appointment = relationship("Appointment", back_populates="reminders")

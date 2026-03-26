@@ -1,5 +1,8 @@
 from .schemas import (
-    PatientCreate, PatientResponse,
-    AppointmentCreate, AppointmentResponse,
-    SOAPResponse
+    PatientCreate,
+    PatientResponse,
+    AppointmentCreate,
+    AppointmentResponse,
+    SessionUpdate,
+    SessionResponse,
 )

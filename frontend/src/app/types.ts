@@ -51,8 +51,6 @@ export interface Session {
   id: number;
   appointment_id: number;
   status: string;
-  audio_file_path: string | null;
-  raw_transcript: string | null;
   soap_subjective: string | null;
   soap_objective: string | null;
   soap_assessment: string | null;

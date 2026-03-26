@@ -125,14 +125,6 @@ class AppointmentResponse(AppointmentBase):
 # --- Sessions ---
 
 
-class SOAPResponse(BaseModel):
-    subjective: str
-    objective: str
-    assessment: str
-    plan: str
-    homework_for_parents: str
-
-
 class SessionUpdate(BaseModel):
     soap_subjective: Optional[str] = None
     soap_objective: Optional[str] = None
@@ -147,8 +139,6 @@ class SessionResponse(BaseModel):
     id: int
     appointment_id: int
     status: str
-    audio_file_path: Optional[str] = None
-    raw_transcript: Optional[str] = None
     soap_subjective: Optional[str] = None
     soap_objective: Optional[str] = None
     soap_assessment: Optional[str] = None

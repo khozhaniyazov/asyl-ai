@@ -19,10 +19,6 @@ class Session(Base):
     soap_plan = Column(Text, nullable=True)
     homework_for_parents = Column(Text, nullable=True)
 
-    # Legacy columns kept for migration compatibility
-    audio_file_path = Column(String, nullable=True)
-    raw_transcript = Column(Text, nullable=True)
-
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     appointment = relationship("Appointment", back_populates="session")

@@ -55,13 +55,13 @@ class WhatsAppService:
 whatsapp_service = WhatsAppService()
 
 
-# --- Module-level convenience functions for Celery tasks ---
+# --- Module-level convenience functions for reminders ---
 
 
 async def send_appointment_reminder(
     phone: str, patient_name: str, appointment_time, reminder_type: str
 ) -> bool:
-    """Send appointment reminder. Called from Celery tasks."""
+    """Send appointment reminder."""
     time_str = appointment_time.strftime("%d.%m.%Y %H:%M") if appointment_time else "—"
     if reminder_type == "session_1h":
         message = (
@@ -73,7 +73,7 @@ async def send_appointment_reminder(
 
 
 async def send_homework_reminder_msg(phone: str, patient_name: str, due_date) -> bool:
-    """Send homework due reminder. Called from Celery tasks."""
+    """Send homework due reminder."""
     date_str = due_date.strftime("%d.%m.%Y") if due_date else "скоро"
     message = (
         f"Напоминание: домашнее задание для {patient_name} "
