@@ -521,6 +521,8 @@
     "verifiedOnly": "Только подтверждённые",
     "sessions": "сеансов",
     "patients": "пациентов",
+    "location": "Локация",
+    "pricePerSession": "Цена за сеанс",
     "nextSlot": "Ближайшее время",
     "videoIntro": "Видео-визитка",
     "videoIntroUrl": "Ссылка на видео-визитку",

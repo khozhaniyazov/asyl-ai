@@ -521,6 +521,8 @@
     "verifiedOnly": "Тек расталғандар",
     "sessions": "сеанс",
     "patients": "пациент",
+    "location": "Орналасуы",
+    "pricePerSession": "Сеанс бағасы",
     "nextSlot": "Жақын уақыт",
     "videoIntro": "Бейне-визитка",
     "videoIntroUrl": "Бейне-визитка сілтемесі",
