@@ -12,19 +12,19 @@ import ParentLogin from "./components/ParentLogin";
 import ParentPortal from "./components/ParentPortal";
 import OnboardingWizard from "./components/OnboardingWizard";
 import HomeworkLibrary from "./components/HomeworkLibrary";
-import WaitlistView from "./components/WaitlistView";
-// v3: marketplace
-import MarketplaceSearch from "./components/MarketplaceSearch";
-import TherapistPublicProfile from "./components/TherapistPublicProfile";
-import MarketplaceProfile from "./components/MarketplaceProfile";
-import IncomingBookings from "./components/IncomingBookings";
-// B+C: new features
-import MessagesView from "./components/MessagesView";
-import AnalyticsDashboard from "./components/AnalyticsDashboard";
-import ClinicManagement from "./components/ClinicManagement";
-import PayoutDashboard from "./components/PayoutDashboard";
-import AdminDashboard from "./components/AdminDashboard";
-import AdminVerification from "./components/AdminVerification";
+
+// Phase 2 imports (hidden for MVP)
+// import WaitlistView from "./components/WaitlistView";
+// import MarketplaceSearch from "./components/MarketplaceSearch";
+// import TherapistPublicProfile from "./components/TherapistPublicProfile";
+// import MarketplaceProfile from "./components/MarketplaceProfile";
+// import IncomingBookings from "./components/IncomingBookings";
+// import MessagesView from "./components/MessagesView";
+// import AnalyticsDashboard from "./components/AnalyticsDashboard";
+// import ClinicManagement from "./components/ClinicManagement";
+// import PayoutDashboard from "./components/PayoutDashboard";
+// import AdminDashboard from "./components/AdminDashboard";
+// import AdminVerification from "./components/AdminVerification";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -33,9 +33,6 @@ export const router = createBrowserRouter([
   { path: "/parent/login", Component: ParentLogin },
   { path: "/parent", Component: ParentPortal },
   { path: "/parent/portal", Component: ParentPortal },
-  // v3: public marketplace pages
-  { path: "/marketplace", Component: MarketplaceSearch },
-  { path: "/marketplace/:therapistId", Component: TherapistPublicProfile },
   {
     path: "/",
     Component: TherapistLayout,
@@ -46,19 +43,17 @@ export const router = createBrowserRouter([
       { path: "session/:appointmentId", Component: ActiveSession },
       { path: "finance", Component: Finance },
       { path: "homework", Component: HomeworkLibrary },
-      { path: "waitlist", Component: WaitlistView },
-      // v3: marketplace management
-      { path: "profile", Component: MarketplaceProfile },
-      { path: "bookings", Component: IncomingBookings },
-      // B+C: new features
-      { path: "messages", Component: MessagesView },
-      { path: "analytics", Component: AnalyticsDashboard },
-      { path: "clinic", Component: ClinicManagement },
       { path: "settings", Component: Settings },
-      // Payouts & Admin
-      { path: "payouts", Component: PayoutDashboard },
-      { path: "admin", Component: AdminDashboard },
-      { path: "admin/verification", Component: AdminVerification },
+      // Phase 2 routes (hidden for MVP)
+      // { path: "waitlist", Component: WaitlistView },
+      // { path: "profile", Component: MarketplaceProfile },
+      // { path: "bookings", Component: IncomingBookings },
+      // { path: "messages", Component: MessagesView },
+      // { path: "analytics", Component: AnalyticsDashboard },
+      // { path: "clinic", Component: ClinicManagement },
+      // { path: "payouts", Component: PayoutDashboard },
+      // { path: "admin", Component: AdminDashboard },
+      // { path: "admin/verification", Component: AdminVerification },
     ],
   },
 ]);

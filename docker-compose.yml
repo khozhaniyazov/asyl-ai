@@ -59,9 +59,6 @@ services:
     environment:
       - DATABASE_URL=postgresql+asyncpg://logoped_user:logoped_password@db:5432/asyl_ai_db
       - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/1
-      - GEMINI_API_KEY=\
       - SECRET_KEY=\
       - AWS_ACCESS_KEY_ID=asyl_admin
       - AWS_SECRET_ACCESS_KEY=asyl_secret_password
@@ -73,40 +70,6 @@ services:
       - redis
     volumes:
       - ./backend:/app
-
-  celery-worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: celery -A celery_worker.celery_app worker --loglevel=info -Q default,reminders,notifications --concurrency=2
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://logoped_user:logoped_password@db:5432/asyl_ai_db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/1
-      - GEMINI_API_KEY=\
-      - SECRET_KEY=\
-      - WHATSAPP_API_TOKEN=\
-      - WHATSAPP_PHONE_NUMBER_ID=\
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./backend:/app
-
-  celery-beat:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: celery -A celery_worker.celery_app beat --loglevel=info
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://logoped_user:logoped_password@db:5432/asyl_ai_db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/1
-    depends_on:
-      - db
-      - redis
 
   frontend:
     build:

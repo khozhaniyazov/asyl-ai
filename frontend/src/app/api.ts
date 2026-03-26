@@ -130,18 +130,9 @@ export const api = {
     return response.data;
   },
 
-  // --- SESSIONS (EMR & AI) ---
-  transcribeAndAnalyze: async (appointmentId: number, audioBlob: Blob) => {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'session.webm');
-    const response = await apiClient.post(`/sessions/${appointmentId}/transcribe-and-analyze`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
-  },
-
-  pollSessionStatus: async (sessionId: number) => {
-    const response = await apiClient.get(`/sessions/${sessionId}/status`);
+  // --- SESSIONS ---
+  createSession: async (appointmentId: number, data: Record<string, unknown>) => {
+    const response = await apiClient.post(`/sessions/${appointmentId}`, data);
     return response.data;
   },
 

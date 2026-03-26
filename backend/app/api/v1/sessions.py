@@ -1,134 +1,77 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from app.core.database import get_db, AsyncSessionLocal
+from app.core.database import get_db
 from app.models import Session, Appointment, Patient, Therapist
-from app.schemas.schemas import SOAPResponse, SessionUpdate, SessionResponse
-from app.integrations.whisper_service import WhisperService
+from app.schemas.schemas import SessionUpdate, SessionResponse
 from app.integrations.whatsapp_service import whatsapp_service
-from app.services.llm_service import LLMService
-from app.services.s3_service import s3_service
 from app.api.deps import get_current_user
-import enum
 from pydantic import BaseModel
-import asyncio
+from typing import Optional
 
 
-class SessionStatus(str, enum.Enum):
-    PENDING = "pending"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class SessionStatusResponse(BaseModel):
-    id: int
-    status: str
-    soap: SOAPResponse | None = None
+class CreateSessionRequest(BaseModel):
+    soap_subjective: Optional[str] = None
+    soap_objective: Optional[str] = None
+    soap_assessment: Optional[str] = None
+    soap_plan: Optional[str] = None
+    homework_for_parents: Optional[str] = None
 
 
 router = APIRouter()
 
 
-async def process_audio_background(
-    session_id: int, audio_bytes: bytes, patient_diagnosis: str, previous_plan: str
-):
-    async with AsyncSessionLocal() as db:
-        try:
-            # 0. Upload to S3
-            s3_key = await asyncio.to_thread(s3_service.upload_audio, audio_bytes)
-
-            # 1. Transcription (Uses real OpenAI if key is present, otherwise falls back to mock)
-            transcript = await WhisperService.transcribe(audio_bytes)
-
-            # 2. Generate SOAP via LLM
-            soap_dict = await LLMService.generate_soap_note(
-                patient_diagnosis=patient_diagnosis,
-                previous_plan=previous_plan,
-                raw_transcript=transcript,
-            )
-
-            # 3. Update DB
-            result = await db.execute(select(Session).filter(Session.id == session_id))
-            db_session = result.scalars().first()
-            if db_session:
-                db_session.audio_file_path = s3_key
-                db_session.raw_transcript = transcript
-                db_session.soap_subjective = soap_dict.get("subjective")
-                db_session.soap_objective = soap_dict.get("objective")
-                db_session.soap_assessment = soap_dict.get("assessment")
-                db_session.soap_plan = soap_dict.get("plan")
-                db_session.homework_for_parents = soap_dict.get("homework_for_parents")
-                db_session.status = SessionStatus.COMPLETED
-                await db.commit()
-        except Exception as e:
-            result = await db.execute(select(Session).filter(Session.id == session_id))
-            db_session = result.scalars().first()
-            if db_session:
-                db_session.status = SessionStatus.FAILED
-                await db.commit()
-
-
-@router.post("/{appointment_id}/transcribe-and-analyze")
-async def process_session_audio(
+@router.post("/{appointment_id}", response_model=SessionResponse)
+async def create_session(
     appointment_id: int,
-    background_tasks: BackgroundTasks,
-    audio: UploadFile = File(...),
+    data: CreateSessionRequest,
     db: AsyncSession = Depends(get_db),
     current_user: Therapist = Depends(get_current_user),
 ):
+    """Create a session with manual SOAP notes for an appointment."""
     result = await db.execute(
-        select(Appointment)
-        .options(selectinload(Appointment.patient))
-        .filter(
+        select(Appointment).filter(
             Appointment.id == appointment_id,
             Appointment.therapist_id == current_user.id,
         )
     )
     appt = result.scalars().first()
-
     if not appt:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
-    patient_diagnosis = appt.patient.diagnosis if appt.patient else ""
-    previous_plan = ""
-
-    session_result = await db.execute(
+    # Check if session already exists
+    existing = await db.execute(
         select(Session).filter(Session.appointment_id == appointment_id)
     )
-    db_session = session_result.scalars().first()
+    db_session = existing.scalars().first()
 
-    if not db_session:
+    if db_session:
+        # Update existing session
+        for field, value in data.model_dump(exclude_unset=True).items():
+            setattr(db_session, field, value)
+        db_session.status = "completed"
+    else:
+        # Create new session
         db_session = Session(
-            appointment_id=appointment_id, status=SessionStatus.PROCESSING
+            appointment_id=appointment_id,
+            status="completed",
+            **data.model_dump(exclude_unset=True),
         )
         db.add(db_session)
-    else:
-        db_session.status = SessionStatus.PROCESSING
 
     await db.commit()
     await db.refresh(db_session)
-
-    audio_bytes = await audio.read()
-
-    background_tasks.add_task(
-        process_audio_background,
-        session_id=db_session.id,
-        audio_bytes=audio_bytes,
-        patient_diagnosis=patient_diagnosis,
-        previous_plan=previous_plan,
-    )
-
-    return {"message": "Audio processing started", "session_id": db_session.id}
+    return db_session
 
 
-@router.get("/{session_id}/status", response_model=SessionStatusResponse)
-async def get_session_status(
+@router.get("/{session_id}", response_model=SessionResponse)
+async def get_session(
     session_id: int,
     db: AsyncSession = Depends(get_db),
     current_user: Therapist = Depends(get_current_user),
 ):
+    """Retrieve a session by ID."""
     result = await db.execute(
         select(Session)
         .join(Appointment)
@@ -137,25 +80,7 @@ async def get_session_status(
     db_session = result.scalars().first()
     if not db_session:
         raise HTTPException(status_code=404, detail="Session not found")
-
-    response = {
-        "id": db_session.id,
-        "status": getattr(db_session, "status", SessionStatus.PROCESSING),
-    }
-
-    if (
-        getattr(db_session, "status", SessionStatus.PROCESSING)
-        == SessionStatus.COMPLETED
-    ):
-        response["soap"] = {
-            "subjective": db_session.soap_subjective or "",
-            "objective": db_session.soap_objective or "",
-            "assessment": db_session.soap_assessment or "",
-            "plan": db_session.soap_plan or "",
-            "homework_for_parents": db_session.homework_for_parents or "",
-        }
-
-    return response
+    return db_session
 
 
 @router.put("/{session_id}", response_model=SessionResponse)

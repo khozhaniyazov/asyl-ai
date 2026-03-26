@@ -15,25 +15,26 @@ from . import (
     availability,
     schedule_requests,
     cancellations,
-    waitlist,
-    # v3: marketplace
-    marketplace_profiles,
-    marketplace_reviews,
-    marketplace_bookings,
     finance,
-    # B+C: new features
-    treatment_plans,
-    messaging,
-    analytics,
-    data_export,
-    reports,
-    clinics,
-    payouts,
-    admin,
-    admin_verification,
+    # Phase 2 features (hidden for MVP)
+    # waitlist,
+    # marketplace_profiles,
+    # marketplace_reviews,
+    # marketplace_bookings,
+    # treatment_plans,
+    # messaging,
+    # analytics,
+    # data_export,
+    # reports,
+    # clinics,
+    # payouts,
+    # admin,
+    # admin_verification,
 )
 
 router = APIRouter()
+
+# Core CRM features (active)
 router.include_router(auth.router, prefix="/auth", tags=["auth"])
 router.include_router(
     appointments.router, prefix="/appointments", tags=["appointments"]
@@ -63,29 +64,22 @@ router.include_router(
 router.include_router(
     cancellations.router, prefix="/cancellations", tags=["cancellations"]
 )
-router.include_router(waitlist.router, prefix="/waitlist", tags=["waitlist"])
-# v3: marketplace
-router.include_router(
-    marketplace_profiles.router, prefix="/marketplace/profiles", tags=["marketplace"]
-)
-router.include_router(
-    marketplace_reviews.router, prefix="/marketplace/reviews", tags=["marketplace"]
-)
-router.include_router(
-    marketplace_bookings.router, prefix="/marketplace/bookings", tags=["marketplace"]
-)
 router.include_router(finance.router, prefix="/finance", tags=["finance"])
-# B+C: new features
-router.include_router(
-    treatment_plans.router, prefix="/treatment", tags=["treatment-plans"]
-)
-router.include_router(messaging.router, prefix="/messaging", tags=["messaging"])
-router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
-router.include_router(data_export.router, prefix="/export", tags=["export"])
-router.include_router(reports.router, prefix="/reports", tags=["reports"])
-router.include_router(clinics.router, prefix="/clinics", tags=["clinics"])
-router.include_router(payouts.router, prefix="/payouts", tags=["payouts"])
-router.include_router(admin.router, prefix="/admin", tags=["admin"])
-router.include_router(
-    admin_verification.router, prefix="/admin/verification", tags=["admin"]
-)
+
+# Phase 2 features (commented out for MVP launch)
+# Marketplace
+# router.include_router(marketplace_profiles.router, prefix="/marketplace/profiles", tags=["marketplace"])
+# router.include_router(marketplace_reviews.router, prefix="/marketplace/reviews", tags=["marketplace"])
+# router.include_router(marketplace_bookings.router, prefix="/marketplace/bookings", tags=["marketplace"])
+
+# Advanced features
+# router.include_router(waitlist.router, prefix="/waitlist", tags=["waitlist"])
+# router.include_router(treatment_plans.router, prefix="/treatment", tags=["treatment-plans"])
+# router.include_router(messaging.router, prefix="/messaging", tags=["messaging"])
+# router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
+# router.include_router(data_export.router, prefix="/export", tags=["export"])
+# router.include_router(reports.router, prefix="/reports", tags=["reports"])
+# router.include_router(clinics.router, prefix="/clinics", tags=["clinics"])
+# router.include_router(payouts.router, prefix="/payouts", tags=["payouts"])
+# router.include_router(admin.router, prefix="/admin", tags=["admin"])
+# router.include_router(admin_verification.router, prefix="/admin/verification", tags=["admin"])
