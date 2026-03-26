@@ -24,6 +24,7 @@ import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import ClinicManagement from "./components/ClinicManagement";
 import PayoutDashboard from "./components/PayoutDashboard";
 import AdminDashboard from "./components/AdminDashboard";
+import AdminVerification from "./components/AdminVerification";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: Login },
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       // Payouts & Admin
       { path: "payouts", Component: PayoutDashboard },
       { path: "admin", Component: AdminDashboard },
+      { path: "admin/verification", Component: AdminVerification },
     ],
   },
 ]);

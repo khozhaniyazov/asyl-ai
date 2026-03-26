@@ -781,4 +781,22 @@ export const api = {
     const response = await apiClient.post(`/admin/payouts/${payoutId}/reject`, { admin_notes: notes });
     return response.data;
   },
+
+  // --- ADMIN VERIFICATION (dedicated) ---
+  adminGetAllVerifications: async (status?: string) => {
+    let url = '/admin/verification/all';
+    if (status) url += `?status=${encodeURIComponent(status)}`;
+    const response = await apiClient.get(url);
+    return response.data;
+  },
+
+  adminGetVerificationStats: async () => {
+    const response = await apiClient.get('/admin/verification/stats');
+    return response.data;
+  },
+
+  adminGetVerificationDetail: async (profileId: number) => {
+    const response = await apiClient.get(`/admin/verification/${profileId}`);
+    return response.data;
+  },
 };

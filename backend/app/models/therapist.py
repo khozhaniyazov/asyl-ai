@@ -28,7 +28,10 @@ class Therapist(Base):
     waitlist_entries = relationship("WaitlistEntry", back_populates="therapist")
     # v3: marketplace
     profile = relationship(
-        "TherapistProfile", back_populates="therapist", uselist=False
+        "TherapistProfile",
+        back_populates="therapist",
+        uselist=False,
+        foreign_keys="TherapistProfile.therapist_id",
     )
     reviews = relationship("Review", back_populates="therapist")
     marketplace_bookings = relationship(

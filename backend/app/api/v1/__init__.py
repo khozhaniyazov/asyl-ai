@@ -30,6 +30,7 @@ from . import (
     clinics,
     payouts,
     admin,
+    admin_verification,
 )
 
 router = APIRouter()
@@ -85,3 +86,6 @@ router.include_router(reports.router, prefix="/reports", tags=["reports"])
 router.include_router(clinics.router, prefix="/clinics", tags=["clinics"])
 router.include_router(payouts.router, prefix="/payouts", tags=["payouts"])
 router.include_router(admin.router, prefix="/admin", tags=["admin"])
+router.include_router(
+    admin_verification.router, prefix="/admin/verification", tags=["admin"]
+)

@@ -59,6 +59,9 @@ class TherapistProfile(Base):
     )
     verification_submitted_at = Column(DateTime, nullable=True)
     verification_notes = Column(Text, nullable=True)  # admin notes on verification
+    verified_at = Column(DateTime, nullable=True)
+    verified_by_id = Column(Integer, ForeignKey("therapists.id"), nullable=True)
+    rejection_reason = Column(Text, nullable=True)
     is_published = Column(Boolean, default=False, index=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(
@@ -67,4 +70,9 @@ class TherapistProfile(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
-    therapist = relationship("Therapist", back_populates="profile")
+    therapist = relationship(
+        "Therapist",
+        back_populates="profile",
+        foreign_keys=[therapist_id],
+    )
+    verified_by = relationship("Therapist", foreign_keys=[verified_by_id])

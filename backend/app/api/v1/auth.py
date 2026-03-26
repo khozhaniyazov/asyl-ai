@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from pydantic import BaseModel
+from typing import Optional
 
 from app.core.database import get_db
 from app.core.security import verify_password, get_password_hash, create_access_token
@@ -16,6 +18,11 @@ from app.schemas.schemas import (
 from app.api.deps import get_current_user
 
 router = APIRouter()
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
 
 @router.post("/register", response_model=TherapistResponse)
@@ -40,15 +47,11 @@ async def register(user_in: TherapistCreate, db: AsyncSession = Depends(get_db))
     return user
 
 
-@router.post("/login", response_model=Token)
-async def login(
-    db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
-):
-    result = await db.execute(
-        select(Therapist).filter(Therapist.email == form_data.username)
-    )
+async def _authenticate(email: str, password: str, db: AsyncSession) -> dict:
+    """Shared authentication logic for both form and JSON login."""
+    result = await db.execute(select(Therapist).filter(Therapist.email == email))
     user = result.scalars().first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
 
     access_token_expires = timedelta(minutes=60 * 24 * 8)
@@ -58,6 +61,24 @@ async def login(
         ),
         "token_type": "bearer",
     }
+
+
+@router.post("/login", response_model=Token)
+async def login(
+    db: AsyncSession = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    """Login via application/x-www-form-urlencoded (OAuth2 standard)."""
+    return await _authenticate(form_data.username, form_data.password, db)
+
+
+@router.post("/login/json", response_model=Token)
+async def login_json(
+    data: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Login via JSON body (for convenience)."""
+    return await _authenticate(data.username, data.password, db)
 
 
 @router.get("/me", response_model=TherapistResponse)
