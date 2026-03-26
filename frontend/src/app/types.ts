@@ -36,6 +36,8 @@ export interface Appointment {
   package_id: number | null;
   reminder_sent: boolean;
   requested_by: "therapist" | "parent";
+  session_type: "IN_PERSON" | "ONLINE" | "HYBRID";
+  meeting_link: string | null;
 }
 
 export interface AppointmentWithPatient extends Appointment {

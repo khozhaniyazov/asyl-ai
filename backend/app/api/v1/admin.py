@@ -89,6 +89,8 @@ async def approve_verification(
         )
 
     profile.verification_status = VerificationStatus.VERIFIED
+    profile.verified_at = datetime.now(timezone.utc)
+    profile.verified_by_id = admin.id
     profile.verification_notes = (
         data.verification_notes or f"Approved by admin {admin.id}"
     )
@@ -116,6 +118,8 @@ async def reject_verification(
         )
 
     profile.verification_status = VerificationStatus.REJECTED
+    profile.verified_by_id = admin.id
+    profile.rejection_reason = data.verification_notes or "Rejected"
     profile.verification_notes = data.verification_notes or "Rejected"
     await db.commit()
     return {"detail": "Verification rejected", "status": "rejected"}

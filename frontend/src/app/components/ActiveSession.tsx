@@ -5,7 +5,9 @@ import { Mic, MicOff, Square, Pause, Play, ArrowLeft, Loader2, Send, Save, Check
 import { toast } from "sonner";
 import { api } from "../api";
 import { SOAPTextArea } from "./SOAPTextArea";
-import type { HomeworkTemplate } from "../types";
+import SoundProgressPicker from "./SoundProgressPicker";
+import type { HomeworkTemplate, SoundProgress, Appointment } from "../types";
+import { SOUND_STAGES } from "../types";
 import { useTranslation } from "react-i18next";
 
 type Phase = "recording" | "processing" | "review";
@@ -47,16 +49,34 @@ export default function ActiveSession() {
   const [hwAssigned, setHwAssigned] = useState(false);
   const [patientId, setPatientId] = useState<number | null>(null);
 
+  // New states for v3
+  const [appointment, setAppointment] = useState<Appointment | null>(null);
+  const [soundUpdates, setSoundUpdates] = useState<{ sound: string; stage: any }[]>([]);
+
   // Load appointment info
   useEffect(() => {
     if (!appointmentId) return;
     (async () => {
       try {
         const appt = await api.getAppointment(parseInt(appointmentId));
+        setAppointment(appt);
         const patient = await api.getPatient(appt.patient_id);
         setPatientName(`${patient.first_name} ${patient.last_name}`);
         setPatientId(appt.patient_id);
         setAppointmentInfo(new Date(appt.start_time).toLocaleString());
+        
+        // Pre-load existing sound progress to show what's currently being worked on
+        const progress = await api.getSoundProgress(appt.patient_id);
+        // Take latest record per sound
+        const soundMap = new Map();
+        progress.forEach((r: SoundProgress) => {
+          if (!soundMap.has(r.sound)) soundMap.set(r.sound, r);
+        });
+        setSoundUpdates(Array.from(soundMap.values()).map(r => ({ 
+          sound: r.sound, 
+          stage: r.stage as typeof SOUND_STAGES[number] 
+        })));
+
         // Load homework templates for assignment step
         const templates = await api.getHomeworkTemplates();
         setHwTemplates(templates);
@@ -222,6 +242,17 @@ export default function ActiveSession() {
         });
       }
       toast.success(t("session.sessionSaved"));
+      
+      // Save sound updates if any
+      if (sessionId && soundUpdates.length > 0) {
+        await Promise.all(soundUpdates.map(s => api.createSoundProgress({
+          patient_id: patientId,
+          session_id: sessionId,
+          sound: s.sound,
+          stage: s.stage
+        })));
+      }
+
       navigate("/");
     } catch {
       toast.error(t("session.failedSave"));
@@ -301,7 +332,14 @@ export default function ActiveSession() {
         <div className="text-right flex items-center gap-3">
           <div>
             <h2>{patientName}</h2>
-            <p className="text-[13px] text-muted-foreground">{appointmentInfo}</p>
+            <div className="flex flex-col items-end">
+              <p className="text-[13px] text-muted-foreground">{appointmentInfo}</p>
+              {appointment?.session_type === 'ONLINE' && appointment.meeting_link && (
+                <a href={appointment.meeting_link} target="_blank" rel="noopener noreferrer" className="text-[11px] text-primary hover:underline font-medium mt-1">
+                  {t("session.joinVideoCall")}
+                </a>
+              )}
+            </div>
           </div>
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px]">
             {patientName.split(" ").map((n) => n[0]).join("")}
@@ -423,6 +461,13 @@ export default function ActiveSession() {
                   <SOAPTextArea key={key} label={key} sectionKey={key} value={soap[key]} onChange={(v) => setSoap({ ...soap, [key]: v })} rows={key === "plan" ? 5 : 3} />
                 ))}
               </div>
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <SoundProgressPicker 
+                initialSounds={soundUpdates} 
+                onChange={setSoundUpdates} 
+              />
             </div>
 
             <div className="bg-card border border-border rounded-2xl p-6 space-y-4">

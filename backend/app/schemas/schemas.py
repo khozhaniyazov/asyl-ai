@@ -520,6 +520,11 @@ class TherapistProfileResponse(BaseModel):
     response_time_hours: Optional[int] = None
     success_stories: Optional[list[dict]] = None
     verification_status: VerificationStatus = VerificationStatus.UNVERIFIED
+    verification_submitted_at: Optional[datetime] = None
+    verification_notes: Optional[str] = None
+    verified_at: Optional[datetime] = None
+    verified_by_id: Optional[int] = None
+    rejection_reason: Optional[str] = None
     is_published: bool = False
     created_at: datetime
     updated_at: Optional[datetime] = None
