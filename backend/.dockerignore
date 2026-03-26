@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite3
+.env
+.venv
+venv/
+.pytest_cache/
+.ruff_cache/
+*.log
+tmp/
+.git/
+.gitignore
+README.md
+tests/
