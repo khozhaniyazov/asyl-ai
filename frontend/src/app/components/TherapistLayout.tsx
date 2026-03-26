@@ -44,11 +44,11 @@ export default function TherapistLayout() {
   const initials = user.full_name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
   const navItems = [
-    { to: "/", icon: CalendarDays, label: t("nav.dashboard") },
-    { to: "/patients", icon: Users, label: t("nav.patients") },
-    { to: "/homework", icon: BookOpen, label: t("nav.homework") },
-    { to: "/finance", icon: DollarSign, label: t("nav.finance") },
-    { to: "/settings", icon: Settings, label: t("nav.settings") },
+    { to: "/dashboard", icon: CalendarDays, label: t("nav.dashboard") },
+    { to: "/dashboard/patients", icon: Users, label: t("nav.patients") },
+    { to: "/dashboard/homework", icon: BookOpen, label: t("nav.homework") },
+    { to: "/dashboard/finance", icon: DollarSign, label: t("nav.finance") },
+    { to: "/dashboard/settings", icon: Settings, label: t("nav.settings") },
   ];
 
   const notifications = [
@@ -85,7 +85,7 @@ export default function TherapistLayout() {
             </NavLink>
           ))}
           <div className="pt-4 px-3"><p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">{t("nav.quickActions")}</p></div>
-          <button onClick={() => { navigate("/patients"); setSidebarOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-all w-full">
+          <button onClick={() => { navigate("/dashboard/patients"); setSidebarOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground transition-all w-full">
             <Plus className="w-5 h-5" /><span className="text-[14px]">{t("nav.newPatient")}</span>
           </button>
         </nav>
@@ -119,7 +119,7 @@ export default function TherapistLayout() {
                   {searchResults.length === 0 ? (
                     <div className="px-4 py-6 text-center text-[13px] text-muted-foreground">{t("search.noResults")} "{searchQuery}"</div>
                   ) : searchResults.map((p: any) => (
-                    <button key={p.id} onClick={() => { navigate(`/patients/${p.id}`); setSearchQuery(""); setSearchFocused(false); }} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors text-left">
+                    <button key={p.id} onClick={() => { navigate(`/dashboard/patients/${p.id}`); setSearchQuery(""); setSearchFocused(false); }} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent/50 transition-colors text-left">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[12px] shrink-0">{(p.first_name?.[0] || "") + (p.last_name?.[0] || "")}</div>
                       <div><p className="text-[13px]">{p.first_name} {p.last_name}</p><p className="text-[11px] text-muted-foreground">{p.diagnosis || t("search.noDiagnosis")}</p></div>
                     </button>

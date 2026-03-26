@@ -160,7 +160,7 @@ export default function Patients() {
                 {patients.map((p) => (
                   <tr
                     key={p.id}
-                    onClick={() => navigate(`/patients/${p.id}`)}
+                    onClick={() => navigate(`/dashboard/patients/${p.id}`)}
                     className="border-b border-border last:border-0 hover:bg-accent/30 cursor-pointer transition-colors"
                   >
                     <td className="px-4 py-3.5">

@@ -126,7 +126,7 @@ export default function ActiveSession() {
       }
 
       toast.success(t("session.sessionSaved"));
-      navigate("/");
+      navigate("/dashboard");
     } catch {
       toast.error(t("session.failedSave"));
     } finally {
@@ -191,7 +191,7 @@ export default function ActiveSession() {
       // Send homework via WhatsApp
       await api.sendHomework(sid);
       toast.success(t("session.sessionSavedHomework"));
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       const msg = err?.response?.data?.detail || t("session.failedSave");
       toast.error(msg);

@@ -16,7 +16,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   if (!authLoading && user) {
-    navigate("/", { replace: true });
+    navigate("/dashboard", { replace: true });
     return null;
   }
 

@@ -58,7 +58,7 @@ export default function PatientProfile() {
     return (
       <div className="text-center py-20">
         <h2>{t("patientProfile.patientNotFound")}</h2>
-        <button onClick={() => navigate("/patients")} className="mt-4 text-primary hover:underline text-[14px]">
+        <button onClick={() => navigate("/dashboard/patients")} className="mt-4 text-primary hover:underline text-[14px]">
           {t("patientProfile.backToPatients")}
         </button>
       </div>
@@ -72,7 +72,7 @@ export default function PatientProfile() {
 
   return (
     <div className="space-y-6">
-      <button onClick={() => navigate("/patients")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-[14px] transition-colors">
+      <button onClick={() => navigate("/dashboard/patients")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-[14px] transition-colors">
         <ArrowLeft className="w-4 h-4" /> {t("patientProfile.backToPatients")}
       </button>
 

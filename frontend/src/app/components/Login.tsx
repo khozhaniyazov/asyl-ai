@@ -17,7 +17,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   if (!authLoading && user) {
-    navigate("/", { replace: true });
+    navigate("/dashboard", { replace: true });
     return null;
   }
 
@@ -31,7 +31,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       const msg = err?.response?.data?.detail || t("auth.loginFailed");
       toast.error(msg);

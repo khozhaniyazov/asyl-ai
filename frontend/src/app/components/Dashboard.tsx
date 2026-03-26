@@ -104,7 +104,7 @@ export default function Dashboard() {
   const handleQuickAction = async (action: string, apt: AppointmentWithPatient) => {
     setSelectedAppointment(null);
     if (action === "start") {
-      navigate(`/session/${apt.id}`);
+      navigate(`/dashboard/session/${apt.id}`);
     } else if (action === "payment") {
       try {
         await api.generateKaspiLink(apt.id);

@@ -49,7 +49,7 @@ export default function OnboardingWizard() {
         console.log("Profile creation skipped or failed", e);
       }
       
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Onboarding failed:", error);
       alert("Failed to save preferences. Please try again.");

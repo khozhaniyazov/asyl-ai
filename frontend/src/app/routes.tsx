@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+import LandingPage from "./components/LandingPage";
 import TherapistLayout from "./components/TherapistLayout";
 import Dashboard from "./components/Dashboard";
 import Patients from "./components/Patients";
@@ -29,6 +30,7 @@ import { ParentProtectedRoute } from "./components/ParentProtectedRoute";
 // import AdminVerification from "./components/AdminVerification";
 
 export const router = createBrowserRouter([
+  { path: "/", Component: LandingPage },
   { path: "/login", Component: Login },
   { path: "/register", Component: Register },
   {
@@ -57,7 +59,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/dashboard",
     Component: TherapistLayout, // TherapistLayout has built-in auth check
     children: [
       { index: true, Component: Dashboard },
