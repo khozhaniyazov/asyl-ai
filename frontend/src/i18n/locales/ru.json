@@ -308,7 +308,32 @@
     "progressDesc": "Прогресс речевой терапии",
     "therapistSummary": "Заключение специалиста",
     "skillProgress": "Прогресс навыков",
-    "tip": "Совет: Ежедневные занятия по 10-15 минут дают лучшие результаты. Сосредоточьтесь на упражнениях из последнего задания."
+    "tip": "Совет: Ежедневные занятия по 10-15 минут дают лучшие результаты. Сосредоточьтесь на упражнениях из последнего задания.",
+    "invalidPhone": "Введите корректный номер",
+    "codeSent": "Код отправлен",
+    "failedSendCode": "Не удалось отправить код",
+    "invalidCode": "Неверный код",
+    "noInstructions": "Нет инструкций",
+    "homeworkCompleted": "Задание отмечено выполненным",
+    "failedComplete": "Не удалось отметить",
+    "markDone": "Выполнено",
+    "noHomework": "Заданий пока нет",
+    "speechProgress": "прогресс речи",
+    "sessionsSummary": "Итоги",
+    "completedSessions": "Завершённых сеансов",
+    "verifiedHomework": "Проверенных заданий",
+    "child": "Ребёнок",
+    "welcome": "Добро пожаловать",
+    "childProgress": "Прогресс ребёнка",
+    "upcomingSessions": "Предстоящие сеансы",
+    "homeworkTasks": "Домашние задания",
+    "payments": "Оплаты",
+    "noUpcoming": "Нет предстоящих сеансов",
+    "viewDetails": "Подробнее",
+    "payNow": "Оплатить сейчас",
+    "markComplete": "Отметить выполненным",
+    "soundProgress": "Прогресс по звукам",
+    "sessionHistory": "История сеансов"
   },
   "notifications": {
     "title": "Уведомления",
@@ -613,22 +638,6 @@
     "noTransactions": "Транзакций пока нет",
     "reminderQueued": "Напоминание поставлено в очередь"
   },
-  "parent": {
-    "invalidPhone": "Введите корректный номер",
-    "codeSent": "Код отправлен",
-    "failedSendCode": "Не удалось отправить код",
-    "invalidCode": "Неверный код",
-    "noInstructions": "Нет инструкций",
-    "homeworkCompleted": "Задание отмечено выполненным",
-    "failedComplete": "Не удалось отметить",
-    "markDone": "Выполнено",
-    "noHomework": "Заданий пока нет",
-    "speechProgress": "прогресс речи",
-    "sessionsSummary": "Итоги",
-    "completedSessions": "Завершённых сеансов",
-    "verifiedHomework": "Проверенных заданий",
-    "child": "Ребёнок"
-  },
   "patientProfile": {
     "dob": "Дата рождения",
     "sessionNum": "Сеанс",
@@ -665,21 +674,6 @@
       "admin": "Администратор",
       "therapist": "Специалист"
     }
-  },
-  "portal": {
-    "title": "Портал родителя",
-    "welcome": "Добро пожаловать",
-    "childProgress": "Прогресс ребёнка",
-    "upcomingSessions": "Предстоящие сеансы",
-    "homeworkTasks": "Домашние задания",
-    "payments": "Оплаты",
-    "noUpcoming": "Нет предстоящих сеансов",
-    "noHomework": "Нет активных заданий",
-    "viewDetails": "Подробнее",
-    "payNow": "Оплатить сейчас",
-    "markComplete": "Отметить выполненным",
-    "soundProgress": "Прогресс по звукам",
-    "sessionHistory": "История сеансов"
   },
   "admin": {
     "title": "Панель администратора",
