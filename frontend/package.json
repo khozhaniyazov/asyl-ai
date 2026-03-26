@@ -6,7 +6,12 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test": "vitest run"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "test:all": "npm run test && npm run test:e2e"
     },
     "dependencies": {
         "@emotion/react": "11.14.0",
@@ -69,9 +74,11 @@
         "vaul": "1.1.2"
     },
     "devDependencies": {
+        "@playwright/test": "^1.58.2",
         "@tailwindcss/vite": "4.1.12",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
+        "@testing-library/user-event": "^14.6.1",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "4.7.0",

@@ -46,6 +46,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Testing
+playwright-report/
+test-results/
+playwright/.cache/
+
 # Database
 *.db
 *.sqlite3
