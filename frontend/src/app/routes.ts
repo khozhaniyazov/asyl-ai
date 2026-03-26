@@ -32,6 +32,7 @@ export const router = createBrowserRouter([
   { path: "/onboarding", Component: OnboardingWizard },
   { path: "/parent/login", Component: ParentLogin },
   { path: "/parent", Component: ParentPortal },
+  { path: "/parent/portal", Component: ParentPortal },
   // v3: public marketplace pages
   { path: "/marketplace", Component: MarketplaceSearch },
   { path: "/marketplace/:therapistId", Component: TherapistPublicProfile },
