@@ -7,12 +7,15 @@ export const apiClient = axios.create({
   withCredentials: true, // Send/receive httpOnly cookies
 });
 
-// Redirect to login on 401/403
+// Redirect to login on 401/403 (skip public pages and auth check)
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      const path = window.location.pathname;
+      const isPublicPage = path === '/' || path === '/login' || path === '/register' || path.startsWith('/parent');
+      const isAuthCheck = error.config?.url?.includes('/auth/me');
+      if (!isPublicPage && !isAuthCheck) {
         window.location.href = '/login';
       }
     }
