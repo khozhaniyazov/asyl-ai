@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta, date
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.core.database import AsyncSessionLocal
+from app.core.database import AsyncSessionLocal, engine, Base
 from app.core.security import get_password_hash
 from app.models.therapist import Therapist
 from app.models.therapist_profile import TherapistProfile, VerificationStatus
@@ -127,7 +127,6 @@ PROFILES = [
         "verification_status": VerificationStatus.VERIFIED,
         "age_groups": ["children", "adolescents", "adults"],
     },
-
 ]
 
 PARENTS = [
@@ -208,6 +207,10 @@ HOMEWORK_INSTRUCTIONS = [
 
 
 async def seed_test_data():
+    # Create all tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     async with AsyncSessionLocal() as db:
         now = datetime.now(timezone.utc)
 

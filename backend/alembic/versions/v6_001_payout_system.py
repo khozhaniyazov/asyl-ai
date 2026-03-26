@@ -19,11 +19,15 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # --- Therapist: add is_admin ---
-    op.add_column(
-        "therapists",
-        sa.Column("is_admin", sa.Boolean(), server_default="0", nullable=True),
-    )
+    # --- Therapist: add is_admin (skip if already exists) ---
+    conn = op.get_bind()
+    result = conn.execute(sa.text("PRAGMA table_info('therapists')"))
+    columns = [row[1] for row in result]
+    if "is_admin" not in columns:
+        op.add_column(
+            "therapists",
+            sa.Column("is_admin", sa.Boolean(), server_default="0", nullable=True),
+        )
 
     # --- Bank Accounts ---
     op.create_table(
