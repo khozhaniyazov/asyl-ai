@@ -2,10 +2,11 @@
 
 ## Prerequisites
 
-1. **DigitalOcean Droplet** ($6/month minimum)
+1. **DigitalOcean Droplet** ($12/month recommended)
    - Ubuntu 22.04 LTS
-   - 1 vCPU, 1GB RAM, 25GB SSD
+   - 1 vCPU, 2GB RAM, 50GB SSD
    - Frankfurt datacenter (closest to Kazakhstan)
+   - Note: 1GB RAM will work for initial testing but 2GB is recommended for production with 50+ users
 
 2. **Domain Name** (e.g., sandar.kz)
    - Point A record to your droplet IP
