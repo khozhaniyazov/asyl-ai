@@ -1,8 +1,11 @@
 """WhatsApp Business API integration via Meta Cloud API with mock fallback."""
 
 import httpx
+import logging
 from app.core.config import settings
 from app.integrations.mock_services import WhatsAppMock
+
+logger = logging.getLogger(__name__)
 
 
 class WhatsAppService:
@@ -15,40 +18,61 @@ class WhatsAppService:
         self.phone_number_id = getattr(settings, "WHATSAPP_PHONE_NUMBER_ID", "")
         self.is_configured = bool(self.token and self.phone_number_id)
 
+        if self.is_configured:
+            logger.info(
+                f"WhatsApp service configured with phone ID: {self.phone_number_id}"
+            )
+        else:
+            logger.warning("WhatsApp service not configured - using mock")
+
     async def send_text_message(self, phone: str, message: str) -> bool:
         if not self.is_configured:
             return await WhatsAppMock.send_message(phone, message)
 
         normalized = phone.replace(" ", "").replace("+", "").replace("-", "")
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{self.BASE_URL}/{self.phone_number_id}/messages",
-                headers={
-                    "Authorization": f"Bearer {self.token}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "messaging_product": "whatsapp",
-                    "to": normalized,
-                    "type": "text",
-                    "text": {"body": message},
-                },
-                timeout=10.0,
-            )
-            return response.status_code == 200
+
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.BASE_URL}/{self.phone_number_id}/messages",
+                    headers={
+                        "Authorization": f"Bearer {self.token}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "messaging_product": "whatsapp",
+                        "to": normalized,
+                        "type": "text",
+                        "text": {"body": message},
+                    },
+                    timeout=10.0,
+                )
+
+                if response.status_code == 200:
+                    logger.info(f"WhatsApp message sent successfully to {normalized}")
+                    return True
+                else:
+                    logger.error(
+                        f"WhatsApp API error: {response.status_code} - {response.text}"
+                    )
+                    return False
+
+        except Exception as e:
+            logger.error(f"WhatsApp send failed: {str(e)}")
+            return False
 
     async def send_otp(self, phone: str, code: str) -> bool:
-        message = f"Ваш код для входа в Logoped: {code}"
+        message = f"Ваш код для входа в Asyl AI: {code}\n\nКод действителен 5 минут."
         return await self.send_text_message(phone, message)
 
     async def send_homework(self, phone: str, patient_name: str, homework: str) -> bool:
-        message = f"Домашнее задание для {patient_name}:\n\n{homework}\n\n— Logoped App"
+        message = f"Домашнее задание для {patient_name}:\n\n{homework}\n\n— Asyl AI"
         return await self.send_text_message(phone, message)
 
     async def send_appointment_reminder(
         self, phone: str, patient_name: str, date_str: str, therapist_name: str
     ) -> bool:
-        message = f"Напоминание: сеанс для {patient_name}\nДата: {date_str}\nСпециалист: {therapist_name}\n\n— Logoped App"
+        message = f"Напоминание: сеанс для {patient_name}\nДата: {date_str}\nСпециалист: {therapist_name}\n\n— Asyl AI"
         return await self.send_text_message(phone, message)
 
 
