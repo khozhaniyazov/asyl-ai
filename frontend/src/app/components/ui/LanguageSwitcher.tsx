@@ -17,7 +17,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
     >
       <Globe className="w-4 h-4 text-primary" />
       <span className="text-[13px] font-medium">
-        {i18n.language === "ru" ? "KK" : "RU"}
+        {i18n.language === "ru" ? "RU" : "KK"}
       </span>
     </button>
   );
