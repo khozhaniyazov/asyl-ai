@@ -22,23 +22,29 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted:', form);
     const result = registerSchema.safeParse({
       email: form.email,
       password: form.password,
       full_name: form.name,
       clinic_name: form.clinic || undefined,
     });
+    console.log('Validation result:', result);
     if (!result.success) {
+      console.error('Validation errors:', result.error.errors);
       toast.error(result.error.errors[0]?.message || t("auth.fillRequired"));
       return;
     }
     setLoading(true);
     try {
+      console.log('Calling register API...');
       await register({ email: form.email, password: form.password, full_name: form.name, clinic_name: form.clinic || undefined });
+      console.log('Register successful, logging in...');
       await login(form.email, form.password);
       toast.success(t("auth.accountCreated"));
       navigate("/onboarding");
     } catch (err: any) {
+      console.error('Registration error:', err);
       toast.error(err?.response?.data?.detail || t("auth.registerFailed"));
     } finally {
       setLoading(false);
