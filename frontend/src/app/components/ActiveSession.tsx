@@ -211,18 +211,24 @@ export default function ActiveSession() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Session Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-[14px] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> {t("session.exitSession")}
         </button>
-        <div className="text-right flex items-center gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px] shrink-0">
+            {patientName
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+          </div>
           <div>
-            <h2>{patientName}</h2>
-            <div className="flex flex-col items-end">
-              <p className="text-[13px] text-muted-foreground">{appointmentInfo}</p>
+            <h2 className="text-[16px] sm:text-[18px]">{patientName}</h2>
+            <div className="flex flex-col">
+              <p className="text-[12px] sm:text-[13px] text-muted-foreground">{appointmentInfo}</p>
               {appointment?.session_type === "ONLINE" && appointment.meeting_link && (
                 <a
                   href={appointment.meeting_link}
@@ -234,12 +240,6 @@ export default function ActiveSession() {
                 </a>
               )}
             </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[13px]">
-            {patientName
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
           </div>
         </div>
       </div>

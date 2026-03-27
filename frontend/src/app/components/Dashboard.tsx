@@ -46,7 +46,9 @@ function enrichAppointments(
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [view, setView] = useState<"week" | "day">("week");
+  const [view, setView] = useState<"week" | "day">(
+    window.innerWidth < 640 ? "day" : "week"
+  );
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithPatient | null>(null);
   const [showNewAppt, setShowNewAppt] = useState(false);
@@ -196,18 +198,20 @@ export default function Dashboard() {
           <h1>{t("dashboard.calendar")}</h1>
           <p className="text-muted-foreground text-[14px]">{format(currentDate, "EEEE, MMMM d, yyyy")}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button onClick={() => setShowNewAppt(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity">
             <Plus className="w-4 h-4" />
             <span className="text-[13px]">{t("dashboard.newAppointment")}</span>
           </button>
-          <div className="flex bg-muted rounded-xl p-1">
+          <div className="hidden sm:flex bg-muted rounded-xl p-1">
             <button onClick={() => setView("week")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "week" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>{t("common.week")}</button>
             <button onClick={() => setView("day")} className={`px-3 py-1.5 rounded-lg text-[13px] transition-all ${view === "day" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>{t("common.day")}</button>
           </div>
-          <button onClick={navigate_prev} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-          <button onClick={() => setCurrentDate(new Date())} className="px-3 py-1.5 text-[13px] rounded-xl hover:bg-accent transition-colors">{t("common.today")}</button>
-          <button onClick={navigate_next} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronRight className="w-4 h-4" /></button>
+          <div className="flex items-center gap-2">
+            <button onClick={navigate_prev} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+            <button onClick={() => setCurrentDate(new Date())} className="px-3 py-1.5 text-[13px] rounded-xl hover:bg-accent transition-colors">{t("common.today")}</button>
+            <button onClick={navigate_next} className="p-2 rounded-xl hover:bg-accent transition-colors"><ChevronRight className="w-4 h-4" /></button>
+          </div>
         </div>
       </div>
 
@@ -224,7 +228,7 @@ export default function Dashboard() {
       {/* Calendar */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
         {view === "week" ? (
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="hidden sm:block bg-card border border-border rounded-2xl overflow-hidden">
             <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border">
               <div className="p-2" />
               {weekDays.map((d) => {
