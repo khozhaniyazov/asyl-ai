@@ -38,8 +38,11 @@ export default function SoundProgressChart({ patientId, refreshKey = 0 }: Props)
   // Group by sound, get latest stage per sound
   const soundMap = useMemo(() => {
     const map = new Map<string, SoundProgress>();
-    // Records come sorted by assessed_at desc, so first occurrence is latest
-    for (const r of records) {
+    // Sort by date desc to ensure first is latest
+    const sorted = [...records].sort((a, b) => 
+      new Date(b.assessed_at || 0).getTime() - new Date(a.assessed_at || 0).getTime()
+    );
+    for (const r of sorted) {
       if (!map.has(r.sound)) {
         map.set(r.sound, r);
       }

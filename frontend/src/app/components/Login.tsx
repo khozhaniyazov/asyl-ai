@@ -53,7 +53,7 @@ export default function Login() {
           <h1>{t("auth.welcomeBack")}</h1>
           <p className="text-muted-foreground text-[14px] mt-1">{t("auth.signInSubtitle")}</p>
         </div>
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} noValidate className="space-y-4">
           <div>
             <label className="text-[13px] mb-1 block">{t("auth.email")}</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="dana@clinic.kz" autoComplete="email" className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />

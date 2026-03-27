@@ -29,8 +29,8 @@ class Settings(BaseSettings):
     # Rate limiting
     RATE_LIMIT_LOGIN_MAX: int = 5  # max attempts
     RATE_LIMIT_LOGIN_WINDOW: int = 900  # 15 minutes in seconds
-    RATE_LIMIT_OTP_MAX: int = 3
-    RATE_LIMIT_OTP_WINDOW: int = 3600  # 1 hour
+    RATE_LIMIT_OTP_MAX: int = 100
+    RATE_LIMIT_OTP_WINDOW: int = 60  # 1 minute
 
     # S3 Storage (MinIO or AWS) - for profile photos and documents
     AWS_ACCESS_KEY_ID: Optional[str] = None

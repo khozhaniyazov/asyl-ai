@@ -109,7 +109,13 @@ async def verify_otp(data: OTPVerify, db: AsyncSession = Depends(get_db)):
         # Generic error to prevent enumeration
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    if datetime.now(timezone.utc) > parent.otp_expires_at:
+    # Ensure comparison is possible (handle naive vs aware)
+    now = datetime.now(timezone.utc)
+    expires_at = parent.otp_expires_at
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+        
+    if now > expires_at:
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
     # Check attempt limit

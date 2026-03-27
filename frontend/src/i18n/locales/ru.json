@@ -170,7 +170,9 @@
     "status_active": "Активный",
     "status_discharged": "Выписан",
     "status_waitlisted": "В листе ожидания",
-    "status_paused": "Приостановлен"
+    "status_paused": "Приостановлен",
+    "homeworkTitle": "Домашние задания",
+    "assignHomework": "Назначить"
   },
   "soap": {
     "subjective": "Субъективно",
@@ -253,17 +255,37 @@
   "onboarding": {
     "welcome": "Добро пожаловать в Logoped!",
     "welcomeDesc": "Настроим вашу практику за пару минут.",
+    "welcomeTitle": "Добро пожаловать в Logoped!",
     "getStarted": "Начать",
     "sessionDuration": "Длительность сеанса",
+    "sessionDurationTitle": "Длительность сеанса",
     "sessionDurationDesc": "Какова стандартная длительность вашего сеанса?",
     "custom": "Другое",
     "pricing": "Стоимость сеанса",
+    "pricingTitle": "Стоимость сеанса",
     "pricingDesc": "Какова ваша стандартная цена за сеанс?",
     "allSet": "Всё готово!",
+    "allSetTitle": "Всё готово!",
     "allSetDesc": "Ваша практика настроена. Можно начинать работу.",
     "goToDashboard": "Перейти к расписанию",
     "step": "Шаг",
-    "of": "из"
+    "of": "из",
+    "configureIntro": "Давайте настроим базовые параметры вашей работы:",
+    "configDuration": "Длительность сеансов по умолчанию",
+    "configPricing": "Стандартная стоимость сеанса",
+    "configChangeAnytime": "Вы сможете изменить это в любой момент в настройках",
+    "sessionDurationLabel": "Длительность (минуты)",
+    "customDuration": "Другая длительность",
+    "pricePerSession": "Цена за сеанс (KZT)",
+    "customPrice": "Другая цена",
+    "selectCity": "Выберите ваш город",
+    "selectSpecializations": "Выберите ваши специализации",
+    "yourDefaults": "Ваши настройки по умолчанию:",
+    "session": "Сеанс",
+    "minutes": "минут",
+    "price": "Цена",
+    "back": "Назад",
+    "continue": "Далее"
   },
   "parent": {
     "portal": "Портал родителя",
@@ -671,7 +693,8 @@
     "homeworkAssigned": "Задание назначено",
     "failedAssignHomework": "Не удалось назначить задание",
     "fillAllSoapFields": "Заполните все поля SOAP",
-    "joinVideoCall": "Присоединиться к видеозвонку"
+    "joinVideoCall": "Присоединиться к видеозвонку",
+    "sendHomework": "Отправить задание"
   },
   "clinic": {
     "title": "Управление клиникой",

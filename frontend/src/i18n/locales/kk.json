@@ -170,7 +170,9 @@
     "status_active": "Белсенді",
     "status_discharged": "Шығарылды",
     "status_waitlisted": "Күту тізімінде",
-    "status_paused": "Тоқтатылды"
+    "status_paused": "Тоқтатылды",
+    "homeworkTitle": "Үй тапсырмалары",
+    "assignHomework": "Тағайындау"
   },
   "soap": {
     "subjective": "Субъективті",
@@ -253,17 +255,37 @@
   "onboarding": {
     "welcome": "Logoped-қа қош келдіңіз!",
     "welcomeDesc": "Тәжірибеңізді бірнеше минутта баптайық.",
+    "welcomeTitle": "Logoped-қа қош келдіңіз!",
     "getStarted": "Бастау",
     "sessionDuration": "Сеанс ұзақтығы",
+    "sessionDurationTitle": "Сеанс ұзақтығы",
     "sessionDurationDesc": "Стандартты сеанс ұзақтығыңыз қандай?",
     "custom": "Басқа",
     "pricing": "Сеанс бағасы",
+    "pricingTitle": "Сеанс бағасы",
     "pricingDesc": "Стандартты сеанс бағаңыз қандай?",
     "allSet": "Бәрі дайын!",
+    "allSetTitle": "Бәрі дайын!",
     "allSetDesc": "Тәжірибеңіз бапталды. Жұмысты бастауға болады.",
     "goToDashboard": "Кестеге өту",
     "step": "Қадам",
-    "of": "/"
+    "of": "/",
+    "configureIntro": "Жұмысыңыздың негізгі параметрлерін баптайық:",
+    "configDuration": "Сеанстардың әдепкі ұзақтығы",
+    "configPricing": "Сеанстың стандартты бағасы",
+    "configChangeAnytime": "Бұны кез келген уақытта баптаулардан өзгерте аласыз",
+    "sessionDurationLabel": "Ұзақтығы (минут)",
+    "customDuration": "Басқа ұзақтық",
+    "pricePerSession": "Сеанс бағасы (KZT)",
+    "customPrice": "Басқа баға",
+    "selectCity": "Қалаңызды таңдаңыз",
+    "selectSpecializations": "Мамандықтарыңызды таңдаңыз",
+    "yourDefaults": "Әдепкі баптауларыңыз:",
+    "session": "Сеанс",
+    "minutes": "минут",
+    "price": "Бағасы",
+    "back": "Артқа",
+    "continue": "Келесі"
   },
   "parent": {
     "portal": "Ата-ана порталы",
@@ -671,7 +693,8 @@
     "homeworkAssigned": "Тапсырма тағайындалды",
     "failedAssignHomework": "Тапсырманы тағайындау сәтсіз",
     "fillAllSoapFields": "Барлық SOAP өрістерін толтырыңыз",
-    "joinVideoCall": "Бейне қоңырауға қосылу"
+    "joinVideoCall": "Бейне қоңырауға қосылу",
+    "sendHomework": "Тапсырманы жіберу"
   },
   "clinic": {
     "title": "Клиниканы басқару",
