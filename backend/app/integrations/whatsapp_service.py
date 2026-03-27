@@ -142,11 +142,47 @@ class WhatsAppService:
     async def send_appointment_reminder(
         self, phone: str, patient_name: str, date_str: str, therapist_name: str
     ) -> bool:
-        """Send appointment reminder. Uses text (works if within 24h window)."""
+        """Send appointment reminder. Uses template (works outside 24h window).
+        Falls back to text message if template fails."""
+        # Try template first (works outside 24h window)
+        result = await self.send_template_message(
+            phone,
+            template_name="appointment_reminder",
+            language="ru",
+            parameters=[patient_name, date_str, therapist_name],
+        )
+        if result:
+            return True
+
+        # Fallback to text (only works within 24h window)
+        logger.warning(f"Template failed for {phone}, falling back to text message")
         message = (
             f"Напоминание: сеанс для {patient_name}\n"
             f"Дата: {date_str}\n"
             f"Специалист: {therapist_name}\n\n— Asyl AI"
+        )
+        return await self.send_text_message(phone, message)
+
+    async def send_homework_reminder(
+        self, phone: str, patient_name: str, due_date_str: str
+    ) -> bool:
+        """Send homework reminder. Uses template (works outside 24h window).
+        Falls back to text message if template fails."""
+        # Try template first
+        result = await self.send_template_message(
+            phone,
+            template_name="homework_reminder",
+            language="ru",
+            parameters=[patient_name, due_date_str],
+        )
+        if result:
+            return True
+
+        # Fallback to text
+        logger.warning(f"Template failed for {phone}, falling back to text message")
+        message = (
+            f"Напоминание: домашнее задание для {patient_name} "
+            f"нужно выполнить до {due_date_str}\n\n— Asyl AI"
         )
         return await self.send_text_message(phone, message)
 
@@ -160,22 +196,15 @@ whatsapp_service = WhatsAppService()
 async def send_appointment_reminder(
     phone: str, patient_name: str, appointment_time, reminder_type: str
 ) -> bool:
-    """Send appointment reminder."""
+    """Send appointment reminder via template."""
     time_str = appointment_time.strftime("%d.%m.%Y %H:%M") if appointment_time else "—"
-    if reminder_type == "session_1h":
-        message = (
-            f"Через 1 час сеанс для {patient_name}\nВремя: {time_str}\n\n— Asyl AI"
-        )
-    else:
-        message = f"Напоминание: завтра сеанс для {patient_name}\nВремя: {time_str}\n\n— Asyl AI"
-    return await whatsapp_service.send_text_message(phone, message)
+    therapist_name = "Ваш специалист"
+    return await whatsapp_service.send_appointment_reminder(
+        phone, patient_name, time_str, therapist_name
+    )
 
 
 async def send_homework_reminder_msg(phone: str, patient_name: str, due_date) -> bool:
-    """Send homework due reminder."""
+    """Send homework due reminder via template."""
     date_str = due_date.strftime("%d.%m.%Y") if due_date else "скоро"
-    message = (
-        f"Напоминание: домашнее задание для {patient_name} "
-        f"нужно выполнить до {date_str}\n\n— Asyl AI"
-    )
-    return await whatsapp_service.send_text_message(phone, message)
+    return await whatsapp_service.send_homework_reminder(phone, patient_name, date_str)
