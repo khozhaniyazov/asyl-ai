@@ -66,7 +66,13 @@ async def get_billing_status(
 
     days_remaining = None
     if sub.expires_at:
-        delta = sub.expires_at - datetime.now(timezone.utc)
+        # Handle both naive and aware datetimes
+        expires = (
+            sub.expires_at
+            if sub.expires_at.tzinfo
+            else sub.expires_at.replace(tzinfo=timezone.utc)
+        )
+        delta = expires - datetime.now(timezone.utc)
         days_remaining = max(0, delta.days)
         if days_remaining == 0 and sub.status == "active" and sub.plan != "free":
             sub.status = "expired"

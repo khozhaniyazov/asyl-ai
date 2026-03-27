@@ -72,3 +72,26 @@ async def token_headers(client: AsyncClient, test_therapist: Therapist) -> dict:
     tokens = r.json()
     a_token = tokens["access_token"]
     return {"Authorization": f"Bearer {a_token}"}
+
+
+@pytest.fixture
+async def auth_client(client: AsyncClient, token_headers: dict) -> AsyncClient:
+    client.headers.update(token_headers)
+    return client
+
+
+@pytest.fixture
+async def test_patient(test_therapist: Therapist):
+    from app.models.patient import Patient
+
+    async with TestingSessionLocal() as db:
+        patient = Patient(
+            first_name="Test",
+            last_name="Patient",
+            parent_phone="+77001234567",
+            therapist_id=test_therapist.id,
+        )
+        db.add(patient)
+        await db.commit()
+        await db.refresh(patient)
+        return patient
