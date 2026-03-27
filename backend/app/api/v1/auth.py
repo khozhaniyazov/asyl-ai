@@ -36,7 +36,7 @@ def _set_auth_cookie(response: Response, token: str) -> None:
     """Set httpOnly cookie with the access token."""
     is_prod = settings.ENVIRONMENT == "production"
     response.set_cookie(
-        key="asyl_ai_token",
+        key="sandar_token",
         value=token,
         httponly=True,
         secure=is_prod,
@@ -48,7 +48,7 @@ def _set_auth_cookie(response: Response, token: str) -> None:
 
 def _clear_auth_cookie(response: Response) -> None:
     """Clear the auth cookie."""
-    response.delete_cookie(key="asyl_ai_token", path="/")
+    response.delete_cookie(key="sandar_token", path="/")
 
 
 @router.post("/register", response_model=TherapistResponse)

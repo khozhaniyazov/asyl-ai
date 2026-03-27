@@ -1,7 +1,7 @@
-# Asyl AI - SaaS Pivot Implementation Plan
+# Sandar - SaaS Pivot Implementation Plan
 
 ## Goal
-Transform Asyl AI from a feature-heavy demo into a focused, production-ready SaaS CRM
+Transform Sandar from a feature-heavy demo into a focused, production-ready SaaS CRM
 for speech therapists in Kazakhstan. Marketplace becomes a Phase 2 growth feature.
 
 ## Strategy

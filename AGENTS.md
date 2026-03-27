@@ -1,7 +1,7 @@
-# Asyl AI - Agent Configuration
+# Sandar - Agent Configuration
 
 ## Project Context
-Asyl AI is a vertical SaaS CRM for speech therapists in Kazakhstan. SaaS-first strategy (get 50-100 therapists using the CRM daily), then activate the marketplace as a growth feature once supply exists. Subscription-only pricing at 7,500 KZT/month (~$15), no commission.
+Sandar is a vertical SaaS CRM for speech therapists in Kazakhstan. SaaS-first strategy (get 50-100 therapists using the CRM daily), then activate the marketplace as a growth feature once supply exists. Subscription-only pricing at 7,500 KZT/month (~$15), no commission.
 
 ## Tech Stack
 - **Backend**: FastAPI + SQLAlchemy (async) + Alembic + PostgreSQL (prod) / SQLite (dev)
@@ -24,7 +24,7 @@ Asyl AI is a vertical SaaS CRM for speech therapists in Kazakhstan. SaaS-first s
 
 ## Project Structure
 ```
-asyl-ai/
+sandar/
   backend/
     app/
       api/v1/         # 30 route modules (16 active, 14 hidden)

@@ -1,4 +1,4 @@
-app = "asyl-ai-backend"
+app = "sandar-backend"
 primary_region = "fra"
 
 [build]
@@ -16,13 +16,13 @@ primary_region = "fra"
   cpus = 1
 
 [mounts]
-  source = "asyl_data"
+  source = "sandar_data"
   destination = "/data"
 
 [env]
   PORT = "8080"
   ENVIRONMENT = "production"
-  DATABASE_URL = "sqlite+aiosqlite:///data/asyl_ai.db"
+  DATABASE_URL = "sqlite+aiosqlite:///data/sandar.db"
 
 [http_service]
   internal_port = 8080

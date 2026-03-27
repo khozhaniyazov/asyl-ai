@@ -96,7 +96,7 @@ async def subscribe(
     payment_link = await kaspi_service.generate_payment_link(
         amount=plan_info["price"],
         appointment_id=current_user.id * 10000,  # unique ID for subscription
-        description=f"Logoped {plan_info['name']} - подписка на месяц",
+        description=f"Sandar {plan_info['name']} - подписка на месяц",
     )
 
     return {

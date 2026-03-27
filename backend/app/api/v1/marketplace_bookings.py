@@ -187,11 +187,15 @@ async def confirm_booking(
         start_time = start_time.replace(tzinfo=timezone.utc)
 
     # Create appointment in PM system
-    session_type = SessionType.ONLINE if booking.type == BookingType.REGULAR else SessionType.IN_PERSON
+    session_type = (
+        SessionType.ONLINE
+        if booking.type == BookingType.REGULAR
+        else SessionType.IN_PERSON
+    )
     # Default to diagnostic being in-person, regular can be online if profile allows
     if profile and profile.online_available and booking.type == BookingType.REGULAR:
         session_type = SessionType.ONLINE
-    
+
     appointment = Appointment(
         therapist_id=current_user.id,
         start_time=start_time,
@@ -199,7 +203,9 @@ async def confirm_booking(
         status=AppointmentStatus.PLANNED,
         requested_by=RequestedBy.PARENT,
         session_type=session_type,
-        meeting_link=f"https://meet.asyl-ai.kz/{booking_id}-{current_user.id}" if session_type == SessionType.ONLINE else None
+        meeting_link=f"https://meet.sandar.kz/{booking_id}-{current_user.id}"
+        if session_type == SessionType.ONLINE
+        else None,
     )
     db.add(appointment)
     await db.flush()

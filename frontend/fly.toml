@@ -1,4 +1,4 @@
-app = "asyl-ai-frontend"
+app = "sandar-frontend"
 primary_region = "fra"
 
 [build]

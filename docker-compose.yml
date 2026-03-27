@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: logoped_user
-      POSTGRES_PASSWORD: logoped_password
-      POSTGRES_DB: asyl_ai_db
+      POSTGRES_USER: sandar_user
+      POSTGRES_PASSWORD: sandar_password
+      POSTGRES_DB: sandar_db
     ports:
       - "5432:5432"
     volumes:
@@ -32,8 +32,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: asyl_admin
-      MINIO_ROOT_PASSWORD: asyl_secret_password
+      MINIO_ROOT_USER: sandar_admin
+      MINIO_ROOT_PASSWORD: sandar_secret
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
@@ -44,9 +44,9 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set myminio http://minio:9000 asyl_admin asyl_secret_password;
-      /usr/bin/mc mb myminio/logoped-sessions;
-      /usr/bin/mc anonymous set private myminio/logoped-sessions;
+      /usr/bin/mc alias set myminio http://minio:9000 sandar_admin sandar_secret;
+      /usr/bin/mc mb myminio/sandar-uploads;
+      /usr/bin/mc anonymous set private myminio/sandar-uploads;
       exit 0;
       "
 
@@ -57,13 +57,13 @@ services:
     ports:
       - "8000:8080"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://logoped_user:logoped_password@db:5432/asyl_ai_db
+      - DATABASE_URL=postgresql+asyncpg://sandar_user:sandar_password@db:5432/sandar_db
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=\
-      - AWS_ACCESS_KEY_ID=asyl_admin
-      - AWS_SECRET_ACCESS_KEY=asyl_secret_password
+      - AWS_ACCESS_KEY_ID=sandar_admin
+      - AWS_SECRET_ACCESS_KEY=sandar_secret
       - AWS_ENDPOINT_URL=http://minio:9000
-      - S3_BUCKET_NAME=logoped-sessions
+      - S3_BUCKET_NAME=sandar-uploads
     depends_on:
       - db
       - minio

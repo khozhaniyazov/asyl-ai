@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Deploying Asyl AI to production..."
+echo "🚀 Deploying Sandar to production..."
 
 # Check if .env exists
 if [ ! -f .env ]; then

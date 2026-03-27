@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-# Asyl AI - Production Deployment Script
+# Sandar - Production Deployment Script
 # Usage: ./deploy.sh [domain]
-# Example: ./deploy.sh app.logoped.kz
+# Example: ./deploy.sh app.sandar.kz
 
-DOMAIN=${1:-"app.logoped.kz"}
+DOMAIN=${1:-"app.sandar.kz"}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "=== Asyl AI Production Deployment ==="
+echo "=== Sandar Production Deployment ==="
 echo "Domain: $DOMAIN"
 echo "Project: $PROJECT_DIR"
 echo ""

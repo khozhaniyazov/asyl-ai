@@ -45,7 +45,7 @@
   },
   "auth": {
     "welcomeBack": "Қайта қош келдіңіз",
-    "signInSubtitle": "Logoped аккаунтыңызға кіріңіз",
+    "signInSubtitle": "Sandar аккаунтыңызға кіріңіз",
     "email": "Email",
     "password": "Құпия сөз",
     "signIn": "Кіру",
@@ -254,9 +254,9 @@
     "kazakh": "Қазақша"
   },
   "onboarding": {
-    "welcome": "Logoped-қа қош келдіңіз!",
+    "welcome": "Sandar-қа қош келдіңіз!",
     "welcomeDesc": "Тәжірибеңізді бірнеше минутта баптайық.",
-    "welcomeTitle": "Logoped-қа қош келдіңіз!",
+    "welcomeTitle": "Sandar-қа қош келдіңіз!",
     "getStarted": "Бастау",
     "sessionDuration": "Сеанс ұзақтығы",
     "sessionDurationTitle": "Сеанс ұзақтығы",
@@ -864,12 +864,12 @@
     },
     "cta": {
       "title": "Бастауға дайынсыз ба?",
-      "subtitle": "Asyl AI-ды қолданып жатқан логопедтерге қосылыңыз",
+      "subtitle": "Sandar-ды қолданып жатқан логопедтерге қосылыңыз",
       "button": "Тегін сынап көру"
     },
     "footer": {
       "parentPortal": "Ата-аналар порталы",
-      "copyright": "© 2026 Asyl AI"
+      "copyright": "© 2026 Sandar"
     }
   }
 }

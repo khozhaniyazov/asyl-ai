@@ -22,7 +22,7 @@ async def get_current_user(
 ) -> Therapist:
     # Try cookie first, then Authorization header
     if not token:
-        token = request.cookies.get("asyl_ai_token")
+        token = request.cookies.get("sandar_token")
 
     if not token:
         raise HTTPException(

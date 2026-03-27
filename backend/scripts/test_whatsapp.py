@@ -31,7 +31,7 @@ async def main():
     print(f"Sending test message to {phone}...")
 
     result = await whatsapp_service.send_text_message(
-        phone, "Тестовое сообщение от Asyl AI. WhatsApp интеграция работает!"
+        phone, "Тестовое сообщение от Sandar. WhatsApp интеграция работает!"
     )
 
     if result:

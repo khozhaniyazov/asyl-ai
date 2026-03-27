@@ -131,12 +131,12 @@ class WhatsAppService:
 
     async def send_otp(self, phone: str, code: str) -> bool:
         """Send OTP code. Uses text message (parent initiates login, so within 24h window)."""
-        message = f"Ваш код для входа в Asyl AI: {code}\n\nКод действителен 5 минут."
+        message = f"Ваш код для входа в Sandar: {code}\n\nКод действителен 5 минут."
         return await self.send_text_message(phone, message)
 
     async def send_homework(self, phone: str, patient_name: str, homework: str) -> bool:
         """Send homework to parent. Uses text (therapist sends right after session)."""
-        message = f"Домашнее задание для {patient_name}:\n\n{homework}\n\n— Asyl AI"
+        message = f"Домашнее задание для {patient_name}:\n\n{homework}\n\n— Sandar"
         return await self.send_text_message(phone, message)
 
     async def send_appointment_reminder(
@@ -159,7 +159,7 @@ class WhatsAppService:
         message = (
             f"Напоминание: сеанс для {patient_name}\n"
             f"Дата: {date_str}\n"
-            f"Специалист: {therapist_name}\n\n— Asyl AI"
+            f"Специалист: {therapist_name}\n\n— Sandar"
         )
         return await self.send_text_message(phone, message)
 
@@ -182,7 +182,7 @@ class WhatsAppService:
         logger.warning(f"Template failed for {phone}, falling back to text message")
         message = (
             f"Напоминание: домашнее задание для {patient_name} "
-            f"нужно выполнить до {due_date_str}\n\n— Asyl AI"
+            f"нужно выполнить до {due_date_str}\n\n— Sandar"
         )
         return await self.send_text_message(phone, message)
 

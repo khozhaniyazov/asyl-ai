@@ -11,12 +11,12 @@ def _generate_dev_secret() -> str:
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Asyl AI - Logoped SaaS"
+    PROJECT_NAME: str = "Sandar - CRM for Speech Therapists"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: str = "development"  # development | production
 
     # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./asyl_ai.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./sandar.db"
 
     # Auth
     SECRET_KEY: str = _generate_dev_secret()
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: Optional[str] = None
     AWS_SECRET_ACCESS_KEY: Optional[str] = None
     AWS_ENDPOINT_URL: Optional[str] = None
-    S3_BUCKET_NAME: str = "logoped-sessions"
+    S3_BUCKET_NAME: str = "sandar-uploads"
 
     # Upload limits
     MAX_UPLOAD_SIZE_MB: int = 5

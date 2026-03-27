@@ -45,7 +45,7 @@
   },
   "auth": {
     "welcomeBack": "С возвращением",
-    "signInSubtitle": "Войдите в свой аккаунт Logoped",
+    "signInSubtitle": "Войдите в свой аккаунт Sandar",
     "email": "Email",
     "password": "Пароль",
     "signIn": "Войти",
@@ -254,9 +254,9 @@
     "kazakh": "Қазақша"
   },
   "onboarding": {
-    "welcome": "Добро пожаловать в Logoped!",
+    "welcome": "Добро пожаловать в Sandar!",
     "welcomeDesc": "Настроим вашу практику за пару минут.",
-    "welcomeTitle": "Добро пожаловать в Logoped!",
+    "welcomeTitle": "Добро пожаловать в Sandar!",
     "getStarted": "Начать",
     "sessionDuration": "Длительность сеанса",
     "sessionDurationTitle": "Длительность сеанса",
@@ -864,12 +864,12 @@
     },
     "cta": {
       "title": "Готовы начать?",
-      "subtitle": "Присоединяйтесь к логопедам, которые уже используют Asyl AI",
+      "subtitle": "Присоединяйтесь к логопедам, которые уже используют Sandar",
       "button": "Попробовать бесплатно"
     },
     "footer": {
       "parentPortal": "Портал для родителей",
-      "copyright": "© 2026 Asyl AI"
+      "copyright": "© 2026 Sandar"
     }
   }
 }

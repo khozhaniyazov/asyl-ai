@@ -7,7 +7,7 @@ interface OfflineRecording {
   timestamp: number;
 }
 
-const DB_NAME = "asyl_ai_offline";
+const DB_NAME = "sandar_offline";
 const STORE_NAME = "recordings";
 
 function openDB(): Promise<IDBDatabase> {

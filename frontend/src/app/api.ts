@@ -24,7 +24,7 @@ apiClient.interceptors.response.use(
 );
 
 const parentHeaders = () => {
-  const token = localStorage.getItem('asyl_ai_parent_token');
+  const token = localStorage.getItem('sandar_parent_token');
   return { headers: { Authorization: `Bearer ${token}` } };
 };
 
@@ -351,17 +351,17 @@ export const api = {
   parentVerifyOtp: async (phone: string, code: string) => {
     const response = await apiClient.post('/parent/verify-otp', { phone, code });
     if (response.data.access_token) {
-      localStorage.setItem('asyl_ai_parent_token', response.data.access_token);
+      localStorage.setItem('sandar_parent_token', response.data.access_token);
     }
     return response.data;
   },
 
   parentLogout: () => {
-    localStorage.removeItem('asyl_ai_parent_token');
+    localStorage.removeItem('sandar_parent_token');
   },
 
   isParentAuthenticated: () => {
-    return !!localStorage.getItem('asyl_ai_parent_token');
+    return !!localStorage.getItem('sandar_parent_token');
   },
 
   // --- PARENT PORTAL ---

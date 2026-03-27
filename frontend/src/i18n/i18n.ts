@@ -18,7 +18,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'asyl_ai_lang',
+      lookupLocalStorage: 'sandar_lang',
     },
   });
 

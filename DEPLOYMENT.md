@@ -1,4 +1,4 @@
-# Asyl AI - DigitalOcean Deployment Guide
+# Sandar - DigitalOcean Deployment Guide
 
 ## Prerequisites
 
@@ -7,7 +7,7 @@
    - 1 vCPU, 1GB RAM, 25GB SSD
    - Frankfurt datacenter (closest to Kazakhstan)
 
-2. **Domain Name** (e.g., asyl.kz)
+2. **Domain Name** (e.g., sandar.kz)
    - Point A record to your droplet IP
 
 3. **SSH Access** to your droplet
@@ -31,8 +31,8 @@ systemctl start docker
 
 ```bash
 cd /opt
-git clone https://github.com/khozhaniyazov/asyl-ai.git
-cd asyl-ai
+git clone https://github.com/khozhaniyazov/sandar.git
+cd sandar
 ```
 
 ## Step 3: Configure Environment
@@ -45,9 +45,9 @@ nano .env
 Add the following (replace with your values):
 ```env
 # Database
-POSTGRES_USER=asyl_user
+POSTGRES_USER=sandar_user
 POSTGRES_PASSWORD=YOUR_SECURE_PASSWORD_HERE
-POSTGRES_DB=asyl_ai_db
+POSTGRES_DB=sandar_db
 
 # Backend
 SECRET_KEY=YOUR_SECRET_KEY_HERE
@@ -109,7 +109,7 @@ Visit https://yourdomain.com - you should see the login page.
 ## Updating the Application
 
 ```bash
-cd /opt/asyl-ai
+cd /opt/sandar
 git pull
 docker-compose -f docker-compose.prod.yml up -d --build
 ```
@@ -117,7 +117,7 @@ docker-compose -f docker-compose.prod.yml up -d --build
 ## Backup Database
 
 ```bash
-docker exec asyl-ai-db-1 pg_dump -U asyl_user asyl_ai_db > backup_$(date +%Y%m%d).sql
+docker exec sandar-db-1 pg_dump -U sandar_user sandar_db > backup_$(date +%Y%m%d).sql
 ```
 
 ## Troubleshooting

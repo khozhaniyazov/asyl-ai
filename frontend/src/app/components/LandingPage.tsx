@@ -56,7 +56,7 @@ export default function LandingPage() {
             <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
               <Stethoscope className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-semibold">Asyl AI</span>
+            <span className="text-lg font-semibold">Sandar</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher />
@@ -367,7 +367,7 @@ export default function LandingPage() {
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Stethoscope className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold">Asyl AI</span>
+              <span className="font-semibold">Sandar</span>
             </div>
             <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
               <button onClick={() => navigate("/login")} className="hover:text-foreground transition-colors">
