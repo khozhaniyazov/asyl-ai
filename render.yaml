@@ -10,6 +10,7 @@ services:
     runtime: python
     plan: free
     rootDir: backend
+    autoDeployTrigger: "off"
     buildCommand: pip install -r requirements.txt
     startCommand: python scripts/init_db.py && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -35,6 +36,7 @@ services:
     name: sandar-web
     runtime: static
     rootDir: frontend
+    autoDeployTrigger: "off"
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     headers:
