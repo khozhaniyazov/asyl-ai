@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     PASSWORD_MIN_LENGTH: int = 8
 
     # Rate limiting
-    RATE_LIMIT_LOGIN_MAX: int = 5  # max attempts
-    RATE_LIMIT_LOGIN_WINDOW: int = 900  # 15 minutes in seconds
+    RATE_LIMIT_LOGIN_MAX: int = 20  # max attempts
+    RATE_LIMIT_LOGIN_WINDOW: int = 300  # 5 minutes in seconds
     RATE_LIMIT_OTP_MAX: int = 100
     RATE_LIMIT_OTP_WINDOW: int = 60  # 1 minute
 

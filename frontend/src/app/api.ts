@@ -4,7 +4,15 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Send/receive httpOnly cookies
+});
+
+// Attach Bearer token from localStorage to every request
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('sandar_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // Redirect to login on 401/403 (skip public pages and auth check)
@@ -16,6 +24,7 @@ apiClient.interceptors.response.use(
       const isPublicPage = path === '/' || path === '/login' || path === '/register' || path.startsWith('/parent');
       const isAuthCheck = error.config?.url?.includes('/auth/me');
       if (!isPublicPage && !isAuthCheck) {
+        localStorage.removeItem('sandar_token');
         window.location.href = '/login';
       }
     }
@@ -35,7 +44,10 @@ export const api = {
     formData.append('username', email);
     formData.append('password', password);
     const response = await apiClient.post('/auth/login', formData);
-    // Token is now in httpOnly cookie, no localStorage needed
+    // Save token to localStorage for cross-origin auth
+    if (response.data.access_token) {
+      localStorage.setItem('sandar_token', response.data.access_token);
+    }
     return response.data;
   },
 
@@ -46,6 +58,7 @@ export const api = {
 
   logout: async () => {
     await apiClient.post('/auth/logout');
+    localStorage.removeItem('sandar_token');
   },
 
   getMe: async () => {

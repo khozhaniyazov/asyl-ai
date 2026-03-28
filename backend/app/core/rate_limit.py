@@ -79,7 +79,10 @@ async def check_rate_limit(
 
 async def rate_limit_login(request: Request) -> None:
     """Rate limit login attempts by IP."""
-    client_ip = request.client.host if request.client else "unknown"
+    # Use X-Forwarded-For on reverse proxies (Render, etc.)
+    client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    if not client_ip:
+        client_ip = request.client.host if request.client else "unknown"
     key = f"rate_limit:login:{client_ip}"
 
     allowed, remaining = await check_rate_limit(
