@@ -8,7 +8,7 @@ services:
   - type: web
     name: sandar-api
     runtime: python
-    plan: individual
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: alembic upgrade head && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -34,7 +34,6 @@ services:
   - type: web
     name: sandar-web
     runtime: static
-    plan: free
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
