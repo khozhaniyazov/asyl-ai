@@ -26,7 +26,7 @@ export default function Patients() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  const [form, setForm] = useState({ firstName: "", lastName: "", diagnosis: "", parentPhone: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", diagnosis: "", parentPhone: "", dateOfBirth: "" });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   const fetchPatients = useCallback(async () => {
@@ -70,8 +70,9 @@ export default function Patients() {
         last_name: form.lastName,
         diagnosis: form.diagnosis || undefined,
         parent_phone: form.parentPhone || undefined,
+        date_of_birth: form.dateOfBirth || undefined,
       });
-      setForm({ firstName: "", lastName: "", diagnosis: "", parentPhone: "" });
+      setForm({ firstName: "", lastName: "", diagnosis: "", parentPhone: "", dateOfBirth: "" });
       setErrors({});
       setShowAdd(false);
       toast.success(t("patients.patientAdded"));
@@ -226,6 +227,16 @@ export default function Patients() {
                   {errors[field.key] && <p className="text-[11px] text-destructive mt-1">{t("auth.fieldRequired")}</p>}
                 </div>
               ))}
+              <div>
+                <label className="text-[13px] mb-1 block">{t("patients.dateOfBirth")}</label>
+                <input
+                  type="date"
+                  value={form.dateOfBirth}
+                  max={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                />
+              </div>
               <button
                 onClick={handleAdd}
                 disabled={submitting}

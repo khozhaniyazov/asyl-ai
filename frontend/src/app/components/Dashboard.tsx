@@ -88,7 +88,7 @@ export default function Dashboard() {
   const todayStr = format(new Date(), "yyyy-MM-dd");
   const todayAppointments = appointments.filter((a) => a.date === todayStr);
   const totalToday = todayAppointments.length;
-  const completedToday = todayAppointments.filter((a) => a.status === "COMPLETED").length;
+  const completedToday = todayAppointments.filter((a) => a.status === "completed" || a.status === "COMPLETED").length;
 
   const dayAppointments = useMemo(() => {
     const dateStr = format(currentDate, "yyyy-MM-dd");

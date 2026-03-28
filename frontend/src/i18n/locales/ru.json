@@ -121,6 +121,7 @@
     "lastName": "Фамилия *",
     "diagnosis": "Диагноз",
     "parentPhone": "Телефон родителя",
+    "dateOfBirth": "Дата рождения",
     "added": "Добавлен",
     "noPatientsYet": "Пациентов пока нет",
     "noPatientsFound": "Пациенты не найдены",

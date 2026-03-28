@@ -121,6 +121,7 @@
     "lastName": "Тегі *",
     "diagnosis": "Диагноз",
     "parentPhone": "Ата-ана телефоны",
+    "dateOfBirth": "Туған күні",
     "added": "Қосылған",
     "noPatientsYet": "Пациенттер әлі жоқ",
     "noPatientsFound": "Пациенттер табылмады",
