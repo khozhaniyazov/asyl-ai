@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from app.core.database import get_db
 from app.models import Session, Appointment, Patient, Therapist
+from app.models.appointment import AppointmentStatus
 from app.schemas.schemas import SessionUpdate, SessionResponse
 from app.integrations.whatsapp_service import whatsapp_service
 from app.api.deps import get_current_user
@@ -51,6 +52,7 @@ async def create_session(
         for field, value in data.model_dump(exclude_unset=True).items():
             setattr(db_session, field, value)
         db_session.status = "completed"
+        appt.status = AppointmentStatus.COMPLETED
     else:
         # Create new session
         db_session = Session(
@@ -59,6 +61,10 @@ async def create_session(
             **data.model_dump(exclude_unset=True),
         )
         db.add(db_session)
+
+    # Sync Appointment status
+    appt.status = AppointmentStatus.COMPLETED
+    db.add(appt)
 
     await db.commit()
     await db.refresh(db_session)

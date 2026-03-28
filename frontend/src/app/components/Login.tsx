@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Stethoscope, Loader2 } from "lucide-react";
@@ -16,10 +16,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (!authLoading && user) {
-    navigate("/dashboard", { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
+  if (!authLoading && user) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

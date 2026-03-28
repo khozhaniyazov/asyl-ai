@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Stethoscope, Loader2 } from "lucide-react";
@@ -11,14 +11,17 @@ import { registerSchema } from "../validation";
 export default function Register() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { register, login, user, loading: authLoading } = useAuth();
+  const { register, user, loading: authLoading } = useAuth();
   const [form, setForm] = useState({ name: "", clinic: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  if (!authLoading && user) {
-    navigate("/dashboard", { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [authLoading, user, navigate]);
+
+  if (!authLoading && user) return null;
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -265,7 +265,12 @@ export default function PatientProfile() {
                   </div>
                   <div className="p-5">
                     {hw.custom_instructions && <p className="text-[14px]">{hw.custom_instructions}</p>}
-                    {hw.due_date && <p className="text-[12px] text-muted-foreground mt-2">{t("patientProfile.dueDate")}: {new Date(hw.due_date).toLocaleDateString("ru-RU")}</p>}
+                    {hw.due_date && (() => {
+                      const d = new Date(hw.due_date);
+                      return d.getFullYear() > 1900 && d.getFullYear() < 2100
+                        ? <p className="text-[12px] text-muted-foreground mt-2">{t("patientProfile.dueDate")}: {d.toLocaleDateString("ru-RU")}</p>
+                        : null;
+                    })()}
                     {hw.therapist_feedback && (
                       <div className="mt-3 bg-green-50 border border-green-200 rounded-xl p-3">
                         <p className="text-[11px] text-green-600 uppercase tracking-wider mb-1">{t("patientProfile.feedback")}</p>

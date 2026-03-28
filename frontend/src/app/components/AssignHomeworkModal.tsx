@@ -96,6 +96,8 @@ export default function AssignHomeworkModal({ patientId, isOpen, onClose, onSucc
             <input 
               type="date" 
               value={dueDate} 
+              min={new Date().toISOString().split("T")[0]}
+              max="2030-12-31"
               onChange={(e) => setDueDate(e.target.value)}
               className="w-full px-3 py-2 bg-input-background rounded-xl border border-border text-[14px] outline-none focus:ring-2 focus:ring-primary/20"
             />

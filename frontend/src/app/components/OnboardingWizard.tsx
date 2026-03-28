@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Stethoscope, Clock, DollarSign, CheckCircle, ArrowRight, ArrowLeft, MapPin, Briefcase } from "lucide-react";
+import { Stethoscope, Clock, DollarSign, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { api } from "../api";
 import { useAuth } from "../AuthContext";
-import { KZ_CITIES, SPECIALIZATIONS } from "../types";
 
 export default function OnboardingWizard() {
   const navigate = useNavigate();
@@ -14,22 +13,20 @@ export default function OnboardingWizard() {
   const [step, setStep] = useState(0);
   const [duration, setDuration] = useState("45");
   const [price, setPrice] = useState("15000");
-  const [city, setCity] = useState("");
-  const [specializations, setSpecializations] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   const steps = [
     { title: t("onboarding.welcomeTitle"), description: t("onboarding.welcomeDesc"), icon: Stethoscope },
     { title: t("onboarding.sessionDurationTitle"), description: t("onboarding.sessionDurationDesc"), icon: Clock },
     { title: t("onboarding.pricingTitle"), description: t("onboarding.pricingDesc"), icon: DollarSign },
-    { title: "Location & Specialization", description: "Help parents find you", icon: MapPin },
     { title: t("onboarding.allSetTitle"), description: t("onboarding.allSetDesc"), icon: CheckCircle },
   ];
+
+  const lastStep = steps.length - 1;
 
   const canNext = () => {
     if (step === 1) return !!duration;
     if (step === 2) return !!price;
-    if (step === 3) return city && specializations.length > 0;
     return true;
   };
 
@@ -40,17 +37,6 @@ export default function OnboardingWizard() {
         default_session_duration: parseInt(duration),
         default_price: parseFloat(price),
       });
-      
-      try {
-        await api.createMyProfile({
-          city,
-          specializations,
-          is_published: false,
-        });
-      } catch (e) {
-        console.log("Profile creation skipped or failed", e);
-      }
-      
       await refreshUser();
       navigate("/dashboard");
     } catch (error) {
@@ -164,51 +150,10 @@ export default function OnboardingWizard() {
             )}
 
             {step === 3 && (
-              <div className="space-y-3">
-                <label className="text-[13px] block">{t("onboarding.selectCity") || "Your city"}</label>
-                <select
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">{t("marketplace.allCities")}</option>
-                  {KZ_CITIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <label className="text-[13px] block mt-3">{t("onboarding.selectSpecializations") || "Your specializations"}</label>
-                <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto">
-                  {SPECIALIZATIONS.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSpecializations((prev) =>
-                        prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
-                      )}
-                      className={`text-left px-3 py-2 rounded-lg border text-[12px] transition-all ${
-                        specializations.includes(s)
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border hover:border-primary/30"
-                      }`}
-                    >
-                      {t(`marketplace.spec.${s}`)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {step === 4 && (
               <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl p-4 space-y-2 text-[14px]">
                 <p className="text-green-800 dark:text-green-200">{t("onboarding.yourDefaults")}</p>
                 <p className="text-green-700 dark:text-green-300">{t("onboarding.session")}: <span className="text-green-900 dark:text-green-100">{duration} {t("onboarding.minutes")}</span></p>
                 <p className="text-green-700 dark:text-green-300">{t("onboarding.price")}: <span className="text-green-900 dark:text-green-100">{parseInt(price).toLocaleString()} KZT</span></p>
-                <p className="text-green-700 dark:text-green-300"><MapPin className="w-3.5 h-3.5 inline mr-1" />{city}</p>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {specializations.map((s) => (
-                    <span key={s} className="text-[10px] bg-green-200 dark:bg-green-900 px-2 py-0.5 rounded-full text-green-800 dark:text-green-200">{t(`marketplace.spec.${s}`)}</span>
-                  ))}
-                </div>
               </div>
             )}
 
@@ -224,7 +169,7 @@ export default function OnboardingWizard() {
               )}
               <button
                 onClick={() => {
-                  if (step < 4) setStep((s) => s + 1);
+                  if (step < lastStep) setStep((s) => s + 1);
                   else handleFinish();
                 }}
                 disabled={!canNext() || saving}
@@ -234,7 +179,7 @@ export default function OnboardingWizard() {
                   <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <>
-                    {step === 4 ? t("onboarding.goToDashboard") : t("onboarding.continue")}
+                    {step === lastStep ? t("onboarding.goToDashboard") : t("onboarding.continue")}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

@@ -308,6 +308,8 @@ export default function ActiveSession() {
           <input
             type="date"
             value={hwDueDate}
+            min={new Date().toISOString().split("T")[0]}
+            max="2030-12-31"
             onChange={(e) => setHwDueDate(e.target.value)}
             className="px-3 py-2 bg-input-background rounded-xl text-[14px] outline-none focus:ring-2 focus:ring-primary/30"
           />
