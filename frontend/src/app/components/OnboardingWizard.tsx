@@ -4,11 +4,13 @@ import { Stethoscope, Clock, DollarSign, CheckCircle, ArrowRight, ArrowLeft, Map
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { api } from "../api";
+import { useAuth } from "../AuthContext";
 import { KZ_CITIES, SPECIALIZATIONS } from "../types";
 
 export default function OnboardingWizard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { refreshUser } = useAuth();
   const [step, setStep] = useState(0);
   const [duration, setDuration] = useState("45");
   const [price, setPrice] = useState("15000");
@@ -49,6 +51,7 @@ export default function OnboardingWizard() {
         console.log("Profile creation skipped or failed", e);
       }
       
+      await refreshUser();
       navigate("/dashboard");
     } catch (error) {
       console.error("Onboarding failed:", error);
