@@ -32,6 +32,16 @@ class Settings(BaseSettings):
     RATE_LIMIT_OTP_MAX: int = 100
     RATE_LIMIT_OTP_WINDOW: int = 60  # 1 minute
 
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def fix_database_url(cls, v: str) -> str:
+        """Convert Render's postgres:// to postgresql+asyncpg:// for SQLAlchemy async."""
+        if v.startswith("postgres://"):
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif v.startswith("postgresql://"):
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
+
     # S3 Storage (MinIO or AWS) - for profile photos and documents
     AWS_ACCESS_KEY_ID: Optional[str] = None
     AWS_SECRET_ACCESS_KEY: Optional[str] = None
