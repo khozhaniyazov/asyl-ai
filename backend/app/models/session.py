@@ -19,7 +19,9 @@ class Session(Base):
     soap_plan = Column(Text, nullable=True)
     homework_for_parents = Column(Text, nullable=True)
 
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     appointment = relationship("Appointment", back_populates="session")
     homework_assignments = relationship("HomeworkAssignment", back_populates="session")

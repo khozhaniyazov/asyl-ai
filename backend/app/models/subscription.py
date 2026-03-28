@@ -13,8 +13,12 @@ class Subscription(Base):
     )
     plan = Column(String, default="trial")  # trial, free, standard, premium
     status = Column(String, default="active")  # active, expired, cancelled
-    started_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    expires_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    started_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist", backref="subscription")

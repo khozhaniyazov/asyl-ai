@@ -23,15 +23,17 @@ class ScheduleRequest(Base):
     parent_id = Column(Integer, ForeignKey("parents.id"), nullable=False)
     patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
     therapist_id = Column(Integer, ForeignKey("therapists.id"), nullable=False)
-    requested_start = Column(DateTime, nullable=False)
-    requested_end = Column(DateTime, nullable=True)
+    requested_start = Column(DateTime(timezone=True), nullable=False)
+    requested_end = Column(DateTime(timezone=True), nullable=True)
     type = Column(Enum(ScheduleRequestType), nullable=False)
     original_appointment_id = Column(
         Integer, ForeignKey("appointments.id"), nullable=True
     )
     status = Column(Enum(ScheduleRequestStatus), default=ScheduleRequestStatus.PENDING)
     therapist_notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     parent = relationship("Parent", back_populates="schedule_requests")
     patient = relationship("Patient")

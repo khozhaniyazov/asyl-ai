@@ -57,13 +57,15 @@ class TherapistProfile(Base):
         default=VerificationStatus.UNVERIFIED,
         index=True,
     )
-    verification_submitted_at = Column(DateTime, nullable=True)
+    verification_submitted_at = Column(DateTime(timezone=True), nullable=True)
     verification_notes = Column(Text, nullable=True)  # admin notes on verification
-    verified_at = Column(DateTime, nullable=True)
+    verified_at = Column(DateTime(timezone=True), nullable=True)
     verified_by_id = Column(Integer, ForeignKey("therapists.id"), nullable=True)
     rejection_reason = Column(Text, nullable=True)
     is_published = Column(Boolean, default=False, index=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),

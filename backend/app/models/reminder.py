@@ -36,12 +36,14 @@ class Reminder(Base):
     )
     type = Column(Enum(ReminderType), nullable=False)
     channel = Column(Enum(ReminderChannel), default=ReminderChannel.WHATSAPP)
-    scheduled_for = Column(DateTime, nullable=False)
-    sent_at = Column(DateTime, nullable=True)
+    scheduled_for = Column(DateTime(timezone=True), nullable=False)
+    sent_at = Column(DateTime(timezone=True), nullable=True)
     status = Column(Enum(ReminderStatus), default=ReminderStatus.SCHEDULED)
     error_message = Column(String, nullable=True)
     celery_task_id = Column(String, nullable=True)  # legacy field, unused
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     appointment = relationship("Appointment", back_populates="reminders")
     homework_assignment = relationship("HomeworkAssignment", back_populates="reminders")

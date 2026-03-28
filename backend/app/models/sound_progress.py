@@ -25,8 +25,12 @@ class SoundProgressRecord(Base):
     stage = Column(Enum(SoundStage), default=SoundStage.NOT_STARTED)
     accuracy_percent = Column(Float, nullable=True)
     notes = Column(Text, nullable=True)
-    assessed_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    assessed_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     patient = relationship("Patient", back_populates="sound_progress_records")
     session = relationship("Session", back_populates="sound_progress_records")

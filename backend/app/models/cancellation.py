@@ -34,9 +34,13 @@ class CancellationRecord(Base):
     type = Column(Enum(CancellationType), nullable=False)
     reason = Column(Text, nullable=True)
     cancelled_by = Column(Enum(CancelledBy), nullable=False)
-    cancelled_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    cancelled_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     fee_charged = Column(Numeric(10, 2), nullable=True)
     package_session_returned = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     appointment = relationship("Appointment", back_populates="cancellation")

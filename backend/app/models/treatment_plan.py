@@ -44,7 +44,9 @@ class TreatmentPlan(Base):
     target_end_date = Column(Date, nullable=True)
     status = Column(Enum(PlanStatus), default=PlanStatus.ACTIVE)
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),
@@ -69,8 +71,10 @@ class TreatmentGoal(Base):
     measurable_criteria = Column(Text, nullable=True)
     status = Column(Enum(GoalStatus), default=GoalStatus.NOT_STARTED)
     target_date = Column(Date, nullable=True)
-    achieved_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    achieved_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     plan = relationship("TreatmentPlan", back_populates="goals")
 
@@ -85,6 +89,8 @@ class GoalTemplate(Base):
     category = Column(String, nullable=True)  # articulation, phonology, etc.
     description = Column(Text, nullable=False)
     measurable_criteria = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist")

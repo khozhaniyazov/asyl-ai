@@ -30,8 +30,8 @@ class Appointment(Base):
     id = Column(Integer, primary_key=True, index=True)
     therapist_id = Column(Integer, ForeignKey("therapists.id"), nullable=False)
     patient_id = Column(Integer, ForeignKey("patients.id"))
-    start_time = Column(DateTime)
-    end_time = Column(DateTime)
+    start_time = Column(DateTime(timezone=True))
+    end_time = Column(DateTime(timezone=True))
     status = Column(Enum(AppointmentStatus), default=AppointmentStatus.PLANNED)
     kaspi_link = Column(String, nullable=True)
     meeting_link = Column(String, nullable=True)
@@ -43,7 +43,9 @@ class Appointment(Base):
     requested_by = Column(Enum(RequestedBy), default=RequestedBy.THERAPIST)
     session_type = Column(Enum(SessionType), default=SessionType.IN_PERSON)
 
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist", back_populates="appointments")
     patient = relationship("Patient", back_populates="appointments")

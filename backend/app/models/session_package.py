@@ -24,9 +24,13 @@ class SessionPackage(Base):
     price_per_session = Column(Numeric(10, 2), nullable=False)
     total_price = Column(Numeric(10, 2), nullable=False)
     payment_status = Column(Enum(PaymentStatus), default=PaymentStatus.PENDING)
-    purchased_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    expires_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    purchased_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     patient = relationship("Patient", back_populates="session_packages")
     therapist = relationship("Therapist", back_populates="session_packages")

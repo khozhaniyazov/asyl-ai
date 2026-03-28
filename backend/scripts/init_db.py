@@ -15,6 +15,8 @@ from app.models import *  # noqa: F401, F403 — import all models to register t
 
 async def init_db():
     async with engine.begin() as conn:
+        # Drop all tables first to handle schema changes (e.g. DateTime -> DateTime(timezone=True))
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     print("Database tables created successfully.")
 

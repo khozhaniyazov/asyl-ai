@@ -11,9 +11,11 @@ class Parent(Base):
     phone = Column(String, unique=True, index=True, nullable=False)
     full_name = Column(String, nullable=True)
     otp_code_hash = Column(String, nullable=True)
-    otp_expires_at = Column(DateTime, nullable=True)
+    otp_expires_at = Column(DateTime(timezone=True), nullable=True)
     otp_attempts = Column(Integer, default=0)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     # v2: relationship via Patient.parent_id instead of linked_patient_ids CSV
     children = relationship("Patient", back_populates="parent")

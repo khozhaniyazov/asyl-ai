@@ -25,8 +25,10 @@ class Conversation(Base):
     id = Column(Integer, primary_key=True, index=True)
     therapist_id = Column(Integer, ForeignKey("therapists.id"), nullable=False)
     parent_id = Column(Integer, ForeignKey("parents.id"), nullable=False)
-    last_message_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_message_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist", back_populates="conversations")
     parent = relationship("Parent", back_populates="conversations")
@@ -44,7 +46,9 @@ class Message(Base):
     sender_id = Column(Integer, nullable=False)  # therapist_id or parent_id
     text = Column(Text, nullable=True)
     media_url = Column(String, nullable=True)
-    read_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    read_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     conversation = relationship("Conversation", back_populates="messages")

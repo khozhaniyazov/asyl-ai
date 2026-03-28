@@ -21,7 +21,9 @@ class Patient(Base):
     last_name = Column(String, index=True)
     diagnosis = Column(String)
     parent_phone = Column(String)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     # v2 fields
     date_of_birth = Column(Date, nullable=True)

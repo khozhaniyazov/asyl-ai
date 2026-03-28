@@ -16,6 +16,8 @@ class TherapistAvailability(Base):
     end_time = Column(Time, nullable=False)
     is_active = Column(Boolean, default=True)
     specific_date = Column(Date, nullable=True)  # override for a specific date
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist", back_populates="availability_slots")

@@ -26,7 +26,9 @@ class Clinic(Base):
     owner_therapist_id = Column(Integer, ForeignKey("therapists.id"), nullable=False)
     address = Column(String, nullable=True)
     phone = Column(String, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     owner = relationship("Therapist")
     memberships = relationship(
@@ -41,7 +43,9 @@ class ClinicMembership(Base):
     clinic_id = Column(Integer, ForeignKey("clinics.id"), nullable=False)
     therapist_id = Column(Integer, ForeignKey("therapists.id"), nullable=False)
     role = Column(Enum(ClinicRole), default=ClinicRole.THERAPIST)
-    joined_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    joined_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     clinic = relationship("Clinic", back_populates="memberships")
     therapist = relationship("Therapist")

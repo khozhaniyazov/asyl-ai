@@ -27,7 +27,9 @@ class HomeworkTemplate(Base):
     media_urls = Column(JSON, nullable=True)  # list of URLs
     target_sounds = Column(String, nullable=True)  # comma-separated: "Р,Ш,Л"
     age_range = Column(String, nullable=True)  # e.g. "3-5", "6-8"
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),

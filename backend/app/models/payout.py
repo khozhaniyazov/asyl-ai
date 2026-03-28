@@ -32,9 +32,13 @@ class Payout(Base):
     status = Column(Enum(PayoutStatus), default=PayoutStatus.PENDING, index=True)
     bank_account_id = Column(Integer, ForeignKey("bank_accounts.id"), nullable=True)
     admin_notes = Column(Text, nullable=True)
-    requested_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    processed_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    requested_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    processed_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     therapist = relationship("Therapist", back_populates="payouts")
     bank_account = relationship("BankAccount")
@@ -52,7 +56,9 @@ class BankAccount(Base):
     account_number = Column(String, nullable=False)
     kaspi_phone = Column(String, nullable=True)
     is_verified = Column(Integer, default=0)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),

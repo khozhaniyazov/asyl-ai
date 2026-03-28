@@ -24,7 +24,9 @@ class WaitlistEntry(Base):
     priority = Column(Integer, default=0)  # higher = more urgent
     status = Column(Enum(WaitlistStatus), default=WaitlistStatus.WAITING)
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     patient = relationship("Patient", back_populates="waitlist_entry")
     therapist = relationship("Therapist", back_populates="waitlist_entries")

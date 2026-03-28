@@ -30,8 +30,10 @@ class Review(Base):
     is_verified = Column(Boolean, default=False)  # True if session_id is set
     is_published = Column(Boolean, default=True)
     therapist_reply = Column(Text, nullable=True)
-    therapist_reply_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    therapist_reply_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
 
     parent = relationship("Parent", back_populates="reviews")
     therapist = relationship("Therapist", back_populates="reviews")
