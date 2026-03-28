@@ -53,30 +53,38 @@ def _clear_auth_cookie(response: Response) -> None:
 
 @router.post("/register", response_model=TherapistResponse)
 async def register(user_in: TherapistCreate, db: AsyncSession = Depends(get_db)):
-    # Validate password strength
-    is_valid, msg = validate_password_strength(user_in.password)
-    if not is_valid:
-        raise HTTPException(status_code=400, detail=msg)
+    try:
+        # Validate password strength
+        is_valid, msg = validate_password_strength(user_in.password)
+        if not is_valid:
+            raise HTTPException(status_code=400, detail=msg)
 
-    result = await db.execute(
-        select(Therapist).filter(Therapist.email == user_in.email)
-    )
-    if result.scalars().first():
-        # Generic error to prevent user enumeration
-        raise HTTPException(
-            status_code=400,
-            detail="Registration failed. Please check your details and try again.",
+        result = await db.execute(
+            select(Therapist).filter(Therapist.email == user_in.email)
         )
-    user = Therapist(
-        email=user_in.email,
-        hashed_password=get_password_hash(user_in.password),
-        full_name=user_in.full_name,
-        clinic_name=user_in.clinic_name,
-    )
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    return user
+        if result.scalars().first():
+            # Generic error to prevent user enumeration
+            raise HTTPException(
+                status_code=400,
+                detail="Registration failed. Please check your details and try again.",
+            )
+        user = Therapist(
+            email=user_in.email,
+            hashed_password=get_password_hash(user_in.password),
+            full_name=user_in.full_name,
+            clinic_name=user_in.clinic_name,
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+        return user
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def _authenticate(email: str, password: str, db: AsyncSession) -> dict:
