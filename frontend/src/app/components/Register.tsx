@@ -35,7 +35,6 @@ export default function Register() {
     setLoading(true);
     try {
       await register({ email: form.email, password: form.password, full_name: form.name, clinic_name: form.clinic || undefined });
-      await login(form.email, form.password);
       toast.success(t("auth.accountCreated"));
       navigate("/onboarding");
     } catch (err: any) {
