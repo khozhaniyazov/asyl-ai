@@ -7,6 +7,7 @@ import { api } from "../api";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "./ui/LanguageSwitcher";
 import { otpRequestSchema, otpVerifySchema } from "../validation";
+import PhoneInput from "./ui/PhoneInput";
 
 export default function ParentLogin() {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function ParentLogin() {
             <motion.div key="phone" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="space-y-4">
               <div>
                 <label className="text-[13px] mb-1 block">{t("parent.phoneNumber")}</label>
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+7 7XX XXX XXXX" className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
+                <PhoneInput value={phone} onChange={setPhone} className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all" />
               </div>
               <button onClick={handleSendOtp} disabled={loading} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl hover:opacity-90 shadow-lg shadow-primary/20 transition-opacity flex items-center justify-center gap-2 disabled:opacity-60">
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}

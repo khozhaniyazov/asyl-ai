@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { api } from "../api";
 import { useTranslation } from "react-i18next";
 import { patientSchema } from "../validation";
+import PhoneInput from "./ui/PhoneInput";
 
 interface Patient {
   id: number;
@@ -211,7 +212,6 @@ export default function Patients() {
                 { key: "firstName", label: t("patients.firstName"), placeholder: t("patients.firstName") },
                 { key: "lastName", label: t("patients.lastName"), placeholder: t("patients.lastName") },
                 { key: "diagnosis", label: t("patients.diagnosis"), placeholder: t("patients.diagnosis") },
-                { key: "parentPhone", label: t("patients.parentPhone"), placeholder: "+7 7XX XXX XXXX" },
               ].map((field) => (
                 <div key={field.key}>
                   <label className="text-[13px] mb-1 block">{field.label}</label>
@@ -227,6 +227,14 @@ export default function Patients() {
                   {errors[field.key] && <p className="text-[11px] text-destructive mt-1">{t("auth.fieldRequired")}</p>}
                 </div>
               ))}
+              <div>
+                <label className="text-[13px] mb-1 block">{t("patients.parentPhone")}</label>
+                <PhoneInput
+                  value={form.parentPhone}
+                  onChange={(v) => setForm({ ...form, parentPhone: v })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-input-background text-[14px] outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                />
+              </div>
               <div>
                 <label className="text-[13px] mb-1 block">{t("patients.dateOfBirth")}</label>
                 <input
